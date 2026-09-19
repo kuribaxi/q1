@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- VERSION 2 – START | Hela filen: ca 2 440 rader | Sök på "FIL-KOMPLETT" i slutet för att kontrollera att hela koden finns med -->
 <html lang="sv">
 <head>
   <meta charset="UTF-8">
@@ -21,6 +22,7 @@
       src: url('https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishBold-Bold.ttf') format('truetype');
       font-weight: 700; font-style: normal; font-display: swap;
     }
+
     :root {
       --bg:#EFEAF9; --surface:#fff; --surface2:#F7F5FC; --border:#E4DEFC;
       --primary:#6C47E8; --primary-soft:#EDE8FC; --primary-glow:rgba(108,71,232,0.18);
@@ -83,6 +85,7 @@
       display:flex;
       flex-direction:column;
     }
+
     .hdr{
       background:var(--surface);
       border-radius:var(--r);
@@ -107,6 +110,7 @@
     }
     .hdr-bismillah:hover{color:#9B59E8;text-shadow:0 2px 8px var(--primary-glow)}
     body.night .hdr-bismillah{color:#C9B8FF;text-shadow:0 1px 4px rgba(201,184,255,.3)}
+
     .hdr-logo{
       width:56px;height:56px;border-radius:18px;
       background:linear-gradient(135deg,var(--primary),#9B59E8);
@@ -133,6 +137,7 @@
       border:2px solid var(--surface);padding:0 3px;
     }
     .bdg.h{display:none}
+
     .daily-aya{
       background:linear-gradient(135deg,var(--primary),#9B59E8 60%,#7A3FE0);
       color:#fff;border-radius:var(--r);padding:28px 32px;
@@ -253,6 +258,7 @@
       font-size:16px;opacity:.85;font-style:italic;
       padding:24px 0;text-align:center;
     }
+
     .section{
       background:linear-gradient(135deg, var(--section-bg-1) 0%, var(--section-bg-2) 100%);
       border-radius:var(--r);padding:26px 28px;
@@ -468,6 +474,7 @@
       cursor:pointer;transition:all .2s;
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
+
     /* ===== TAFSIR ===== */
     .tafsir-card{
       max-width:800px;width:100%;padding:0;
@@ -499,6 +506,7 @@
     .tafsir-close:active,
     .tafsir-fs-btn:active{transform:scale(.92)}
     .tafsir-fs-btn.active{background:var(--primary);color:#fff}
+
     .tafsir-lang-bar{
       display:flex;gap:6px;flex-wrap:wrap;
       padding:0 24px 16px;flex-shrink:0;
@@ -517,6 +525,7 @@
       box-shadow:0 4px 14px var(--primary-glow);
     }
     .tafsir-lang-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
+
     .tafsir-translate-bar{
       display:flex;gap:6px;flex-wrap:wrap;align-items:center;
       padding:12px 24px;
@@ -542,6 +551,7 @@
       background:var(--emerald);color:#fff;border-color:var(--emerald);
     }
     .tafsir-translate-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
+
     /* Ny verktygsrad för font och storlek */
     .tafsir-font-bar{
       display:flex;gap:8px;flex-wrap:wrap;align-items:center;
@@ -591,6 +601,7 @@
       display:flex;align-items:center;gap:6px;
     }
     .tafsir-font-bar .reset-btn:active{background:var(--primary-soft);color:var(--primary)}
+
     .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
     .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
     .tafsir-body{
@@ -615,6 +626,7 @@
       background:var(--primary-soft);display:inline-block;
       padding:4px 12px;border-radius:50px;margin-bottom:10px;
     }
+
     .bottom-lang-bar{
       position:fixed;
       bottom:0;left:0;right:0;
@@ -658,6 +670,7 @@
     .bottom-lang-inner button[data-lang="fa"]{
       font-family:var(--kurdish-font);font-size:15px;
     }
+
     @media (max-width:768px){
       body{padding:16px 14px calc(var(--bottom-bar-height) + 20px)}
       .section{padding:20px 18px}
@@ -746,7 +759,9 @@
   </style>
 </head>
 <body>
+
 <div class="container">
+
   <div class="hdr">
     <div class="hdr-left">
       <div class="hdr-logo"><i class="fas fa-book-open"></i></div>
@@ -769,6 +784,7 @@
       </button>
     </div>
   </div>
+
   <div class="daily-aya">
     <div class="daily-aya-top">
       <div class="daily-aya-label"><i class="fas fa-star-and-crescent"></i> Dagens aya</div>
@@ -790,19 +806,23 @@
         </button>
       </div>
     </div>
+
     <div class="daily-aya-qari-row">
       <i class="fas fa-microphone-lines"></i>
       <select id="qariSelect"></select>
     </div>
+
     <div class="daily-aya-qari-row">
       <i class="fas fa-wand-magic-sparkles"></i>
       <select id="elevenDailyVoiceSelect" title="ElevenLabs-röst (bytbar)"><option value="">Hämtar ElevenLabs-röster…</option></select>
       <button type="button" class="day-action-btn" id="playDailyElevenBtn" onclick="playDailyAyaEleven(this)" title="Läs upp dagens aya med ElevenLabs" style="flex-shrink:0"><i class="fas fa-play"></i></button>
     </div>
+
     <div id="dailyAyaContent">
       <div class="daily-aya-loading">Laddar…</div>
     </div>
   </div>
+
   <div class="section">
     <div class="section-title"><i class="fas fa-search"></i> Hoppa till sura</div>
     <div class="sura-picker">
@@ -811,8 +831,10 @@
       <button onclick="goToSuraAyah()"><i class="fas fa-arrow-right"></i> Visa</button>
     </div>
   </div>
+
   <div class="section">
     <div class="section-title"><i class="fas fa-comment-dots"></i> Röst för böner & duor (ElevenLabs)</div>
+
     <div id="elevenVoicePanel">
       <div class="sura-picker">
         <input type="password" id="elevenApiKeyInput" placeholder="ElevenLabs API-nyckel" style="flex:1;min-width:200px">
@@ -827,6 +849,7 @@
       </div>
     </div>
   </div>
+
   <div class="section">
     <div class="section-title"><i class="fas fa-star"></i> آیة الکرسی · Ayat al-Kursi</div>
     <div class="verse-block">
@@ -841,6 +864,7 @@
     </div>
     <div class="translation" data-tr="kursi"></div>
   </div>
+
   <div class="section">
     <div class="section-title"><i class="fas fa-hands-praying"></i> قنوت · Qunūt</div>
     <div class="verse-block">
@@ -854,6 +878,7 @@
     </div>
     <div class="translation" data-tr="qunut"></div>
   </div>
+
   <div class="section">
     <div class="section-title"><i class="fas fa-book"></i> الفاتحة · Al-Fātiha</div>
     <div class="verse-block">
@@ -868,8 +893,10 @@
     </div>
     <div class="translation" data-tr="fatiha"></div>
   </div>
+
   <div class="section">
     <div class="section-title"><i class="fas fa-shield-halved"></i> ٤ قل · De fyra ”Qul”</div>
+
     <span class="pill">١ · Al-Kāfirūn</span>
     <div class="verse-block">
       <div class="verse-tools">
@@ -882,7 +909,9 @@
       </div>
     </div>
     <div class="translation" data-tr="kafirun"></div>
+
     <hr class="divider">
+
     <span class="pill">٢ · Al-Ikhlāṣ</span>
     <div class="verse-block">
       <div class="verse-tools">
@@ -895,7 +924,9 @@
       </div>
     </div>
     <div class="translation" data-tr="ikhlas"></div>
+
     <hr class="divider">
+
     <span class="pill">٣ · Al-Falaq</span>
     <div class="verse-block">
       <div class="verse-tools">
@@ -908,7 +939,9 @@
       </div>
     </div>
     <div class="translation" data-tr="falaq"></div>
+
     <hr class="divider">
+
     <span class="pill">٤ · An-Nās</span>
     <div class="verse-block">
       <div class="verse-tools">
@@ -922,8 +955,10 @@
     </div>
     <div class="translation" data-tr="nas"></div>
   </div>
+
   <div class="section">
     <div class="section-title"><i class="fas fa-heart"></i> Skyddsböner & Rukya</div>
+
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
@@ -934,7 +969,9 @@
       </div>
     </div>
     <div class="translation" data-tr="ruqya1"></div>
+
     <hr class="divider">
+
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
@@ -945,7 +982,9 @@
       </div>
     </div>
     <div class="translation" data-tr="ruqya2"></div>
+
     <hr class="divider">
+
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
@@ -956,7 +995,9 @@
       </div>
     </div>
     <div class="translation" data-tr="ruqya3"></div>
+
     <hr class="divider">
+
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
@@ -968,6 +1009,7 @@
     </div>
     <div class="translation" data-tr="ruqya4"></div>
   </div>
+
   <div class="section">
     <div class="section-title"><i class="fas fa-sun"></i> دعاء النور · Ljusets bön</div>
     <div class="verse-block">
@@ -996,11 +1038,14 @@
     </div>
     <div class="translation" data-tr="nur"></div>
   </div>
+
   <div class="footer">
     <i class="fas fa-mosque"></i> Familjens Planerare · Quran‑del<br>
     <span style="font-size:12px">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</span>
   </div>
+
 </div>
+
 <div class="bottom-lang-bar">
   <div class="bottom-lang-inner">
     <button data-lang="sv" onclick="setLang('sv')">🇸🇪 Svenska</button>
@@ -1011,6 +1056,7 @@
     <button data-lang="phonetic" onclick="setLang('phonetic')">🔤 Uttal</button>
   </div>
 </div>
+
 <div class="modal-ov h" id="favModal" onclick="if(event.target===this)closeFavorites()">
   <div class="modal-card" style="max-width:700px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
@@ -1024,9 +1070,11 @@
     <div id="favList"></div>
   </div>
 </div>
+
 <div class="modal-ov h" id="viewFavModal" onclick="if(event.target===this)closeViewFav()">
   <div class="modal-card" id="viewFavContent"></div>
 </div>
+
 <div class="modal-ov h" id="tafsirModal" onclick="if(event.target===this)closeTafsir()">
   <div class="modal-card tafsir-card" id="tafsirCard">
     <div class="tafsir-topbar">
@@ -1061,5 +1109,4 @@
         <option value="'K24 Kurdish','Vazirmatn','Noto Naskh Arabic','Amiri','Tahoma',sans-serif">K24 Kurdish</option>
         <option value="'Amiri Quran','Scheherazade New','Amiri',serif">Amiri Quran</option>
         <option value="'Scheherazade New',serif">Scheherazade New</option>
-        <option value="'Noto Naskh Arabic',serif">Noto Naskh Arabic</option>
-        <option value="'Vazirmatn',sans-serif">Vazirmatn</option>
+        <
