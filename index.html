@@ -1574,18 +1574,43 @@ function saveElevenApiKey(){
 async function fetchElevenVoices(){
   const key = localStorage.getItem('elevenLabsApiKey');
   const sel = document.getElementById('elevenVoiceSelect');
+  const hint = document.getElementById('elevenHint');
   if(!key){ toast('❌ Spara din API-nyckel först'); return; }
   if(!sel) return;
   sel.innerHTML = '<option value="">Hämtar röster…</option>';
   try{
-    const res = await fetch('https://api.elevenlabs.io/v1/voices', {
-      headers: { 'xi-api-key': key }
-    });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
+    let res;
+    try{
+      res = await fetch('https://api.elevenlabs.io/v1/voices', {
+        headers: { 'xi-api-key': key }
+      });
+    }catch(networkErr){
+      // fetch själv kastar (ingen HTTP-status alls) vid t.ex. nätverksblockering/CORS/annonsblockerare
+      throw new Error('Nätverksanropet nådde aldrig fram (blockeras ev. av annonsblockerare/webbläsartillägg eller brandvägg). Tekniskt fel: ' + networkErr.message);
+    }
+    if(!res.ok){
+      let detail = '';
+      try{
+        const errJson = await res.json();
+        detail = (errJson && errJson.detail && (errJson.detail.message || errJson.detail)) || JSON.stringify(errJson);
+      }catch(e){
+        try{ detail = await res.text(); }catch(e2){ detail = ''; }
+      }
+      if(res.status === 401){
+        throw new Error('401 Obehörig – API-nyckeln är ogiltig, felstavad eller återkallad. ' + detail);
+      } else if(res.status === 403){
+        throw new Error('403 Förbjuden – nyckeln saknar behörighet (kontrollera permissions/scopes på nyckeln i ditt ElevenLabs-konto). ' + detail);
+      } else if(res.status === 429){
+        throw new Error('429 – för många förfrågningar eller kvoten/krediterna är slut på kontot. ' + detail);
+      } else {
+        throw new Error('HTTP ' + res.status + (detail ? ' – ' + detail : ''));
+      }
+    }
     const data = await res.json();
     const voices = data.voices || [];
     if(!voices.length){
       sel.innerHTML = '<option value="">Inga röster hittades på kontot</option>';
+      if(hint) hint.innerHTML = '⚠️ Nyckeln fungerar men kontot har inga röster ännu. Lägg till/klona en röst på elevenlabs.io och hämta igen.';
       return;
     }
     const savedVoiceId = localStorage.getItem('elevenLabsVoiceId');
@@ -1603,11 +1628,13 @@ async function fetchElevenVoices(){
     // Cacha röstlistan så den kan visas i den enhetliga qari-/röstväljaren också
     localStorage.setItem('elevenLabsVoicesCache', JSON.stringify(voices.map(v => ({ id: v.voice_id, name: v.name }))));
     populateQariSelect();
+    if(hint) hint.innerHTML = '✅ ' + voices.length + ' röster hämtade och redo att användas.';
     toast('✅ ' + voices.length + ' röster hämtade');
   }catch(err){
     console.error('ElevenLabs voices-fel:', err);
     sel.innerHTML = '<option value="">Kunde inte hämta röster</option>';
-    toast('❌ Kunde inte hämta röster (kontrollera din API-nyckel)');
+    if(hint) hint.innerHTML = '❌ <b>Kunde inte hämta röster:</b> ' + escapeHtml(err.message || String(err));
+    toast('❌ Kunde inte hämta röster – se felmeddelandet nedan');
   }
 }
 
