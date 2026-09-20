@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishRegular-Regular.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishBold-Bold.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @font-face {
@@ -538,6 +538,22 @@
       padding:4px 12px;border-radius:50px;margin-bottom:10px;
     }
 
+    /* Helskärm för Tafsir-modal */
+    .modal-ov.fs-active {
+      padding: 0;
+    }
+    .modal-ov.fs-active .tafsir-card {
+      max-width: 100%;
+      width: 100%;
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
+      border: none;
+    }
+    .modal-ov.fs-active .tafsir-scroll {
+      padding-bottom: 40px;
+    }
+
     .bottom-lang-bar{
       position:fixed;
       bottom:0;left:0;right:0;
@@ -979,7 +995,12 @@
   <div class="modal-card tafsir-card">
     <div class="tafsir-topbar">
       <div class="tafsir-title" id="tafsirTitle"><i class="fas fa-book-open"></i> Tafsir</div>
-      <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button class="tafsir-close" onclick="toggleTafsirFullscreen()" title="Helskärm" id="tafsirFsBtn" style="background:var(--surface2); color:var(--text2);">
+          <i class="fas fa-expand" id="tafsirFsIcon"></i>
+        </button>
+        <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
+      </div>
     </div>
     <div class="tafsir-lang-bar" id="tafsirLangBar"></div>
     <div class="tafsir-translate-bar" id="tafsirTranslateBar">
@@ -998,7 +1019,14 @@
       <span class="label" style="margin-left:10px"><i class="fas fa-font"></i> Typsnitt:</span>
       <select id="tafsirFontSelect" onchange="setTafsirFontFamily(this.value)" style="border:1.5px solid var(--border);border-radius:50px;padding:6px 12px;font-family:var(--font);font-size:12px;font-weight:800;background:var(--surface);color:var(--text2);cursor:pointer">
         <option value="default">Standard (serif)</option>
-        <option value="sans">Sans-serif</option>
+        <option value="inter">Inter / System</option>
+        <option value="georgia">Georgia</option>
+        <option value="times">Times New Roman</option>
+        <option value="arial">Arial</option>
+        <option value="roboto">Roboto</option>
+        <option value="opensans">Open Sans</option>
+        <option value="verdana">Verdana</option>
+        <option value="courier">Courier New</option>
         <option value="amiri">Amiri (arabisk stil)</option>
         <option value="kurdish">K24 Kurdish</option>
       </select>
@@ -1147,7 +1175,15 @@ function openTafsirModalCommon(title){
   loadTafsir(currentTafsirLang);
 }
 function closeTafsir(){
+  // Stäng helskärm om den är aktiv
+  if (document.fullscreenElement === document.getElementById('tafsirModal') || 
+      document.webkitFullscreenElement === document.getElementById('tafsirModal')) {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    else if (document.msExitFullscreen) document.msExitFullscreen();
+  }
   document.getElementById('tafsirModal').classList.add('h');
+  document.getElementById('tafsirModal').classList.remove('fs-active');
 }
 
 function renderTafsirLangBar(){
@@ -1170,7 +1206,14 @@ let tafsirFontSize = parseInt(localStorage.getItem('quranTafsirFontSize'), 10) |
 let tafsirFontFamily = localStorage.getItem('quranTafsirFontFamily') || 'default';
 const TAFSIR_FONT_FAMILIES = {
   default: 'var(--font)',
-  sans: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  inter: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  georgia: "Georgia, 'Times New Roman', Times, serif",
+  times: "'Times New Roman', Times, serif",
+  arial: "Arial, Helvetica, sans-serif",
+  roboto: "'Roboto', sans-serif",
+  opensans: "'Open Sans', sans-serif",
+  verdana: "Verdana, Geneva, sans-serif",
+  courier: "'Courier New', Courier, monospace",
   amiri: 'var(--quran-font)',
   kurdish: 'var(--kurdish-font)'
 };
@@ -1326,6 +1369,56 @@ async function loadTafsir(lang){
 }
 
 /* ============================================================
+   HELSKÄRM FÖR TAFSIR
+   ============================================================ */
+function toggleTafsirFullscreen() {
+  const modal = document.getElementById('tafsirModal');
+  const icon = document.getElementById('tafsirFsIcon');
+  const btn = document.getElementById('tafsirFsBtn');
+  
+  if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+    if (modal.requestFullscreen) {
+      modal.requestFullscreen();
+    } else if (modal.webkitRequestFullscreen) {
+      modal.webkitRequestFullscreen();
+    } else if (modal.msRequestFullscreen) {
+      modal.msRequestFullscreen();
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  }
+}
+
+document.addEventListener('fullscreenchange', updateTafsirFsIcon);
+document.addEventListener('webkitfullscreenchange', updateTafsirFsIcon);
+document.addEventListener('msfullscreenchange', updateTafsirFsIcon);
+
+function updateTafsirFsIcon() {
+  const icon = document.getElementById('tafsirFsIcon');
+  const btn = document.getElementById('tafsirFsBtn');
+  const modal = document.getElementById('tafsirModal');
+  if (!icon || !btn || !modal) return;
+  
+  const isFs = document.fullscreenElement === modal || 
+               document.webkitFullscreenElement === modal ||
+               document.msFullscreenElement === modal;
+  
+  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+  btn.classList.toggle('active', isFs);
+  if (isFs) {
+    modal.classList.add('fs-active');
+  } else {
+    modal.classList.remove('fs-active');
+  }
+}
+
+/* ============================================================
    HJÄLPFUNKTIONER
    ============================================================ */
 const SURAH_NAMES = [
@@ -1358,9 +1451,6 @@ let currentLang = localStorage.getItem('quranLang') || 'sv';
 
 /* ============================================================
    QARI (RECITATÖR) & LJUDUPPSPELNING
-   Endast reciter som är bekräftat fungerande på cdn.islamic.network
-   är kvar i listan. Övriga togs bort eftersom deras ljudfiler
-   saknades för många verser (spelades tyst eller föll tillbaka).
    ============================================================ */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy', kind:'cdn' },
@@ -1376,10 +1466,9 @@ function getCachedElevenVoices(){
   try{ return JSON.parse(localStorage.getItem('elevenLabsVoicesCache') || '[]'); }catch(e){ return []; }
 }
 
-// Lagras som "cdn:ar.alafasy" eller "eleven:{voiceId}"
 function getCurrentVoiceRaw(){
   let raw = localStorage.getItem('quranQari') || 'cdn:ar.alafasy';
-  if(!raw.includes(':')) raw = 'cdn:' + raw; // bakåtkompatibilitet med äldre sparat värde
+  if(!raw.includes(':')) raw = 'cdn:' + raw;
   return raw;
 }
 function getCurrentVoiceSelection(){
@@ -1566,10 +1655,7 @@ function toggleDailyLoop(){
 }
 
 /* ============================================================
-   ELEVENLABS – enda ljudkällan för böner/duor som inte finns
-   som Quran-recitation (Qunūt, rukya-böner, Ljusets bön).
-   Samma röstlista/nyckel används även av den enhetliga
-   qari-/röst-väljaren vid Dagens aya.
+   ELEVENLABS
    ============================================================ */
 const DEFAULT_ELEVENLABS_API_KEY = 'sk_f4e325ded7425949933964b98467f0614434bd1d03298754';
 
@@ -1633,7 +1719,6 @@ async function fetchElevenVoices(){
         headers: { 'xi-api-key': key }
       });
     }catch(networkErr){
-      // fetch själv kastar (ingen HTTP-status alls) vid t.ex. nätverksblockering/CORS/annonsblockerare
       throw new Error('Nätverksanropet nådde aldrig fram (blockeras ev. av annonsblockerare/webbläsartillägg eller brandvägg). Tekniskt fel: ' + networkErr.message);
     }
     if(!res.ok){
@@ -1673,7 +1758,6 @@ async function fetchElevenVoices(){
       sel.value = voices[0].voice_id;
       localStorage.setItem('elevenLabsVoiceId', voices[0].voice_id);
     }
-    // Cacha röstlistan så den kan visas i den enhetliga qari-/röstväljaren också
     localStorage.setItem('elevenLabsVoicesCache', JSON.stringify(voices.map(v => ({ id: v.voice_id, name: v.name }))));
     populateQariSelect();
     if(hint) hint.innerHTML = '✅ ' + voices.length + ' röster hämtade och redo att användas.';
@@ -1764,8 +1848,6 @@ function autoTransliterate(arabic){
 
 /* ============================================================
    DAGENS AYA
-   Kurmanji: hämtas nu från fawazahmed0/quran-api (edition kmr-unknown),
-   ett stabilt, statiskt CDN-baserat bibliotek med riktig Kurmanji-text.
    ============================================================ */
 function safeFetchJson(url){
   return fetch(url)
