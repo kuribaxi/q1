@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishRegular-Regular.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishBold-Bold.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&family=Inter:wght@400;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @font-face {
@@ -291,6 +291,7 @@
     .verse-tool:active{transform:scale(.9)}
     .verse-tool.copied{background:#fff;color:var(--emerald);border-color:#fff}
     .verse-tool.playing{background:#fff;color:var(--arabic-grad-1);border-color:#fff}
+    .verse-tool.active{background:#fff;color:var(--emerald);border-color:#fff}
     .verse-tool:disabled{opacity:.35;cursor:not-allowed}
     .verse-tool:disabled:active{transform:none}
     .arabic{
@@ -464,6 +465,17 @@
       display:flex;flex-direction:column;
       max-height:90vh;overflow:hidden;
     }
+    .tafsir-card:fullscreen,
+    .tafsir-card:-webkit-full-screen{
+      max-width:100vw;max-height:100vh;
+      width:100vw;height:100vh;
+      border-radius:0;
+      background:var(--surface);
+    }
+    .tafsir-card:fullscreen .tafsir-scroll,
+    .tafsir-card:-webkit-full-screen .tafsir-scroll{
+      flex:1;
+    }
     .tafsir-topbar{
       display:flex;justify-content:space-between;align-items:center;
       padding:22px 24px 14px;flex-shrink:0;
@@ -536,22 +548,6 @@
       font-size:12px;font-weight:800;color:var(--primary);
       background:var(--primary-soft);display:inline-block;
       padding:4px 12px;border-radius:50px;margin-bottom:10px;
-    }
-
-    /* Helskärm för Tafsir-modal */
-    .modal-ov.fs-active {
-      padding: 0;
-    }
-    .modal-ov.fs-active .tafsir-card {
-      max-width: 100%;
-      width: 100%;
-      height: 100vh;
-      max-height: 100vh;
-      border-radius: 0;
-      border: none;
-    }
-    .modal-ov.fs-active .tafsir-scroll {
-      padding-bottom: 40px;
     }
 
     .bottom-lang-bar{
@@ -752,26 +748,12 @@
   </div>
 
   <div class="section">
-    <div class="section-title"><i class="fas fa-comment-dots"></i> ElevenLabs-röst för böner & duor</div>
-    <div class="sura-picker">
-      <input type="password" id="elevenApiKeyInput" placeholder="ElevenLabs API-nyckel" style="flex:1;min-width:200px">
-      <button onclick="saveElevenApiKey()"><i class="fas fa-key"></i> Spara nyckel</button>
-    </div>
-    <div class="sura-picker" style="margin-top:10px">
-      <select id="elevenVoiceSelect"><option value="">Hämta röster med din nyckel ovan…</option></select>
-      <button onclick="fetchElevenVoices()"><i class="fas fa-rotate"></i> Hämta röster</button>
-    </div>
-    <div id="elevenHint" style="font-size:13px;color:var(--text3);font-weight:600;margin-top:10px;line-height:1.5">
-      Används för Qunūt, rukya-bönerna och Ljusets bön (dessa finns inte som Quran-recitation). Ger ultra-naturlig arabiska (Modern Standard Arabic + dialekter). Har du klonat din egen röst på elevenlabs.io dyker den upp här efter att du hämtat röster. Din API-nyckel sparas endast lokalt i din egen webbläsare och skickas direkt till ElevenLabs — aldrig via oss. Samma röstlista går även att välja direkt vid ▶️-knappen på Dagens aya (för Quran-verser).
-    </div>
-  </div>
-
-  <div class="section">
     <div class="section-title"><i class="fas fa-star"></i> آیة الکرسی · Ayat al-Kursi</div>
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playAyah(2,255,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playAyah(2,255,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
         <button class="verse-tool" onclick="openTafsirAyah(2,255,'Ayat al-Kursi · 2:255')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic">
@@ -786,7 +768,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small" id="qunutArabic">
         اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ، وَعَافِنَا فِيمَنْ عَافَيْتَ، وَتَوَلَّنَا فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لَنَا فِيمَا أَعْطَيْتَ، وَقِنَا شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، وَنَسْتَغْفِرُكَ وَنَتُوبُ إِلَيْكَ، وَصَلَّى اللَّهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ
@@ -800,7 +781,8 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playSurah(1,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playSurah(1,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(1,'Al-Fātiha')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic">
@@ -817,7 +799,8 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playSurah(109,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playSurah(109,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(109,'Al-Kāfirūn')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
@@ -832,7 +815,8 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playSurah(112,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playSurah(112,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(112,'Al-Ikhlāṣ')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
@@ -847,7 +831,8 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playSurah(113,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playSurah(113,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(113,'Al-Falaq')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
@@ -862,7 +847,8 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playSurah(114,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playSurah(114,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(114,'An-Nās')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
@@ -878,7 +864,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         بِسْمِ اللَّهِ أَرْقِيكَ، مِنْ كُلِّ شَيْءٍ يُؤْذِيكَ، مِنْ شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ، اللَّهُ يَشْفِيكَ، بِسْمِ اللَّهِ أَرْقِيكَ
@@ -891,7 +876,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         اللَّهُمَّ رَبَّ النَّاسِ، أَذْهِبْ الْبَاسَ، اشْفِهِ وَأَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا
@@ -904,7 +888,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ
@@ -917,7 +900,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا
@@ -931,7 +913,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>
@@ -995,10 +976,8 @@
   <div class="modal-card tafsir-card">
     <div class="tafsir-topbar">
       <div class="tafsir-title" id="tafsirTitle"><i class="fas fa-book-open"></i> Tafsir</div>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <button class="tafsir-close" onclick="toggleTafsirFullscreen()" title="Helskärm" id="tafsirFsBtn" style="background:var(--surface2); color:var(--text2);">
-          <i class="fas fa-expand" id="tafsirFsIcon"></i>
-        </button>
+      <div style="display:flex;gap:8px;flex-shrink:0">
+        <button class="tafsir-close" id="tafsirFsBtn" onclick="toggleTafsirFullscreen()" title="Helskärm"><i class="fas fa-expand" id="tafsirFsIcon"></i></button>
         <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
       </div>
     </div>
@@ -1021,12 +1000,12 @@
         <option value="default">Standard (serif)</option>
         <option value="inter">Inter / System</option>
         <option value="georgia">Georgia</option>
-        <option value="times">Times New Roman</option>
+        <option value="timesnewroman">Times New Roman</option>
         <option value="arial">Arial</option>
         <option value="roboto">Roboto</option>
         <option value="opensans">Open Sans</option>
         <option value="verdana">Verdana</option>
-        <option value="courier">Courier New</option>
+        <option value="couriernew">Courier New</option>
         <option value="amiri">Amiri (arabisk stil)</option>
         <option value="kurdish">K24 Kurdish</option>
       </select>
@@ -1175,15 +1154,7 @@ function openTafsirModalCommon(title){
   loadTafsir(currentTafsirLang);
 }
 function closeTafsir(){
-  // Stäng helskärm om den är aktiv
-  if (document.fullscreenElement === document.getElementById('tafsirModal') || 
-      document.webkitFullscreenElement === document.getElementById('tafsirModal')) {
-    if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-    else if (document.msExitFullscreen) document.msExitFullscreen();
-  }
   document.getElementById('tafsirModal').classList.add('h');
-  document.getElementById('tafsirModal').classList.remove('fs-active');
 }
 
 function renderTafsirLangBar(){
@@ -1205,15 +1176,15 @@ function renderTafsirTranslateBar(){
 let tafsirFontSize = parseInt(localStorage.getItem('quranTafsirFontSize'), 10) || 19;
 let tafsirFontFamily = localStorage.getItem('quranTafsirFontFamily') || 'default';
 const TAFSIR_FONT_FAMILIES = {
-  default: 'var(--font)',
-  inter: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-  georgia: "Georgia, 'Times New Roman', Times, serif",
-  times: "'Times New Roman', Times, serif",
+  default: "'Times New Roman', Times, serif",
+  inter: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  georgia: "Georgia, 'Times New Roman', serif",
+  timesnewroman: "'Times New Roman', Times, serif",
   arial: "Arial, Helvetica, sans-serif",
-  roboto: "'Roboto', sans-serif",
-  opensans: "'Open Sans', sans-serif",
+  roboto: "'Roboto', Arial, sans-serif",
+  opensans: "'Open Sans', Arial, sans-serif",
   verdana: "Verdana, Geneva, sans-serif",
-  courier: "'Courier New', Courier, monospace",
+  couriernew: "'Courier New', Courier, monospace",
   amiri: 'var(--quran-font)',
   kurdish: 'var(--kurdish-font)'
 };
@@ -1241,6 +1212,26 @@ function setTafsirFontFamily(fam){
   localStorage.setItem('quranTafsirFontFamily', tafsirFontFamily);
   applyTafsirDisplay();
 }
+
+/* Helskärm för tafsir-fönstret */
+function toggleTafsirFullscreen(){
+  const el = document.querySelector('.tafsir-card');
+  if(!el) return;
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if(!isFs){
+    (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen).call(el);
+  } else {
+    (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+  }
+}
+function updateTafsirFsIcon(){
+  const icon = document.getElementById('tafsirFsIcon');
+  if(!icon) return;
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+}
+document.addEventListener('fullscreenchange', updateTafsirFsIcon);
+document.addEventListener('webkitfullscreenchange', updateTafsirFsIcon);
 
 function selectTafsir(lang){
   currentTafsirLang = lang;
@@ -1369,56 +1360,6 @@ async function loadTafsir(lang){
 }
 
 /* ============================================================
-   HELSKÄRM FÖR TAFSIR
-   ============================================================ */
-function toggleTafsirFullscreen() {
-  const modal = document.getElementById('tafsirModal');
-  const icon = document.getElementById('tafsirFsIcon');
-  const btn = document.getElementById('tafsirFsBtn');
-  
-  if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-    if (modal.requestFullscreen) {
-      modal.requestFullscreen();
-    } else if (modal.webkitRequestFullscreen) {
-      modal.webkitRequestFullscreen();
-    } else if (modal.msRequestFullscreen) {
-      modal.msRequestFullscreen();
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
-  }
-}
-
-document.addEventListener('fullscreenchange', updateTafsirFsIcon);
-document.addEventListener('webkitfullscreenchange', updateTafsirFsIcon);
-document.addEventListener('msfullscreenchange', updateTafsirFsIcon);
-
-function updateTafsirFsIcon() {
-  const icon = document.getElementById('tafsirFsIcon');
-  const btn = document.getElementById('tafsirFsBtn');
-  const modal = document.getElementById('tafsirModal');
-  if (!icon || !btn || !modal) return;
-  
-  const isFs = document.fullscreenElement === modal || 
-               document.webkitFullscreenElement === modal ||
-               document.msFullscreenElement === modal;
-  
-  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
-  btn.classList.toggle('active', isFs);
-  if (isFs) {
-    modal.classList.add('fs-active');
-  } else {
-    modal.classList.remove('fs-active');
-  }
-}
-
-/* ============================================================
    HJÄLPFUNKTIONER
    ============================================================ */
 const SURAH_NAMES = [
@@ -1451,6 +1392,9 @@ let currentLang = localStorage.getItem('quranLang') || 'sv';
 
 /* ============================================================
    QARI (RECITATÖR) & LJUDUPPSPELNING
+   Endast reciter som är bekräftat fungerande på cdn.islamic.network
+   är kvar i listan. Övriga togs bort eftersom deras ljudfiler
+   saknades för många verser (spelades tyst eller föll tillbaka).
    ============================================================ */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy', kind:'cdn' },
@@ -1462,64 +1406,28 @@ let currentAudio = null;
 let currentPlayBtn = null;
 let currentAudioUrl = null;
 
-function getCachedElevenVoices(){
-  try{ return JSON.parse(localStorage.getItem('elevenLabsVoicesCache') || '[]'); }catch(e){ return []; }
-}
-
-function getCurrentVoiceRaw(){
-  let raw = localStorage.getItem('quranQari') || 'cdn:ar.alafasy';
-  if(!raw.includes(':')) raw = 'cdn:' + raw;
-  return raw;
-}
-function getCurrentVoiceSelection(){
-  const raw = getCurrentVoiceRaw();
-  const idx = raw.indexOf(':');
-  return { type: raw.slice(0, idx), id: raw.slice(idx + 1) };
-}
 function getCurrentQari(){
-  const sel = getCurrentVoiceSelection();
-  return sel.type === 'cdn' ? sel.id : 'ar.alafasy';
+  return localStorage.getItem('quranQari') || 'ar.alafasy';
 }
 
 function populateQariSelect(){
   const sel = document.getElementById('qariSelect');
   if(!sel) return;
-  const elevenVoices = getCachedElevenVoices();
-  let html = `<optgroup label="🎙️ Qari (recitation)">` +
-    QARIS.map(q => `<option value="cdn:${q.id}">${q.name}</option>`).join('') +
-    `</optgroup>`;
-  if(elevenVoices.length){
-    html += `<optgroup label="✨ ElevenLabs-röster">` +
-      elevenVoices.map(v => `<option value="eleven:${v.id}">${v.name}</option>`).join('') +
-      `</optgroup>`;
-  }
-  sel.innerHTML = html;
-  sel.value = getCurrentVoiceRaw();
+  sel.innerHTML = QARIS.map(q => `<option value="${q.id}">${q.name}</option>`).join('');
+  sel.value = getCurrentQari();
   if(!sel.dataset.bound){
     sel.addEventListener('change', ()=> setQari(sel.value));
     sel.dataset.bound = '1';
   }
 }
 
-function setQari(value){
+function setQari(id){
   stopCurrentAudio();
-  if(!value.includes(':')) value = 'cdn:' + value;
-  localStorage.setItem('quranQari', value);
-  const idx = value.indexOf(':');
-  const type = value.slice(0, idx);
-  const id = value.slice(idx + 1);
+  localStorage.setItem('quranQari', id);
   const sel = document.getElementById('qariSelect');
-  if(sel) sel.value = value;
-  if(type === 'eleven'){
-    localStorage.setItem('elevenLabsVoiceId', id);
-    const evSel = document.getElementById('elevenVoiceSelect');
-    if(evSel) evSel.value = id;
-    const v = getCachedElevenVoices().find(x => x.id === id);
-    toast('✨ Röst: ' + (v ? v.name : id));
-  } else {
-    const q = QARIS.find(q => q.id === id);
-    toast('🎙️ Qari: ' + (q ? q.name : id));
-  }
+  if(sel) sel.value = id;
+  const q = QARIS.find(q => q.id === id);
+  toast('🎙️ Qari: ' + (q ? q.name : id));
 }
 
 function getGlobalAyahNumber(surah, ayah){
@@ -1613,33 +1521,16 @@ function toggleAudio(url, btn){
 }
 
 async function playAyah(surah, ayah, btn){
-  const sel = getCurrentVoiceSelection();
-  if(sel.type === 'eleven'){
-    const text = getArabicTextFromBtn(btn);
-    await playTextWithEleven(btn, text, sel.id);
-    return;
-  }
-  toggleAudio(buildAyahAudioUrl(surah, ayah, sel.id), btn);
+  toggleAudio(buildAyahAudioUrl(surah, ayah), btn);
 }
 
 async function playSurah(surah, btn){
-  const sel = getCurrentVoiceSelection();
-  if(sel.type === 'eleven'){
-    const text = getArabicTextFromBtn(btn);
-    await playTextWithEleven(btn, text, sel.id);
-    return;
-  }
-  toggleAudio(buildSurahAudioUrl(surah, sel.id), btn);
+  toggleAudio(buildSurahAudioUrl(surah), btn);
 }
 
 async function playDailyAya(btn){
   if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
-  const sel = getCurrentVoiceSelection();
-  if(sel.type === 'eleven'){
-    await playTextWithEleven(btn, currentAyaData.arabic, sel.id);
-    return;
-  }
-  toggleAudio(buildAyahAudioUrl(currentAyaData.surahNum, currentAyaData.ayahNum, sel.id), btn);
+  toggleAudio(buildAyahAudioUrl(currentAyaData.surahNum, currentAyaData.ayahNum), btn);
 }
 
 function toggleDailyLoop(){
@@ -1651,171 +1542,22 @@ function toggleDailyLoop(){
     currentAudio.loop = !isOn;
   }
   if(btn) btn.classList.toggle('active', !isOn);
-  toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar Dagens aya tills vidare');
+  toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar tills vidare');
 }
 
-/* ============================================================
-   ELEVENLABS
-   ============================================================ */
-const DEFAULT_ELEVENLABS_API_KEY = 'sk_f4e325ded7425949933964b98467f0614434bd1d03298754';
-
-function getArabicTextFromBtn(btn){
-  const block = btn.closest('.verse-block');
-  if(!block) return '';
-  const arabicEl = block.querySelector('.arabic');
-  if(!arabicEl) return '';
-  let text = '';
-  arabicEl.childNodes.forEach(n=>{
-    if(n.nodeType === 3) text += n.textContent;
-    else if(n.tagName === 'BR') text += '. ';
-    else text += n.textContent;
-  });
-  return text.replace(/\s+/g,' ').trim();
-}
-
-function playDuaTTS(btn){
-  const text = getArabicTextFromBtn(btn);
-  if(!text){ toast('❌ Ingen text att läsa upp'); return; }
-  playTextWithEleven(btn, text);
-}
-
-function loadSavedElevenState(){
-  if(!localStorage.getItem('elevenLabsApiKey') && DEFAULT_ELEVENLABS_API_KEY){
-    localStorage.setItem('elevenLabsApiKey', DEFAULT_ELEVENLABS_API_KEY);
+/* Generisk upprepningsknapp för Ayat al-Kursi, al-Fātiha och de fyra Qul-suran */
+function toggleVerseLoop(loopBtn){
+  const container = loopBtn.closest('.verse-tools');
+  if(!container) return;
+  const playBtn = container.querySelector('.verse-tool[data-role="play"]');
+  if(!playBtn) return;
+  const isOn = playBtn.dataset.loop === '1';
+  playBtn.dataset.loop = isOn ? '0' : '1';
+  if(currentAudio && currentPlayBtn === playBtn){
+    currentAudio.loop = !isOn;
   }
-  const keyInput = document.getElementById('elevenApiKeyInput');
-  const savedKey = localStorage.getItem('elevenLabsApiKey');
-  if(keyInput && savedKey) keyInput.value = savedKey;
-  const sel = document.getElementById('elevenVoiceSelect');
-  if(sel && !sel.dataset.bound){
-    sel.addEventListener('change', ()=>{
-      localStorage.setItem('elevenLabsVoiceId', sel.value);
-      localStorage.setItem('quranQari', 'eleven:' + sel.value);
-      populateQariSelect();
-    });
-    sel.dataset.bound = '1';
-  }
-}
-
-function saveElevenApiKey(){
-  const input = document.getElementById('elevenApiKeyInput');
-  const key = input ? input.value.trim() : '';
-  if(!key){ toast('❌ Ange en API-nyckel'); return; }
-  localStorage.setItem('elevenLabsApiKey', key);
-  toast('🔑 API-nyckel sparad lokalt i din webbläsare');
-}
-
-async function fetchElevenVoices(){
-  const key = localStorage.getItem('elevenLabsApiKey');
-  const sel = document.getElementById('elevenVoiceSelect');
-  const hint = document.getElementById('elevenHint');
-  if(!key){ toast('❌ Spara din API-nyckel först'); return; }
-  if(!sel) return;
-  sel.innerHTML = '<option value="">Hämtar röster…</option>';
-  try{
-    let res;
-    try{
-      res = await fetch('https://api.elevenlabs.io/v1/voices', {
-        headers: { 'xi-api-key': key }
-      });
-    }catch(networkErr){
-      throw new Error('Nätverksanropet nådde aldrig fram (blockeras ev. av annonsblockerare/webbläsartillägg eller brandvägg). Tekniskt fel: ' + networkErr.message);
-    }
-    if(!res.ok){
-      let detail = '';
-      try{
-        const errJson = await res.json();
-        detail = (errJson && errJson.detail && (errJson.detail.message || errJson.detail)) || JSON.stringify(errJson);
-      }catch(e){
-        try{ detail = await res.text(); }catch(e2){ detail = ''; }
-      }
-      if(res.status === 401){
-        throw new Error('401 Obehörig – API-nyckeln är ogiltig, felstavad eller återkallad. ' + detail);
-      } else if(res.status === 403){
-        throw new Error('403 Förbjuden – nyckeln saknar behörighet (kontrollera permissions/scopes på nyckeln i ditt ElevenLabs-konto). ' + detail);
-      } else if(res.status === 429){
-        throw new Error('429 – för många förfrågningar eller kvoten/krediterna är slut på kontot. ' + detail);
-      } else {
-        throw new Error('HTTP ' + res.status + (detail ? ' – ' + detail : ''));
-      }
-    }
-    const data = await res.json();
-    const voices = data.voices || [];
-    if(!voices.length){
-      sel.innerHTML = '<option value="">Inga röster hittades på kontot</option>';
-      if(hint) hint.innerHTML = '⚠️ Nyckeln fungerar men kontot har inga röster ännu. Lägg till/klona en röst på elevenlabs.io och hämta igen.';
-      return;
-    }
-    const savedVoiceId = localStorage.getItem('elevenLabsVoiceId');
-    sel.innerHTML = voices.map(v => {
-      const gender = v.labels && v.labels.gender ? (v.labels.gender === 'female' ? ' ♀' : v.labels.gender === 'male' ? ' ♂' : '') : '';
-      const cat = v.category ? ' · ' + v.category : '';
-      return `<option value="${v.voice_id}">${v.name}${gender}${cat}</option>`;
-    }).join('');
-    if(savedVoiceId && voices.some(v => v.voice_id === savedVoiceId)){
-      sel.value = savedVoiceId;
-    } else {
-      sel.value = voices[0].voice_id;
-      localStorage.setItem('elevenLabsVoiceId', voices[0].voice_id);
-    }
-    localStorage.setItem('elevenLabsVoicesCache', JSON.stringify(voices.map(v => ({ id: v.voice_id, name: v.name }))));
-    populateQariSelect();
-    if(hint) hint.innerHTML = '✅ ' + voices.length + ' röster hämtade och redo att användas.';
-    toast('✅ ' + voices.length + ' röster hämtade');
-  }catch(err){
-    console.error('ElevenLabs voices-fel:', err);
-    sel.innerHTML = '<option value="">Kunde inte hämta röster</option>';
-    if(hint) hint.innerHTML = '❌ <b>Kunde inte hämta röster:</b> ' + escapeHtml(err.message || String(err));
-    toast('❌ Kunde inte hämta röster – se felmeddelandet nedan');
-  }
-}
-
-async function playTextWithEleven(btn, text, voiceId){
-  const apiKey = localStorage.getItem('elevenLabsApiKey');
-  const vId = voiceId || localStorage.getItem('elevenLabsVoiceId');
-  if(!apiKey){ toast('❌ Lägg till och spara din ElevenLabs API-nyckel först'); return; }
-  if(!vId){ toast('❌ Hämta och välj en ElevenLabs-röst först'); return; }
-  if(!text){ toast('❌ Ingen text att läsa upp'); return; }
-
-  if(btn.dataset.elevenUrl && btn.dataset.elevenVoiceId === vId){
-    toggleAudio(btn.dataset.elevenUrl, btn);
-    return;
-  }
-
-  stopCurrentAudio();
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  try{
-    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${vId}`, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-        'Accept': 'audio/mpeg'
-      },
-      body: JSON.stringify({
-        text: text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: { stability: 0.5, similarity_boost: 0.75 }
-      })
-    });
-    if(!res.ok){
-      let msg = 'HTTP ' + res.status;
-      try{
-        const errJson = await res.json();
-        if(errJson && errJson.detail && errJson.detail.message) msg = errJson.detail.message;
-      }catch(e){}
-      throw new Error(msg);
-    }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    btn.dataset.elevenUrl = url;
-    btn.dataset.elevenVoiceId = vId;
-    toggleAudio(url, btn);
-  }catch(err){
-    console.error('ElevenLabs TTS-fel:', err);
-    toast('❌ ElevenLabs: ' + (err.message || 'kunde inte generera ljud'));
-    resetPlayBtn(btn);
-  }
+  loopBtn.classList.toggle('active', !isOn);
+  toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar tills vidare');
 }
 
 /* ============================================================
@@ -1848,6 +1590,8 @@ function autoTransliterate(arabic){
 
 /* ============================================================
    DAGENS AYA
+   Kurmanji: hämtas nu från fawazahmed0/quran-api (edition kmr-unknown),
+   ett stabilt, statiskt CDN-baserat bibliotek med riktig Kurmanji-text.
    ============================================================ */
 function safeFetchJson(url){
   return fetch(url)
@@ -2259,7 +2003,6 @@ updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
 populateQariSelect();
-loadSavedElevenState();
 updateFavBadge();
 renderTafsirTranslateBar();
 fetchRandomAya();
