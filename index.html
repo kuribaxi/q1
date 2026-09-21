@@ -1399,12 +1399,17 @@ let currentLang = localStorage.getItem('quranLang') || 'sv';
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy', kind:'cdn' },
   { id:'ar.husary', name:'Mahmoud Khalil Al-Husary', kind:'cdn' },
-  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi (Murattal)', kind:'cdn' }
+  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi (Murattal)', kind:'cdn' },
+  { id:'ar.sudais', name:'Abdur-Rahman As-Sudais', kind:'cdn' },
+  { id:'ar.abdulbasit', name:'Abdul Basit (Murattal)', kind:'cdn' },
+  { id:'ar.ajamy', name:'Ahmed Al-Ajamy', kind:'cdn' },
+  { id:'ar.hanirifai', name:'Hani Rifai', kind:'cdn' }
 ];
 
 let currentAudio = null;
 let currentPlayBtn = null;
 let currentAudioUrl = null;
+let currentQueue = null; // { urls, index, btn } – används vid uppspelning av hela suror
 
 function getCurrentQari(){
   return localStorage.getItem('quranQari') || 'ar.alafasy';
@@ -1442,9 +1447,18 @@ function buildAyahAudioUrl(surah, ayah, overrideQariId){
   return `https://cdn.islamic.network/quran/audio/128/${qari}/${global}.mp3`;
 }
 
-function buildSurahAudioUrl(surah, overrideQariId){
-  const qari = overrideQariId || getCurrentQari();
-  return `https://cdn.islamic.network/quran/audio-surah/128/${qari}/${surah}.mp3`;
+// Bygger en lista med en ljudfil per vers i en sura, istället för att
+// förlita sig på CDN:ns hopslagna "hel-sura"-fil, vars täckning är
+// opålitlig för många qaris (fungerade t.ex. inte alls för Al-Minshawi).
+// Per-vers-ljud är samma pålitliga källa som redan används för
+// Dagens aya och Ayat al-Kursi.
+function buildSurahAyahUrls(surah, overrideQariId){
+  const count = SURAH_AYAH_COUNTS[surah - 1];
+  const urls = [];
+  for(let ayah = 1; ayah <= count; ayah++){
+    urls.push(buildAyahAudioUrl(surah, ayah, overrideQariId));
+  }
+  return urls;
 }
 
 function resetPlayBtn(btn){
@@ -1460,9 +1474,7 @@ function stopCurrentAudio(){
     currentAudio.pause();
     currentAudio.src = '';
   }
-  if('speechSynthesis' in window && (window.speechSynthesis.speaking || window.speechSynthesis.pending)){
-    window.speechSynthesis.cancel();
-  }
+  currentQueue = null;
   resetPlayBtn(currentPlayBtn);
   currentAudio = null;
   currentPlayBtn = null;
@@ -1520,12 +1532,85 @@ function toggleAudio(url, btn){
   });
 }
 
+/* Spelar en lista av ljudfiler (t.ex. en hel suras alla verser) i följd.
+   Samma play/paus/laddnings-beteende som toggleAudio, men kedjar vidare
+   till nästa vers när en fil tar slut, och faller tillbaka till Alafasy
+   om en enskild vers saknar ljud för vald qari. */
+function toggleAudioQueue(urls, btn){
+  if(!btn || !urls || !urls.length) return;
+  if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
+    currentAudio.pause();
+    resetPlayBtn(btn);
+    return;
+  }
+  if(currentPlayBtn === btn && currentAudio && currentAudio.paused && currentQueue){
+    currentAudio.play().catch(()=>toast('❌ Kunde inte spela upp ljud'));
+    btn.innerHTML = '<i class="fas fa-pause"></i>';
+    btn.classList.add('playing');
+    return;
+  }
+  stopCurrentAudio();
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  currentQueue = { urls: urls.slice(), index: 0, btn };
+  currentPlayBtn = btn;
+  playQueueStep();
+}
+
+function playQueueStep(){
+  if(!currentQueue) return;
+  const q = currentQueue;
+  if(q.index >= q.urls.length){
+    if(q.btn.dataset.loop === '1'){
+      q.index = 0;
+    } else {
+      resetPlayBtn(q.btn);
+      currentAudio = null; currentPlayBtn = null; currentAudioUrl = null; currentQueue = null;
+      return;
+    }
+  }
+  const url = q.urls[q.index];
+  const audio = new Audio(url);
+  currentAudio = audio;
+  currentAudioUrl = url;
+  audio.addEventListener('playing', ()=>{
+    if(currentAudio === audio){
+      q.btn.innerHTML = '<i class="fas fa-pause"></i>';
+      q.btn.classList.add('playing');
+    }
+  });
+  audio.addEventListener('ended', ()=>{
+    if(currentAudio === audio && currentQueue === q){
+      q.index++;
+      playQueueStep();
+    }
+  });
+  audio.addEventListener('error', ()=>{
+    if(currentQueue !== q) return;
+    const fallbackMatch = url.match(/^(https:\/\/cdn\.islamic\.network\/quran\/audio\/128\/)(ar\.[a-zA-Z]+)(\/.+\.mp3)$/);
+    if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy' && !q.urls['fb' + q.index]){
+      q.urls['fb' + q.index] = true; // markera att vi redan försökt fallback för detta index
+      q.urls[q.index] = fallbackMatch[1] + 'ar.alafasy' + fallbackMatch[3];
+      playQueueStep();
+      return;
+    }
+    // Kunde inte spela denna vers ens med Alafasy – hoppa till nästa
+    q.index++;
+    playQueueStep();
+  });
+  audio.play().catch(()=>{
+    if(currentQueue === q){
+      q.index++;
+      playQueueStep();
+    }
+  });
+}
+
 async function playAyah(surah, ayah, btn){
   toggleAudio(buildAyahAudioUrl(surah, ayah), btn);
 }
 
 async function playSurah(surah, btn){
-  toggleAudio(buildSurahAudioUrl(surah), btn);
+  toggleAudioQueue(buildSurahAyahUrls(surah), btn);
 }
 
 async function playDailyAya(btn){
