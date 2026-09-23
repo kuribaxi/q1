@@ -258,6 +258,164 @@
       padding:24px 0;text-align:center;
     }
 
+    /* ===== SÖKFUNKTION ===== */
+    .search-toggle-btn{
+      width:38px;height:38px;border-radius:50%;
+      border:1.5px solid rgba(255,255,255,.5);
+      background:rgba(255,255,255,.18);
+      color:#fff;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:15px;transition:all .2s;
+      backdrop-filter:blur(4px);
+    }
+    .search-toggle-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
+    .search-toggle-btn:active{transform:scale(.9)}
+    .search-toggle-btn.active{background:#fff;color:var(--primary);border-color:#fff}
+
+    .search-panel{
+      display:none;
+      margin-top:16px;position:relative;z-index:1;
+      background:rgba(255,255,255,.14);
+      border:1.5px solid rgba(255,255,255,.35);
+      border-radius:16px;padding:16px;
+      backdrop-filter:blur(6px);
+    }
+    .search-panel.open{display:block}
+
+    .search-input-row{
+      display:flex;gap:8px;align-items:center;margin-bottom:12px;
+    }
+    .search-input-row input{
+      flex:1;height:46px;border-radius:12px;
+      border:1.5px solid rgba(255,255,255,.5);
+      background:rgba(255,255,255,.95);
+      color:#1E1535;
+      font-family:var(--font);font-size:17px;font-weight:700;
+      padding:0 16px;outline:none;
+      direction:rtl;text-align:right;
+    }
+    .search-input-row input[dir="ltr"]{
+      direction:ltr;text-align:left;
+    }
+    .search-input-row input::placeholder{color:#A89FCE;font-weight:600;font-size:15px}
+    .search-input-row button{
+      height:46px;padding:0 18px;border-radius:12px;
+      border:none;cursor:pointer;
+      font-family:var(--font);font-size:15px;font-weight:800;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:all .2s;
+    }
+    .search-input-row .search-go{
+      background:#fff;color:var(--primary);
+      box-shadow:0 4px 14px rgba(0,0,0,.15);
+    }
+    .search-input-row .search-go:active{transform:scale(.96)}
+    .search-input-row .search-clear{
+      background:rgba(255,255,255,.25);color:#fff;
+      border:1.5px solid rgba(255,255,255,.4);
+    }
+    .search-input-row .search-clear:active{transform:scale(.96)}
+
+    /* Virtuellt tangentbord */
+    .vk-container{
+      margin-top:10px;
+      border-radius:14px;
+      background:rgba(0,0,0,.18);
+      padding:10px;
+      border:1.5px solid rgba(255,255,255,.25);
+    }
+    .vk-lang-tabs{
+      display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;
+    }
+    .vk-lang-tabs button{
+      flex:1;min-width:70px;height:38px;border-radius:10px;
+      border:1.5px solid rgba(255,255,255,.4);
+      background:rgba(255,255,255,.15);
+      color:#fff;font-family:var(--font);font-size:13px;font-weight:800;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;justify-content:center;gap:5px;
+    }
+    .vk-lang-tabs button.active{
+      background:#fff;color:var(--primary);border-color:#fff;
+    }
+    .vk-lang-tabs button:not(.active):active{background:rgba(255,255,255,.3)}
+
+    .vk-keys{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .vk-row{
+      display:flex;gap:5px;justify-content:center;
+    }
+    .vk-key{
+      flex:1;min-width:0;height:44px;border-radius:9px;
+      border:none;cursor:pointer;
+      background:rgba(255,255,255,.92);
+      color:#1E1535;
+      font-family:var(--quran-font);
+      font-size:20px;font-weight:700;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .1s;
+      user-select:none;
+      padding:0 2px;
+    }
+    .vk-key:active{background:#fff;transform:scale(.93)}
+    .vk-key.wide{flex:1.5;font-size:14px;font-family:var(--font);font-weight:800}
+    .vk-key.space{flex:4;font-size:13px;font-family:var(--font);font-weight:800}
+    .vk-key.backspace{flex:1.5;background:rgba(240,94,122,.9);color:#fff;font-size:16px;font-family:var(--font)}
+    .vk-key.backspace:active{background:var(--rose)}
+    .vk-key.enter{flex:1.5;background:var(--emerald);color:#fff;font-size:14px;font-family:var(--font);font-weight:800}
+    .vk-key.enter:active{background:#1AA876}
+
+    .search-results{
+      max-height:320px;overflow-y:auto;
+      margin-top:12px;
+      border-radius:12px;
+      background:rgba(255,255,255,.95);
+      padding:10px;
+    }
+    .search-results:empty{display:none}
+    .search-result-item{
+      padding:12px 14px;border-radius:10px;
+      background:var(--surface);
+      border:1.5px solid var(--border);
+      margin-bottom:8px;cursor:pointer;
+      transition:all .2s;
+      text-align:left;
+    }
+    .search-result-item:hover{
+      border-color:var(--primary);
+      background:var(--primary-soft);
+      transform:translateX(4px);
+    }
+    .search-result-item:last-child{margin-bottom:0}
+    .sr-ref{
+      font-size:12px;font-weight:800;color:var(--primary);
+      margin-bottom:6px;display:flex;align-items:center;gap:6px;
+    }
+    .sr-arabic{
+      font-family:var(--quran-font);
+      font-size:20px;line-height:1.9;direction:rtl;text-align:right;
+      color:var(--text);margin-bottom:6px;
+    }
+    .sr-text{
+      font-size:15px;color:var(--text2);line-height:1.5;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .search-loading{
+      text-align:center;padding:20px;color:var(--text2);
+      font-size:15px;font-weight:700;
+    }
+    .search-empty{
+      text-align:center;padding:20px;color:var(--text3);
+      font-size:15px;font-weight:700;
+    }
+    .search-empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.5}
+    .search-hint{
+      font-size:12px;color:rgba(255,255,255,.8);
+      text-align:center;margin-top:8px;font-weight:600;
+    }
+
     .section{
       background:linear-gradient(135deg, var(--section-bg-1) 0%, var(--section-bg-2) 100%);
       border-radius:var(--r);padding:26px 28px;
@@ -636,6 +794,8 @@
       .bottom-lang-inner button[data-lang="ku"],
       .bottom-lang-inner button[data-lang="ku-KM"],
       .bottom-lang-inner button[data-lang="fa"]{font-size:14px}
+      .vk-key{height:40px;font-size:18px}
+      .vk-key.wide,.vk-key.space,.vk-key.backspace,.vk-key.enter{font-size:12px}
     }
     @media (max-width:480px){
       body{padding:12px 10px calc(var(--bottom-bar-height) + 15px)}
@@ -654,6 +814,7 @@
       .daily-aya-text.fa{font-size:26px;line-height:1.8}
       .daily-aya-text.phonetic{font-size:22px;line-height:1.7}
       .day-action-btn{width:34px;height:34px;font-size:13px}
+      .search-toggle-btn{width:34px;height:34px;font-size:13px}
       .icon-btn{width:44px;height:44px;font-size:17px}
       .verse-tools{top:6px;left:6px}
       .verse-tool{width:32px;height:32px;font-size:13px}
@@ -698,6 +859,10 @@
       .bottom-lang-inner button[data-lang="ku-KM"],
       .bottom-lang-inner button[data-lang="fa"]{font-size:12px}
       :root{ --bottom-bar-height: 152px; }
+      .vk-key{height:36px;font-size:16px}
+      .vk-key.wide,.vk-key.space,.vk-key.backspace,.vk-key.enter{font-size:11px}
+      .search-input-row input{font-size:15px;height:42px}
+      .search-input-row button{height:42px;padding:0 12px;font-size:13px}
     }
   </style>
 </head>
@@ -753,7 +918,39 @@
         <button class="day-action-btn" id="saveFavBtn" onclick="saveCurrentAyaAsFavorite()" title="Spara favorit">
           <i class="far fa-star"></i>
         </button>
+        <button class="search-toggle-btn" id="searchToggleBtn" onclick="toggleSearchPanel()" title="Sök i Quran">
+          <i class="fas fa-search"></i>
+        </button>
       </div>
+    </div>
+
+    <!-- Sökpanel -->
+    <div class="search-panel" id="searchPanel">
+      <div class="search-input-row">
+        <input type="text" id="quranSearchInput" placeholder="Sök ord i Quran…" dir="rtl" autocomplete="off">
+        <button class="search-go" onclick="performQuranSearch()" title="Sök">
+          <i class="fas fa-search"></i>
+        </button>
+        <button class="search-clear" onclick="clearQuranSearch()" title="Rensa">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="vk-container">
+        <div class="vk-lang-tabs">
+          <button class="active" data-vk="ar" onclick="switchVkLang('ar')">🇸🇦 العربية</button>
+          <button data-vk="fa" onclick="switchVkLang('fa')">🇮🇷 فارسی</button>
+          <button data-vk="ku" onclick="switchVkLang('ku')">🏳️ کوردی</button>
+          <button data-vk="latin" onclick="switchVkLang('latin')">🔤 Latin</button>
+        </div>
+        <div class="vk-keys" id="vkKeys"></div>
+      </div>
+
+      <div class="search-hint">
+        <i class="fas fa-lightbulb"></i> Skriv ett ord och tryck <i class="fas fa-search"></i> för att söka i hela Quran
+      </div>
+
+      <div class="search-results" id="searchResults"></div>
     </div>
 
     <div class="daily-aya-qari-row">
@@ -1246,245 +1443,281 @@ const PHONETIC = {
 };
 
 /* ============================================================
-   TAFSIR
+   VIRTUELLT TANGENTBORD – ARABISKA / PERSISKA / SORANI
    ============================================================ */
-const TAFSIRS = [
-  { lang:'ar-ibnkathir', flag:'🇸🇦', label:'العربية · ابن كثير', slug:'ar-tafsir-ibn-kathir', name:'تفسير ابن كثير', rtl:true },
-  { lang:'ar-tabari', flag:'🇸🇦', label:'العربية · الطبري', slug:'ar-tafsir-al-tabari', name:'تفسير الطبري', rtl:true },
-  { lang:'ar-saddi', flag:'🇸🇦', label:'العربية · السعدي', slug:'ar-tafseer-al-saddi', name:'تفسير السعدي', rtl:true },
-  { lang:'en-ibnkathir', flag:'🇬🇧', label:'English · Ibn Kathir', slug:'en-tafisr-ibn-kathir', name:'Tafsir Ibn Kathir (English)', rtl:false },
-  { lang:'en-maarif', flag:'🇬🇧', label:'English · Maarif-ul-Quran', slug:'en-tafsir-maarif-ul-quran', name:'Maarif-ul-Quran', rtl:false },
-  { lang:'fa-mokhtasar', flag:'🇮🇷', label:'فارسی · المختصر', slug:'persian-mokhtasar', name:'تفسیر المختصر (فارسی)', rtl:true },
-  { lang:'fa-saadi', flag:'🇮🇷', label:'فارسی · سعدی', slug:'fr-tafsir-as-saadi', name:'تفسیر السعدی (فارسی)', rtl:true },
-  { lang:'ku-rebar', flag:'🏳️', label:'کوردی سۆرانی · ڕەبار', slug:'kurd-tafsir-rebar', name:'تەفسیری ڕەبار', rtl:true }
-];
-
-let currentTafsirRef = null;
-let currentTafsirLang = localStorage.getItem('quranTafsirLang') || 'ar-ibnkathir';
-let currentTafsirHtml = '';
-let currentTafsirTranslation = localStorage.getItem('quranTafsirTranslation') || 'original';
-
-function openTafsirAyah(surah, ayah, title){
-  currentTafsirRef = { type:'ayah', surah, ayah };
-  openTafsirModalCommon(title);
-}
-function openTafsirChapter(chapter, title){
-  currentTafsirRef = { type:'chapter', chapter };
-  openTafsirModalCommon(title);
-}
-function openTafsirDaily(){
-  if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
-  currentTafsirRef = { type:'ayah', surah: currentAyaData.surahNum, ayah: currentAyaData.ayahNum };
-  openTafsirModalCommon(currentAyaData.surahName + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum);
-}
-
-function openTafsirModalCommon(title){
-  document.getElementById('tafsirTitle').innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + title;
-  renderTafsirLangBar();
-  renderTafsirTranslateBar();
-  applyTafsirDisplay();
-  document.getElementById('tafsirModal').classList.remove('h');
-  document.querySelector('.tafsir-scroll').scrollTop = 0;
-  loadTafsir(currentTafsirLang);
-}
-function closeTafsir(){
-  document.getElementById('tafsirModal').classList.add('h');
-}
-
-function renderTafsirLangBar(){
-  const bar = document.getElementById('tafsirLangBar');
-  bar.innerHTML = TAFSIRS.map(t =>
-    `<button class="${t.lang === currentTafsirLang ? 'active' : ''}" onclick="selectTafsir('${t.lang}')">${t.flag} ${t.label}</button>`
-  ).join('');
-}
-
-function renderTafsirTranslateBar(){
-  const bar = document.getElementById('tafsirTranslateBar');
-  if(!bar) return;
-  bar.querySelectorAll('button').forEach(b=>{
-    b.classList.toggle('active', b.dataset.tl === currentTafsirTranslation);
-  });
-}
-
-let tafsirFontSize = parseInt(localStorage.getItem('quranTafsirFontSize'), 10) || 19;
-let tafsirFontFamily = localStorage.getItem('quranTafsirFontFamily') || 'default';
-const TAFSIR_FONT_FAMILIES = {
-  default: "'Times New Roman', Times, serif",
-  inter: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-  georgia: "Georgia, 'Times New Roman', serif",
-  timesnewroman: "'Times New Roman', Times, serif",
-  arial: "Arial, Helvetica, sans-serif",
-  roboto: "'Roboto', Arial, sans-serif",
-  opensans: "'Open Sans', Arial, sans-serif",
-  verdana: "Verdana, Geneva, sans-serif",
-  couriernew: "'Courier New', Courier, monospace",
-  amiri: 'var(--quran-font)',
-  kurdish: 'var(--kurdish-font)'
+const VK_LAYOUTS = {
+  ar: {
+    name: 'العربية',
+    rows: [
+      ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
+      ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
+      ['ئ','ء','ؤ','ر','لا','ى','ة','و','ز','ظ'],
+      ['ذ','\u200c','\u200d','،','؟','!','.','،','؛',':']
+    ]
+  },
+  fa: {
+    name: 'فارسی',
+    rows: [
+      ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','چ'],
+      ['ش','س','ی','ب','ل','ا','ت','ن','م','ک','گ'],
+      ['پ','ژ','ذ','ر','ز','ط','ظ','و','ء','آ'],
+      ['ئ','ء','ؤ','\u200c','،','؟','!','.','؛',':']
+    ]
+  },
+  ku: {
+    name: 'کوردی',
+    rows: [
+      ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','چ'],
+      ['ش','س','ی','ب','ل','ا','ت','ن','م','ک','گ'],
+      ['پ','ژ','ڕ','ڵ','ۆ','ێ','و','وو','ی','ە','ڕ'],
+      ['ئ','ء','ؤ','ڕ','ڵ','ۆ','ێ','،','؟','!','.']
+    ]
+  },
+  latin: {
+    name: 'Latin',
+    rows: [
+      ['q','w','e','r','t','y','u','i','o','p','å'],
+      ['a','s','d','f','g','h','j','k','l','ö','ä'],
+      ['z','x','c','v','b','n','m','-','_','@'],
+      ['.',',','?','!',':',';',"'",'"','(',')']
+    ]
+  }
 };
 
-function applyTafsirDisplay(){
-  const body = document.getElementById('tafsirBody');
-  const sizeLabel = document.getElementById('tafsirSizeLabel');
-  const fontSelect = document.getElementById('tafsirFontSelect');
-  if(body){
-    body.style.fontSize = tafsirFontSize + 'px';
-    body.style.fontFamily = TAFSIR_FONT_FAMILIES[tafsirFontFamily] || TAFSIR_FONT_FAMILIES.default;
+let currentVkLang = 'ar';
+
+function renderVkKeyboard(){
+  const container = document.getElementById('vkKeys');
+  if(!container) return;
+  const layout = VK_LAYOUTS[currentVkLang];
+  if(!layout) return;
+
+  let html = '';
+  layout.rows.forEach((row, idx) => {
+    html += '<div class="vk-row">';
+    if(idx === layout.rows.length - 1){
+      // Sista raden: backspace + keys + enter
+      html += '<button class="vk-key backspace" onclick="vkBackspace()" title="Radera"><i class="fas fa-delete-left"></i></button>';
+      row.forEach(k => {
+        html += `<button class="vk-key" onclick="vkInsert('${k}')">${k}</button>`;
+      });
+      html += '<button class="vk-key enter" onclick="performQuranSearch()" title="Sök"><i class="fas fa-search"></i></button>';
+    } else {
+      row.forEach(k => {
+        html += `<button class="vk-key" onclick="vkInsert('${k}')">${k}</button>`;
+      });
+    }
+    html += '</div>';
+  });
+
+  // Mellanslag-rad
+  html += '<div class="vk-row">';
+  html += '<button class="vk-key wide" onclick="vkInsert(\' \')">␣ Mellanslag</button>';
+  html += '<button class="vk-key wide" onclick="vkClear()">Rensa</button>';
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function switchVkLang(lang){
+  currentVkLang = lang;
+  document.querySelectorAll('.vk-lang-tabs button').forEach(b => {
+    b.classList.toggle('active', b.dataset.vk === lang);
+  });
+  renderVkKeyboard();
+  // Ändra input-riktning beroende på språk
+  const inp = document.getElementById('quranSearchInput');
+  if(inp){
+    if(lang === 'latin'){
+      inp.setAttribute('dir','ltr');
+      inp.setAttribute('placeholder','Search words in Quran…');
+    } else {
+      inp.setAttribute('dir','rtl');
+      inp.setAttribute('placeholder','Sök ord i Quran…');
+    }
   }
-  if(sizeLabel) sizeLabel.textContent = tafsirFontSize + 'px';
-  if(fontSelect) fontSelect.value = tafsirFontFamily;
 }
 
-function changeTafsirFontSize(delta){
-  tafsirFontSize = Math.min(34, Math.max(14, tafsirFontSize + delta));
-  localStorage.setItem('quranTafsirFontSize', tafsirFontSize);
-  applyTafsirDisplay();
+function vkInsert(char){
+  const inp = document.getElementById('quranSearchInput');
+  if(!inp) return;
+  const start = inp.selectionStart || inp.value.length;
+  const end = inp.selectionEnd || inp.value.length;
+  inp.value = inp.value.slice(0, start) + char + inp.value.slice(end);
+  inp.focus();
+  inp.selectionStart = inp.selectionEnd = start + char.length;
 }
 
-function setTafsirFontFamily(fam){
-  tafsirFontFamily = TAFSIR_FONT_FAMILIES[fam] ? fam : 'default';
-  localStorage.setItem('quranTafsirFontFamily', tafsirFontFamily);
-  applyTafsirDisplay();
-}
-
-function toggleTafsirFullscreen(){
-  const el = document.querySelector('.tafsir-card');
-  if(!el) return;
-  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  if(!isFs){
-    (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen).call(el);
+function vkBackspace(){
+  const inp = document.getElementById('quranSearchInput');
+  if(!inp) return;
+  const start = inp.selectionStart || 0;
+  const end = inp.selectionEnd || 0;
+  if(start === end && start > 0){
+    inp.value = inp.value.slice(0, start - 1) + inp.value.slice(start);
+    inp.selectionStart = inp.selectionEnd = start - 1;
   } else {
-    (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+    inp.value = inp.value.slice(0, start) + inp.value.slice(end);
+    inp.selectionStart = inp.selectionEnd = start;
   }
-}
-function updateTafsirFsIcon(){
-  const icon = document.getElementById('tafsirFsIcon');
-  if(!icon) return;
-  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
-}
-document.addEventListener('fullscreenchange', updateTafsirFsIcon);
-document.addEventListener('webkitfullscreenchange', updateTafsirFsIcon);
-
-function selectTafsir(lang){
-  currentTafsirLang = lang;
-  localStorage.setItem('quranTafsirLang', lang);
-  renderTafsirLangBar();
-  loadTafsir(lang);
+  inp.focus();
 }
 
-function translateTafsirTo(targetLang){
-  currentTafsirTranslation = targetLang;
-  localStorage.setItem('quranTafsirTranslation', targetLang);
-  renderTafsirTranslateBar();
-  if(targetLang === 'original'){
-    document.getElementById('tafsirBody').innerHTML = currentTafsirHtml;
-  } else {
-    applyGoogleTranslate(targetLang);
+function vkClear(){
+  const inp = document.getElementById('quranSearchInput');
+  if(inp){ inp.value = ''; inp.focus(); }
+}
+
+function toggleSearchPanel(){
+  const panel = document.getElementById('searchPanel');
+  const btn = document.getElementById('searchToggleBtn');
+  if(!panel) return;
+  panel.classList.toggle('open');
+  if(btn) btn.classList.toggle('active', panel.classList.contains('open'));
+  if(panel.classList.contains('open')){
+    renderVkKeyboard();
+    setTimeout(()=> {
+      const inp = document.getElementById('quranSearchInput');
+      if(inp) inp.focus();
+    }, 100);
   }
 }
 
-function applyGoogleTranslate(targetLang){
-  const body = document.getElementById('tafsirBody');
-  if(!currentTafsirHtml){ return; }
+/* ============================================================
+   QURAN-SÖKNING
+   Använder alquran.cloud search API (ar.alafasy för arabiska,
+   en.sahih för engelska, sv.bernstrom för svenska).
+   Vi söker i arabisk text först – om användaren skriver latinska
+   tecken söker vi i engelsk/svensk översättning.
+   ============================================================ */
+let searchInProgress = false;
+let lastSearchQuery = '';
 
-  const map = { 'sv': 'sv', 'fa': 'fa', 'ku': 'ku', 'ku-KM': 'ku' };
-  const gtLang = targetLang === 'ku' ? 'ckb' : (map[targetLang] || 'en');
-
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = currentTafsirHtml;
-  const plainText = tempDiv.textContent || tempDiv.innerText || '';
-
-  body.innerHTML = '<div class="daily-aya-loading">Översätter med Google Translate…</div>';
-
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(gtLang)}&dt=t&q=${encodeURIComponent(plainText.slice(0, 4500))}`;
-
-  fetch(url)
-    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
-    .then(data => {
-      if(data && data[0]){
-        const translated = data[0].map(seg => seg[0]).join('');
-        const dir = ['fa','ku','ckb','ar'].includes(gtLang) ? 'rtl' : 'ltr';
-        body.innerHTML = `<div class="tafsir-verse-num" style="background:var(--emerald-soft);color:#0A7B4E">🌐 Översatt med Google Translate (${gtLang.toUpperCase()})</div>
-          <p dir="${dir}" style="direction:${dir};text-align:${dir === 'rtl' ? 'right' : 'left'}">${escapeHtml(translated)}</p>`;
-      } else {
-        throw new Error('Ingen översättning returnerades');
-      }
-    })
-    .catch(err => {
-      console.error('Google Translate-fel:', err);
-      body.innerHTML = `<div class="fav-empty">
-        <i class="fas fa-triangle-exclamation"></i>
-        Kunde inte översätta automatiskt.<br><br>
-        <span style="font-size:13px;font-weight:600">
-          Tips: Öppna sidan i Edge och använd <b>Högerklicka → Översätt till…</b>,<br>
-          eller markera texten och använd webbläsarens inbyggda översättning.
-        </span>
-      </div>`;
-    });
+function detectSearchLang(query){
+  // Arabiska tecken (inkl. persiska/sorani-specifika)
+  const arabicRange = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  if(arabicRange.test(query)) return 'ar';
+  return 'en';
 }
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+async function performQuranSearch(){
+  if(searchInProgress) return;
+  const inp = document.getElementById('quranSearchInput');
+  const results = document.getElementById('searchResults');
+  if(!inp || !results) return;
 
-function sanitizeTafsirHtml(html){
-  if(!html) return '';
-  return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on\w+="[^"]*"/gi, '');
-}
+  const query = inp.value.trim();
+  if(query.length < 2){
+    results.innerHTML = '<div class="search-empty"><i class="fas fa-keyboard"></i>Skriv minst 2 tecken att söka efter.</div>';
+    return;
+  }
 
-async function fetchTafsirFromSpa5k(slug, surah, ayah){
-  const url = `https://cdn.jsdelivr.net/gh/spa5k/tafsir_api@main/tafsir/${slug}/${surah}/${ayah}.json`;
-  const res = await fetch(url);
-  if(!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
-  return {
-    html: sanitizeTafsirHtml(data.text || ''),
-    resourceName: (data.edition && data.edition.name) || slug
-  };
-}
+  // Om query är samma som förra, gör inget
+  if(query === lastSearchQuery && results.innerHTML.includes('search-result-item')) return;
 
-async function loadTafsir(lang){
-  const body = document.getElementById('tafsirBody');
-  const sourceEl = document.getElementById('tafsirSource');
-  const meta = TAFSIRS.find(t => t.lang === lang) || TAFSIRS[0];
+  searchInProgress = true;
+  lastSearchQuery = query;
 
-  body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
-  body.classList.toggle('rtl', !!meta.rtl);
-  sourceEl.textContent = '';
+  results.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Söker i Quran…</div>';
 
-  if(!currentTafsirRef) return;
+  const lang = detectSearchLang(query);
+  const editions = lang === 'ar'
+    ? ['ar.alafasy', 'ar.muhammadfarooq']
+    : ['en.sahih', 'en.pickthall', 'sv.bernstrom'];
 
   try{
-    const surah = currentTafsirRef.type === 'ayah' ? currentTafsirRef.surah : currentTafsirRef.chapter;
-    const ayah = currentTafsirRef.type === 'ayah' ? currentTafsirRef.ayah : 1;
+    let allMatches = [];
+    const seen = new Set();
 
-    const result = await fetchTafsirFromSpa5k(meta.slug, surah, ayah);
+    for(const edition of editions){
+      try{
+        const url = `https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/${edition}`;
+        const res = await fetch(url);
+        if(!res.ok) continue;
+        const data = await res.json();
+        if(data && data.data && Array.isArray(data.data.matches)){
+          data.data.matches.forEach(m => {
+            const key = m.number + '_' + edition.split('.')[0];
+            if(!seen.has(key)){
+              seen.add(key);
+              allMatches.push({
+                surah: m.surah.number,
+                surahName: m.surah.englishName,
+                surahNameAr: m.surah.name,
+                ayah: m.numberInSurah,
+                arabic: m.text,
+                edition: edition.split('.')[0]
+              });
+            }
+          });
+        }
+      }catch(e){ /* fortsätt med nästa edition */ }
+    }
 
-    if(!result || !result.html || result.html.trim() === ''){
-      body.innerHTML = '<div class="fav-empty"><i class="fas fa-circle-info"></i>Tafsir-text saknas för denna vers på detta språk.</div>';
-      currentTafsirHtml = '';
+    if(!allMatches.length){
+      results.innerHTML = '<div class="search-empty"><i class="fas fa-search-minus"></i>Inga träffar hittades för "' + escapeHtml(query) + '".<br><span style="font-size:13px">Prova ett annat ord eller stavning.</span></div>';
       return;
     }
 
-    sourceEl.textContent = result.resourceName || meta.name || '';
-    currentTafsirHtml = result.html;
+    // Begränsa till 30 träffar
+    allMatches = allMatches.slice(0, 30);
 
-    if(currentTafsirTranslation !== 'original'){
-      applyGoogleTranslate(currentTafsirTranslation);
-    } else {
-      body.innerHTML = currentTafsirHtml;
-    }
+    let html = `<div style="font-size:12px;font-weight:800;color:var(--text3);padding:4px 8px 10px;text-transform:uppercase;letter-spacing:.06em">
+      <i class="fas fa-list"></i> ${allMatches.length} träffar för "${escapeHtml(query)}"
+    </div>`;
+
+    allMatches.forEach(m => {
+      html += `
+        <div class="search-result-item" onclick="goToSearchResult(${m.surah}, ${m.ayah})">
+          <div class="sr-ref"><i class="fas fa-bookmark"></i> ${escapeHtml(m.surahName)} ${m.surah}:${m.ayah}</div>
+          <div class="sr-arabic">${escapeHtml(m.arabic)}</div>
+        </div>
+      `;
+    });
+
+    results.innerHTML = html;
 
   }catch(err){
-    console.error('Tafsir-fel:', err);
-    body.innerHTML = `
-      <div class="fav-empty">
-        <i class="fas fa-triangle-exclamation"></i>
-        Kunde inte hämta tafsir just nu.<br>
-        <span style="font-size:13px;font-weight:600">${err.message || 'Nätverksfel'}</span>
-      </div>`;
+    console.error('Sökfel:', err);
+    results.innerHTML = '<div class="search-empty"><i class="fas fa-triangle-exclamation"></i>Kunde inte söka just nu.<br><span style="font-size:13px">Kontrollera din internetanslutning.</span></div>';
+  }finally{
+    searchInProgress = false;
   }
 }
+
+function goToSearchResult(surah, ayah){
+  // Stäng sökpanelen och visa versen i Dagens aya
+  const panel = document.getElementById('searchPanel');
+  const btn = document.getElementById('searchToggleBtn');
+  if(panel) panel.classList.remove('open');
+  if(btn) btn.classList.remove('active');
+
+  fetchAya(surah, ayah);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  toast('📖 ' + SURAH_NAMES[surah - 1] + ' ' + surah + ':' + ayah);
+}
+
+function clearQuranSearch(){
+  const inp = document.getElementById('quranSearchInput');
+  const results = document.getElementById('searchResults');
+  if(inp) inp.value = '';
+  if(results) results.innerHTML = '';
+  lastSearchQuery = '';
+  if(inp) inp.focus();
+}
+
+// Enter-tangent i sökfältet
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('quranSearchInput');
+  if(inp){
+    inp.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        performQuranSearch();
+      }
+    });
+  }
+});
 
 /* ============================================================
    HJÄLPFUNKTIONER
@@ -1588,14 +1821,12 @@ function resetPlayBtn(btn){
 }
 
 function stopCurrentAudio(){
-  // Stoppa pågående ljud
   if(currentAudio){
     currentAudio.loop = false;
     currentAudio.pause();
     try { currentAudio.src = ''; } catch(e){}
     currentAudio.load && currentAudio.load();
   }
-  // Återställ knapp och kö
   resetPlayBtn(currentPlayBtn);
   currentAudio = null;
   currentPlayBtn = null;
@@ -1667,7 +1898,6 @@ function toggleAudioQueue(urls, btn, surahNum){
     btn.classList.add('playing');
     return;
   }
-  // Viktigt: stoppa allt gammalt först
   stopCurrentAudio();
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
   currentQueue = { urls: urls.slice(), index: 0, btn, surahNum: surahNum || null };
@@ -2472,6 +2702,7 @@ populateQariSelect();
 updateFavBadge();
 renderTafsirTranslateBar();
 fetchRandomAya();
+renderVkKeyboard();
 </script>
 
 </body>
