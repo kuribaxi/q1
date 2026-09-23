@@ -922,7 +922,6 @@
       </div>
     </div>
 
-    <!-- Sökpanel -->
     <div class="search-panel" id="searchPanel">
       <div class="search-input-row">
         <input type="text" id="quranSearchInput" placeholder="Sök ord i Quran…" dir="rtl" autocomplete="off">
@@ -1446,29 +1445,18 @@ const PHONETIC = {
 function normalizeArabic(text){
   if(!text) return '';
   return String(text)
-    // Ta bort alla diakritiska tecken (harakat/erab)
     .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]/g, '')
-    // Ta bort tatweel (förlängningstecken)
     .replace(/\u0640/g, '')
-    // Ta bort Quran-dekorationer och versmarkörer
     .replace(/[\u06DD\u06DE\u08E3-\u08FF\uFE70-\uFE7F]/g, '')
-    // Ta bort tecken som ﴿ ﴾ och andra symboler
     .replace(/[\uFD3E\uFD3F]/g, '')
-    // Ta bort arabiska siffror och versnummer
     .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, '')
-    // Ta bort skiljetecken och extra mellanslag
     .replace(/[،؛؟!.:\-_()[\]{}'"»«]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-    // Normalisera alef-varianter till enkel alef
     .replace(/[أإآٱا]/g, 'ا')
-    // Normalisera ya/yeh-varianter
     .replace(/[يىیۍ]/g, 'ي')
-    // Normalisera ta marbuta till ha
     .replace(/[ةه]/g, 'ه')
-    // Normalisera waw-varianter
     .replace(/[ؤو]/g, 'و')
-    // Normalisera kaf-varianter
     .replace(/[كک]/g, 'ك');
 }
 
@@ -1477,7 +1465,7 @@ function normalizeSearchTerm(text){
 }
 
 /* ============================================================
-   VIRTUELLT TANGENTBORD – ARABISKA / PERSISKA / SORANI
+   VIRTUELLT TANGENTBORD
    ============================================================ */
 const VK_LAYOUTS = {
   ar: {
@@ -1616,14 +1604,10 @@ function toggleSearchPanel(){
 
 /* ============================================================
    QURAN-SÖKNING
-   Söker med normaliserad text (utan erab/diakritiska tecken).
-   1) Provar alquran.cloud:s inbyggda sök-API
-   2) Om inga träffar: hämtar suror och söker lokalt med
-      normaliserad jämförelse
    ============================================================ */
 let searchInProgress = false;
 let lastSearchQuery = '';
-let quranCache = {}; // cache för hämtade suror (surah -> array av verser)
+let quranCache = {};
 
 function detectSearchLang(query){
   const arabicRange = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
@@ -1653,8 +1637,6 @@ async function localQuranSearch(query, maxResults){
   if(normalizedQuery.length < 2) return [];
 
   const results = [];
-  // Sök i alla 114 suror – men begränsa för prestanda
-  // Vi hämtar suror i grupper och söker igenom
   const surahPromises = [];
   for(let s = 1; s <= 114; s++){
     surahPromises.push(fetchSurahFromApi(s).then(ayahs => ({ surah: s, ayahs })));
@@ -1695,21 +1677,18 @@ async function performQuranSearch(){
   searchInProgress = true;
   lastSearchQuery = query;
 
-  const normalizedQuery = normalizeSearchTerm(query);
   results.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Söker i Quran (ignorerar erab)…</div>';
 
   const lang = detectSearchLang(query);
   let allMatches = [];
   const seen = new Set();
 
-  // Steg 1: Prova alquran.cloud:s inbyggda sök-API
   const editions = lang === 'ar'
     ? ['ar.alafasy', 'ar.muhammadfarooq', 'ar.husary']
     : ['en.sahih', 'en.pickthall', 'sv.bernstrom'];
 
   for(const edition of editions){
     try{
-      // Sök med det RÅA ordet först (API:et kan hantera det)
       const url = `https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/${edition}`;
       const res = await fetch(url);
       if(!res.ok) continue;
@@ -1732,8 +1711,6 @@ async function performQuranSearch(){
     }catch(e){ /* fortsätt */ }
   }
 
-  // Steg 2: Om API-sökningen inte gav något (eller få träffar), sök lokalt
-  // med normaliserad text (utan erab)
   if(allMatches.length === 0 && lang === 'ar'){
     results.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Söker lokalt i hela Quran (utan erab)…<br><span style="font-size:12px;font-weight:600">Detta kan ta en liten stund första gången.</span></div>';
     try{
@@ -1898,9 +1875,28 @@ function buildAyahAudioUrl(surah, ayah, overrideQariId){
   return `https://cdn.islamic.network/quran/audio/128/${qari}/${global}.mp3`;
 }
 
+/* Bismillah är vers 1:1 – bygg en URL för den */
+function buildBismillahUrl(overrideQariId){
+  return buildAyahAudioUrl(1, 1, overrideQariId);
+}
+
+/* Suror som INTE ska ha separat Bismillah inlagt före:
+   - Sura 1 (Al-Fatiha) har Bismillah som sin första vers
+   - Sura 9 (At-Tawbah) har ingen Bismillah alls
+   - Sura 109 (Al-Kafirun) enligt användarens önskemål */
+const SURAHS_WITHOUT_BISMILLAH = [1, 9, 109];
+
+function surahNeedsBismillah(surahNum){
+  return !SURAHS_WITHOUT_BISMILLAH.includes(surahNum);
+}
+
+/* Bygger en lista med Bismillah + alla verser i suran (om tillämpligt) */
 function buildSurahAyahUrls(surah, overrideQariId){
   const count = SURAH_AYAH_COUNTS[surah - 1];
   const urls = [];
+  if(surahNeedsBismillah(surah)){
+    urls.push(buildBismillahUrl(overrideQariId));
+  }
   for(let ayah = 1; ayah <= count; ayah++){
     urls.push(buildAyahAudioUrl(surah, ayah, overrideQariId));
   }
@@ -1994,7 +1990,7 @@ function toggleAudioQueue(urls, btn, surahNum){
   }
   stopCurrentAudio();
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  currentQueue = { urls: urls.slice(), index: 0, btn, surahNum: surahNum || null };
+  currentQueue = { urls: urls.slice(), index: 0, btn, surahNum: surahNum || null, hasBismillah: urls.length > (surahNum ? SURAH_AYAH_COUNTS[surahNum - 1] : 0) };
   currentPlayBtn = btn;
   playQueueStep();
 }
@@ -2024,7 +2020,13 @@ function playQueueStep(){
       q.btn.classList.add('playing');
       if(q.btn.id === 'playSuraBtn' && q.surahNum){
         updateSuraProgress(q);
-        loadAndRenderAya(q.surahNum, q.index + 1);
+        // Beräkna vilken vers i suran som spelas (hänsyn till Bismillah-extra)
+        const hasBismillah = q.hasBismillah;
+        const ayahIndex = hasBismillah ? q.index : q.index + 1;
+        // Om Bismillah spelas (index 0 när hasBismillah) visa vers 1 ändå
+        if(ayahIndex >= 1){
+          loadAndRenderAya(q.surahNum, Math.min(ayahIndex, SURAH_AYAH_COUNTS[q.surahNum - 1]));
+        }
       }
     }
   });
@@ -2078,11 +2080,26 @@ function updateSuraProgress(q){
   if(!el) return;
   if(!q){ el.textContent = ''; return; }
   const surahName = q.surahNum ? SURAH_NAMES[q.surahNum - 1] : '';
-  el.textContent = 'Vers ' + (q.index + 1) + ' av ' + q.urls.length + (surahName ? ' · ' + surahName : '');
+  // Om kön har Bismillah först, visa "Bismillah" för index 0
+  let displayIndex = q.index + 1;
+  let suffix = '';
+  if(q.hasBismillah && q.index === 0){
+    suffix = ' · Bismillah';
+  } else if(q.hasBismillah){
+    displayIndex = q.index; // Versnummer i suran (1-baserat)
+  }
+  el.textContent = 'Vers ' + displayIndex + ' av ' + (q.surahNum ? SURAH_AYAH_COUNTS[q.surahNum - 1] : q.urls.length) + (surahName ? ' · ' + surahName : '') + suffix;
 }
 
 async function playAyah(surah, ayah, btn){
-  toggleAudio(buildAyahAudioUrl(surah, ayah), btn);
+  // Om det är första versen i en sura (och suran ska ha Bismillah),
+  // spela Bismillah först och sedan versen
+  if(ayah === 1 && surahNeedsBismillah(surah)){
+    const urls = [buildBismillahUrl(), buildAyahAudioUrl(surah, ayah)];
+    toggleAudioQueue(urls, btn, surah);
+  } else {
+    toggleAudio(buildAyahAudioUrl(surah, ayah), btn);
+  }
 }
 
 async function playSurah(surah, btn){
@@ -2091,7 +2108,15 @@ async function playSurah(surah, btn){
 
 async function playDailyAya(btn){
   if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
-  toggleAudio(buildAyahAudioUrl(currentAyaData.surahNum, currentAyaData.ayahNum), btn);
+  const { surahNum, ayahNum } = currentAyaData;
+  // Om det är första versen i en sura (och suran ska ha Bismillah),
+  // spela Bismillah först och sedan versen
+  if(ayahNum === 1 && surahNeedsBismillah(surahNum)){
+    const urls = [buildBismillahUrl(), buildAyahAudioUrl(surahNum, ayahNum)];
+    toggleAudioQueue(urls, btn, surahNum);
+  } else {
+    toggleAudio(buildAyahAudioUrl(surahNum, ayahNum), btn);
+  }
 }
 
 function toggleDailyLoop(){
@@ -2508,7 +2533,13 @@ function playFavorite(id, btn){
   if((f.type || 'ayah') === 'surah'){
     toggleAudioQueue(buildSurahAyahUrls(f.surahNum), btn, f.surahNum);
   } else {
-    toggleAudio(buildAyahAudioUrl(f.surahNum, f.ayahNum), btn);
+    // För enskild vers-favorit: om vers 1 i sura (som ska ha Bismillah), spela Bismillah först
+    if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
+      const urls = [buildBismillahUrl(), buildAyahAudioUrl(f.surahNum, f.ayahNum)];
+      toggleAudioQueue(urls, btn, f.surahNum);
+    } else {
+      toggleAudio(buildAyahAudioUrl(f.surahNum, f.ayahNum), btn);
+    }
   }
 }
 
@@ -2528,6 +2559,10 @@ function buildFavoriteQueueUrls(ids){
     if((f.type || 'ayah') === 'surah'){
       urls = urls.concat(buildSurahAyahUrls(f.surahNum));
     } else {
+      // Enskild vers: Bismillah först om vers 1 i sura som ska ha Bismillah
+      if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
+        urls.push(buildBismillahUrl());
+      }
       urls.push(buildAyahAudioUrl(f.surahNum, f.ayahNum));
     }
   });
