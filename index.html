@@ -316,7 +316,6 @@
     }
     .search-input-row .search-clear:active{transform:scale(.96)}
 
-    /* Virtuellt tangentbord */
     .vk-container{
       margin-top:10px;
       border-radius:14px;
@@ -619,7 +618,6 @@
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
-    /* ===== TAFSIR ===== */
     .tafsir-card{
       max-width:800px;width:100%;padding:0;
       display:flex;flex-direction:column;
@@ -947,7 +945,7 @@
       </div>
 
       <div class="search-hint">
-        <i class="fas fa-lightbulb"></i> Skriv ett ord och tryck <i class="fas fa-search"></i> för att söka i hela Quran
+        <i class="fas fa-lightbulb"></i> Skriv ett ord och tryck <i class="fas fa-search"></i> för att söka i hela Quran (erab ignoreras automatiskt)
       </div>
 
       <div class="search-results" id="searchResults"></div>
@@ -1443,6 +1441,42 @@ const PHONETIC = {
 };
 
 /* ============================================================
+   ARABISK NORMALISERING – tar bort erab (harakat) och diakritiska tecken
+   ============================================================ */
+function normalizeArabic(text){
+  if(!text) return '';
+  return String(text)
+    // Ta bort alla diakritiska tecken (harakat/erab)
+    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]/g, '')
+    // Ta bort tatweel (förlängningstecken)
+    .replace(/\u0640/g, '')
+    // Ta bort Quran-dekorationer och versmarkörer
+    .replace(/[\u06DD\u06DE\u08E3-\u08FF\uFE70-\uFE7F]/g, '')
+    // Ta bort tecken som ﴿ ﴾ och andra symboler
+    .replace(/[\uFD3E\uFD3F]/g, '')
+    // Ta bort arabiska siffror och versnummer
+    .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, '')
+    // Ta bort skiljetecken och extra mellanslag
+    .replace(/[،؛؟!.:\-_()[\]{}'"»«]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    // Normalisera alef-varianter till enkel alef
+    .replace(/[أإآٱا]/g, 'ا')
+    // Normalisera ya/yeh-varianter
+    .replace(/[يىیۍ]/g, 'ي')
+    // Normalisera ta marbuta till ha
+    .replace(/[ةه]/g, 'ه')
+    // Normalisera waw-varianter
+    .replace(/[ؤو]/g, 'و')
+    // Normalisera kaf-varianter
+    .replace(/[كک]/g, 'ك');
+}
+
+function normalizeSearchTerm(text){
+  return normalizeArabic(text).toLowerCase();
+}
+
+/* ============================================================
    VIRTUELLT TANGENTBORD – ARABISKA / PERSISKA / SORANI
    ============================================================ */
 const VK_LAYOUTS = {
@@ -1452,7 +1486,7 @@ const VK_LAYOUTS = {
       ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
       ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
       ['ئ','ء','ؤ','ر','لا','ى','ة','و','ز','ظ'],
-      ['ذ','\u200c','\u200d','،','؟','!','.','،','؛',':']
+      ['ذ','\u200c','\u200d','،','؟','!','.','؛',':']
     ]
   },
   fa: {
@@ -1496,21 +1530,19 @@ function renderVkKeyboard(){
   layout.rows.forEach((row, idx) => {
     html += '<div class="vk-row">';
     if(idx === layout.rows.length - 1){
-      // Sista raden: backspace + keys + enter
       html += '<button class="vk-key backspace" onclick="vkBackspace()" title="Radera"><i class="fas fa-delete-left"></i></button>';
       row.forEach(k => {
-        html += `<button class="vk-key" onclick="vkInsert('${k}')">${k}</button>`;
+        html += `<button class="vk-key" onclick="vkInsert('${k.replace(/'/g, "\\'")}')">${k}</button>`;
       });
       html += '<button class="vk-key enter" onclick="performQuranSearch()" title="Sök"><i class="fas fa-search"></i></button>';
     } else {
       row.forEach(k => {
-        html += `<button class="vk-key" onclick="vkInsert('${k}')">${k}</button>`;
+        html += `<button class="vk-key" onclick="vkInsert('${k.replace(/'/g, "\\'")}')">${k}</button>`;
       });
     }
     html += '</div>';
   });
 
-  // Mellanslag-rad
   html += '<div class="vk-row">';
   html += '<button class="vk-key wide" onclick="vkInsert(\' \')">␣ Mellanslag</button>';
   html += '<button class="vk-key wide" onclick="vkClear()">Rensa</button>';
@@ -1525,7 +1557,6 @@ function switchVkLang(lang){
     b.classList.toggle('active', b.dataset.vk === lang);
   });
   renderVkKeyboard();
-  // Ändra input-riktning beroende på språk
   const inp = document.getElementById('quranSearchInput');
   if(inp){
     if(lang === 'latin'){
@@ -1585,19 +1616,68 @@ function toggleSearchPanel(){
 
 /* ============================================================
    QURAN-SÖKNING
-   Använder alquran.cloud search API (ar.alafasy för arabiska,
-   en.sahih för engelska, sv.bernstrom för svenska).
-   Vi söker i arabisk text först – om användaren skriver latinska
-   tecken söker vi i engelsk/svensk översättning.
+   Söker med normaliserad text (utan erab/diakritiska tecken).
+   1) Provar alquran.cloud:s inbyggda sök-API
+   2) Om inga träffar: hämtar suror och söker lokalt med
+      normaliserad jämförelse
    ============================================================ */
 let searchInProgress = false;
 let lastSearchQuery = '';
+let quranCache = {}; // cache för hämtade suror (surah -> array av verser)
 
 function detectSearchLang(query){
-  // Arabiska tecken (inkl. persiska/sorani-specifika)
   const arabicRange = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
   if(arabicRange.test(query)) return 'ar';
   return 'en';
+}
+
+async function fetchSurahFromApi(surahNum){
+  if(quranCache[surahNum]) return quranCache[surahNum];
+  try{
+    const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/ar.alafasy`);
+    if(!res.ok) return null;
+    const data = await res.json();
+    if(data && data.data && Array.isArray(data.data.ayahs)){
+      quranCache[surahNum] = data.data.ayahs.map(a => ({
+        numberInSurah: a.numberInSurah,
+        text: a.text
+      }));
+      return quranCache[surahNum];
+    }
+  }catch(e){ /* tyst */ }
+  return null;
+}
+
+async function localQuranSearch(query, maxResults){
+  const normalizedQuery = normalizeSearchTerm(query);
+  if(normalizedQuery.length < 2) return [];
+
+  const results = [];
+  // Sök i alla 114 suror – men begränsa för prestanda
+  // Vi hämtar suror i grupper och söker igenom
+  const surahPromises = [];
+  for(let s = 1; s <= 114; s++){
+    surahPromises.push(fetchSurahFromApi(s).then(ayahs => ({ surah: s, ayahs })));
+  }
+
+  const surahs = await Promise.all(surahPromises);
+
+  for(const { surah, ayahs } of surahs){
+    if(!ayahs) continue;
+    for(const ayah of ayahs){
+      const normalizedText = normalizeSearchTerm(ayah.text);
+      if(normalizedText.includes(normalizedQuery)){
+        results.push({
+          surah: surah,
+          surahName: SURAH_NAMES[surah - 1],
+          ayah: ayah.numberInSurah,
+          arabic: ayah.text
+        });
+        if(results.length >= maxResults) return results;
+      }
+    }
+  }
+  return results;
 }
 
 async function performQuranSearch(){
@@ -1612,81 +1692,96 @@ async function performQuranSearch(){
     return;
   }
 
-  // Om query är samma som förra, gör inget
-  if(query === lastSearchQuery && results.innerHTML.includes('search-result-item')) return;
-
   searchInProgress = true;
   lastSearchQuery = query;
 
-  results.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Söker i Quran…</div>';
+  const normalizedQuery = normalizeSearchTerm(query);
+  results.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Söker i Quran (ignorerar erab)…</div>';
 
   const lang = detectSearchLang(query);
+  let allMatches = [];
+  const seen = new Set();
+
+  // Steg 1: Prova alquran.cloud:s inbyggda sök-API
   const editions = lang === 'ar'
-    ? ['ar.alafasy', 'ar.muhammadfarooq']
+    ? ['ar.alafasy', 'ar.muhammadfarooq', 'ar.husary']
     : ['en.sahih', 'en.pickthall', 'sv.bernstrom'];
 
-  try{
-    let allMatches = [];
-    const seen = new Set();
+  for(const edition of editions){
+    try{
+      // Sök med det RÅA ordet först (API:et kan hantera det)
+      const url = `https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/${edition}`;
+      const res = await fetch(url);
+      if(!res.ok) continue;
+      const data = await res.json();
+      if(data && data.data && Array.isArray(data.data.matches)){
+        data.data.matches.forEach(m => {
+          const key = m.surah.number + ':' + m.numberInSurah;
+          if(!seen.has(key)){
+            seen.add(key);
+            allMatches.push({
+              surah: m.surah.number,
+              surahName: m.surah.englishName,
+              ayah: m.numberInSurah,
+              arabic: m.text,
+              edition: edition.split('.')[0]
+            });
+          }
+        });
+      }
+    }catch(e){ /* fortsätt */ }
+  }
 
-    for(const edition of editions){
-      try{
-        const url = `https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/${edition}`;
-        const res = await fetch(url);
-        if(!res.ok) continue;
-        const data = await res.json();
-        if(data && data.data && Array.isArray(data.data.matches)){
-          data.data.matches.forEach(m => {
-            const key = m.number + '_' + edition.split('.')[0];
-            if(!seen.has(key)){
-              seen.add(key);
-              allMatches.push({
-                surah: m.surah.number,
-                surahName: m.surah.englishName,
-                surahNameAr: m.surah.name,
-                ayah: m.numberInSurah,
-                arabic: m.text,
-                edition: edition.split('.')[0]
-              });
-            }
+  // Steg 2: Om API-sökningen inte gav något (eller få träffar), sök lokalt
+  // med normaliserad text (utan erab)
+  if(allMatches.length === 0 && lang === 'ar'){
+    results.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Söker lokalt i hela Quran (utan erab)…<br><span style="font-size:12px;font-weight:600">Detta kan ta en liten stund första gången.</span></div>';
+    try{
+      const localMatches = await localQuranSearch(query, 50);
+      localMatches.forEach(m => {
+        const key = m.surah + ':' + m.ayah;
+        if(!seen.has(key)){
+          seen.add(key);
+          allMatches.push({
+            surah: m.surah,
+            surahName: m.surahName,
+            ayah: m.ayah,
+            arabic: m.arabic,
+            edition: 'local'
           });
         }
-      }catch(e){ /* fortsätt med nästa edition */ }
+      });
+    }catch(e){
+      console.error('Lokal sökning misslyckades:', e);
     }
-
-    if(!allMatches.length){
-      results.innerHTML = '<div class="search-empty"><i class="fas fa-search-minus"></i>Inga träffar hittades för "' + escapeHtml(query) + '".<br><span style="font-size:13px">Prova ett annat ord eller stavning.</span></div>';
-      return;
-    }
-
-    // Begränsa till 30 träffar
-    allMatches = allMatches.slice(0, 30);
-
-    let html = `<div style="font-size:12px;font-weight:800;color:var(--text3);padding:4px 8px 10px;text-transform:uppercase;letter-spacing:.06em">
-      <i class="fas fa-list"></i> ${allMatches.length} träffar för "${escapeHtml(query)}"
-    </div>`;
-
-    allMatches.forEach(m => {
-      html += `
-        <div class="search-result-item" onclick="goToSearchResult(${m.surah}, ${m.ayah})">
-          <div class="sr-ref"><i class="fas fa-bookmark"></i> ${escapeHtml(m.surahName)} ${m.surah}:${m.ayah}</div>
-          <div class="sr-arabic">${escapeHtml(m.arabic)}</div>
-        </div>
-      `;
-    });
-
-    results.innerHTML = html;
-
-  }catch(err){
-    console.error('Sökfel:', err);
-    results.innerHTML = '<div class="search-empty"><i class="fas fa-triangle-exclamation"></i>Kunde inte söka just nu.<br><span style="font-size:13px">Kontrollera din internetanslutning.</span></div>';
-  }finally{
-    searchInProgress = false;
   }
+
+  if(!allMatches.length){
+    results.innerHTML = '<div class="search-empty"><i class="fas fa-search-minus"></i>Inga träffar hittades för "' + escapeHtml(query) + '".<br><span style="font-size:13px">Prova ett annat ord eller stavning (erab ignoreras).</span></div>';
+    searchInProgress = false;
+    return;
+  }
+
+  allMatches = allMatches.slice(0, 30);
+
+  let html = `<div style="font-size:12px;font-weight:800;color:var(--text3);padding:4px 8px 10px;text-transform:uppercase;letter-spacing:.06em">
+    <i class="fas fa-list"></i> ${allMatches.length} träffar för "${escapeHtml(query)}" (erab ignoreras)
+  </div>`;
+
+  allMatches.forEach(m => {
+    html += `
+      <div class="search-result-item" onclick="goToSearchResult(${m.surah}, ${m.ayah})">
+        <div class="sr-ref"><i class="fas fa-bookmark"></i> ${escapeHtml(m.surahName)} ${m.surah}:${m.ayah}</div>
+        <div class="sr-arabic">${escapeHtml(m.arabic)}</div>
+      </div>
+    `;
+  });
+
+  results.innerHTML = html;
+  searchInProgress = false;
 }
 
 function goToSearchResult(surah, ayah){
-  // Stäng sökpanelen och visa versen i Dagens aya
   const panel = document.getElementById('searchPanel');
   const btn = document.getElementById('searchToggleBtn');
   if(panel) panel.classList.remove('open');
@@ -1706,7 +1801,6 @@ function clearQuranSearch(){
   if(inp) inp.focus();
 }
 
-// Enter-tangent i sökfältet
 document.addEventListener('DOMContentLoaded', () => {
   const inp = document.getElementById('quranSearchInput');
   if(inp){
