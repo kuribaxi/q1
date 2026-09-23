@@ -1246,9 +1246,7 @@ const PHONETIC = {
 };
 
 /* ============================================================
-   TAFSIR – endast riktiga tafsir-databaser (arabiska + engelska
-   + kurdiska sorani + persiska). Översättning av tafsir till
-   andra språk görs via Google Translate-knappar i modalen.
+   TAFSIR
    ============================================================ */
 const TAFSIRS = [
   { lang:'ar-ibnkathir', flag:'🇸🇦', label:'العربية · ابن كثير', slug:'ar-tafsir-ibn-kathir', name:'تفسير ابن كثير', rtl:true },
@@ -1308,7 +1306,6 @@ function renderTafsirTranslateBar(){
   });
 }
 
-/* Textstorlek & typsnitt i tafsir-fönstret, sparas mellan besök */
 let tafsirFontSize = parseInt(localStorage.getItem('quranTafsirFontSize'), 10) || 19;
 let tafsirFontFamily = localStorage.getItem('quranTafsirFontFamily') || 'default';
 const TAFSIR_FONT_FAMILIES = {
@@ -1349,7 +1346,6 @@ function setTafsirFontFamily(fam){
   applyTafsirDisplay();
 }
 
-/* Helskärm för tafsir-fönstret */
 function toggleTafsirFullscreen(){
   const el = document.querySelector('.tafsir-card');
   if(!el) return;
@@ -1391,12 +1387,7 @@ function applyGoogleTranslate(targetLang){
   const body = document.getElementById('tafsirBody');
   if(!currentTafsirHtml){ return; }
 
-  const map = {
-    'sv': 'sv',
-    'fa': 'fa',
-    'ku': 'ku',
-    'ku-KM': 'ku'
-  };
+  const map = { 'sv': 'sv', 'fa': 'fa', 'ku': 'ku', 'ku-KM': 'ku' };
   const gtLang = targetLang === 'ku' ? 'ckb' : (map[targetLang] || 'en');
 
   const tempDiv = document.createElement('div');
@@ -1528,9 +1519,6 @@ let currentLang = localStorage.getItem('quranLang') || 'sv';
 
 /* ============================================================
    QARI (RECITATÖR) & LJUDUPPSPELNING
-   Endast reciter som är bekräftat fungerande på cdn.islamic.network
-   är kvar i listan. Övriga togs bort eftersom deras ljudfiler
-   saknades för många verser (spelades tyst eller föll tillbaka).
    ============================================================ */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy', kind:'cdn' },
@@ -1545,7 +1533,7 @@ const QARIS = [
 let currentAudio = null;
 let currentPlayBtn = null;
 let currentAudioUrl = null;
-let currentQueue = null; // { urls, index, btn } – används vid uppspelning av hela suror
+let currentQueue = null;
 
 function getCurrentQari(){
   return localStorage.getItem('quranQari') || 'ar.alafasy';
@@ -1583,11 +1571,6 @@ function buildAyahAudioUrl(surah, ayah, overrideQariId){
   return `https://cdn.islamic.network/quran/audio/128/${qari}/${global}.mp3`;
 }
 
-// Bygger en lista med en ljudfil per vers i en sura, istället för att
-// förlita sig på CDN:ns hopslagna "hel-sura"-fil, vars täckning är
-// opålitlig för många qaris (fungerade t.ex. inte alls för Al-Minshawi).
-// Per-vers-ljud är samma pålitliga källa som redan används för
-// Dagens aya och Ayat al-Kursi.
 function buildSurahAyahUrls(surah, overrideQariId){
   const count = SURAH_AYAH_COUNTS[surah - 1];
   const urls = [];
@@ -1605,16 +1588,19 @@ function resetPlayBtn(btn){
 }
 
 function stopCurrentAudio(){
+  // Stoppa pågående ljud
   if(currentAudio){
     currentAudio.loop = false;
     currentAudio.pause();
-    currentAudio.src = '';
+    try { currentAudio.src = ''; } catch(e){}
+    currentAudio.load && currentAudio.load();
   }
-  currentQueue = null;
+  // Återställ knapp och kö
   resetPlayBtn(currentPlayBtn);
   currentAudio = null;
   currentPlayBtn = null;
   currentAudioUrl = null;
+  currentQueue = null;
 }
 
 function toggleAudio(url, btn){
@@ -1668,10 +1654,6 @@ function toggleAudio(url, btn){
   });
 }
 
-/* Spelar en lista av ljudfiler (t.ex. en hel suras alla verser) i följd.
-   Samma play/paus/laddnings-beteende som toggleAudio, men kedjar vidare
-   till nästa vers när en fil tar slut, och faller tillbaka till Alafasy
-   om en enskild vers saknar ljud för vald qari. */
 function toggleAudioQueue(urls, btn, surahNum){
   if(!btn || !urls || !urls.length) return;
   if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
@@ -1685,6 +1667,7 @@ function toggleAudioQueue(urls, btn, surahNum){
     btn.classList.add('playing');
     return;
   }
+  // Viktigt: stoppa allt gammalt först
   stopCurrentAudio();
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
   currentQueue = { urls: urls.slice(), index: 0, btn, surahNum: surahNum || null };
@@ -1708,8 +1691,6 @@ function playQueueStep(){
   }
   const url = q.urls[q.index];
   const audio = new Audio(url);
-  // "Upprepa endast denna vers" görs med webbläsarens egen loop – filen
-  // spelas då om utan att kedjan ropar "ended" och går vidare.
   audio.loop = (loopMode === 'ayah');
   currentAudio = audio;
   currentAudioUrl = url;
@@ -1733,12 +1714,11 @@ function playQueueStep(){
     if(currentQueue !== q) return;
     const fallbackMatch = url.match(/^(https:\/\/cdn\.islamic\.network\/quran\/audio\/128\/)(ar\.[a-zA-Z]+)(\/.+\.mp3)$/);
     if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy' && !q.urls['fb' + q.index]){
-      q.urls['fb' + q.index] = true; // markera att vi redan försökt fallback för detta index
+      q.urls['fb' + q.index] = true;
       q.urls[q.index] = fallbackMatch[1] + 'ar.alafasy' + fallbackMatch[3];
       playQueueStep();
       return;
     }
-    // Kunde inte spela denna vers ens med Alafasy – hoppa till nästa
     q.index++;
     playQueueStep();
   });
@@ -1750,7 +1730,6 @@ function playQueueStep(){
   });
 }
 
-/* Hoppa till föregående vers i den sura som just nu spelas i Dagens aya-fönstret */
 function suraPlayerBack(){
   if(!currentQueue || !currentPlayBtn || currentPlayBtn.id !== 'playSuraBtn'){
     toast('❌ Ingen sura spelas just nu');
@@ -1761,7 +1740,6 @@ function suraPlayerBack(){
   playQueueStep();
 }
 
-/* Stoppa uppspelningen av suran helt (till skillnad från paus) */
 function stopSuraPlayback(){
   const btn = document.getElementById('playSuraBtn');
   if(currentPlayBtn === btn){
@@ -1771,7 +1749,6 @@ function stopSuraPlayback(){
   }
 }
 
-/* Visar "Vers X av Y" medan en sura spelas från Dagens aya-fönstret */
 function updateSuraProgress(q){
   const el = document.getElementById('suraProgress');
   if(!el) return;
@@ -1805,7 +1782,6 @@ function toggleDailyLoop(){
   toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar tills vidare');
 }
 
-/* Generisk upprepningsknapp för Ayat al-Kursi, al-Fātiha och de fyra Qul-suran */
 function toggleVerseLoop(loopBtn){
   const container = loopBtn.closest('.verse-tools');
   if(!container) return;
@@ -1813,9 +1789,6 @@ function toggleVerseLoop(loopBtn){
   if(!playBtn) return;
   const isOn = playBtn.dataset.loop === '1';
   playBtn.dataset.loop = isOn ? '0' : '1';
-  // OBS: sätt bara audio.loop för enskilda verser (t.ex. Ayat al-Kursi).
-  // För suror med flera verser sköts upprepningen av playQueueStep istället –
-  // annars skulle bara den just spelande versen loopa och kedjan brytas.
   if(currentAudio && currentPlayBtn === playBtn && !currentQueue){
     currentAudio.loop = !isOn;
   }
@@ -1853,8 +1826,6 @@ function autoTransliterate(arabic){
 
 /* ============================================================
    DAGENS AYA
-   Kurmanji: hämtas nu från fawazahmed0/quran-api (edition kmr-unknown),
-   ett stabilt, statiskt CDN-baserat bibliotek med riktig Kurmanji-text.
    ============================================================ */
 function safeFetchJson(url){
   return fetch(url)
@@ -1874,9 +1845,6 @@ async function fetchKuKmTranslation(surah, ayah){
   return '';
 }
 
-/* Hämtar och visar en vers i Dagens aya-rutan utan att röra ljuduppspelningen.
-   Används dels av fetchAya (som även stoppar ljud), dels när sura-spelaren
-   i Dagens aya-fönstret visar vilken vers som just nu spelas. */
 async function loadAndRenderAya(surah, ayah){
   try{
     const arRes = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.alafasy`)
@@ -1993,12 +1961,11 @@ function renderFallbackAya(){
 
 function nextDailyAya(){ fetchRandomAya(); }
 
-/* Sekventiell navigering – gå till nästa/föregående vers i Mushaf-ordning */
 function goToNextAya(){
   if(!currentAyaData){ fetchRandomAya(); return; }
   const currentGlobal = getGlobalAyahNumber(currentAyaData.surahNum, currentAyaData.ayahNum);
   let nextGlobal = currentGlobal + 1;
-  if(nextGlobal > TOTAL_AYAS) nextGlobal = 1; // börja om från Al-Fātiha 1:1
+  if(nextGlobal > TOTAL_AYAS) nextGlobal = 1;
   const { surah, ayah } = globalAyaToSurahAya(nextGlobal);
   fetchAya(surah, ayah);
 }
@@ -2007,7 +1974,7 @@ function goToPrevAya(){
   if(!currentAyaData){ fetchRandomAya(); return; }
   const currentGlobal = getGlobalAyahNumber(currentAyaData.surahNum, currentAyaData.ayahNum);
   let prevGlobal = currentGlobal - 1;
-  if(prevGlobal < 1) prevGlobal = TOTAL_AYAS; // hoppa till sista versen (An-Nās)
+  if(prevGlobal < 1) prevGlobal = TOTAL_AYAS;
   const { surah, ayah } = globalAyaToSurahAya(prevGlobal);
   fetchAya(surah, ayah);
 }
@@ -2026,7 +1993,6 @@ function populateSuraSelect(){
   });
 }
 
-/* Spela valfri sura direkt från Dagens aya-fönstret, med upprepning */
 function populatePlaySuraSelect(){
   const sel = document.getElementById('playSuraSelect');
   if(!sel) return;
@@ -2039,7 +2005,6 @@ function populatePlaySuraSelect(){
     sel.addEventListener('change', ()=>{
       localStorage.setItem('quranPlaySura', sel.value);
       updateFavSuraBtn();
-      // Byter man sura mitt i uppspelning, starta om med den nya suran
       const btn = document.getElementById('playSuraBtn');
       if(btn && currentPlayBtn === btn){
         playSelectedSura(btn);
@@ -2058,7 +2023,6 @@ function playSelectedSura(btn){
   playSurah(surahNum, btn);
 }
 
-/* Upprepningsläge för sura-spelaren: av → hela suran → endast denna vers → av */
 function cycleSuraLoopMode(){
   const loopBtn = document.getElementById('loopSuraBtn');
   const playBtn = document.getElementById('playSuraBtn');
@@ -2082,7 +2046,6 @@ function cycleSuraLoopMode(){
   }
 }
 
-/* Favoritmarkera hela den valda suran (inte bara en enskild vers) */
 function isSuraFavorited(surahNum){
   return favorites.some(f => f.type === 'surah' && f.surahNum === surahNum);
 }
@@ -2215,7 +2178,6 @@ function closeFavorites(){
   document.getElementById('favModal').classList.add('h');
 }
 
-/* Spelar upp en favorit – hel sura eller enskild vers, beroende på typ */
 function playFavorite(id, btn){
   const f = favorites.find(x => x.id === id);
   if(!f) return;
@@ -2226,7 +2188,6 @@ function playFavorite(id, btn){
   }
 }
 
-/* Spela en eller flera favoriter i följd från favoritfönstret */
 function toggleSelectAllFavorites(checkbox){
   document.querySelectorAll('.fav-checkbox').forEach(cb => { cb.checked = checkbox.checked; });
 }
@@ -2253,7 +2214,6 @@ function playFavoritesSequence(){
   let ids = getCheckedFavoriteIds();
   let label = 'markerade';
   if(!ids.length){
-    // Inget markerat – spela alla, i den ordning de visas (nyast först)
     ids = favorites.slice().reverse().map(f => f.id);
     label = 'alla';
   }
@@ -2329,7 +2289,6 @@ function renderFavorites(){
   }).join('');
 }
 
-/* Går till "Hoppa till sura" med den favoritmarkerade suran vald */
 function goToSuraFromFavorite(surahNum){
   closeFavorites();
   const sel = document.getElementById('suraSelect');
@@ -2364,7 +2323,6 @@ function closeViewFav(){
   document.getElementById('viewFavModal').classList.add('h');
 }
 
-/* Helskärm för favoritfönstret */
 function toggleFavFullscreen(){
   const el = document.querySelector('#favModal .modal-card');
   if(!el) return;
