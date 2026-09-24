@@ -83,182 +83,213 @@
       flex-direction:column;
     }
 
-    .hdr{
+    /* ===== TOPPBAR MED KLOCKA & VÄDER (SAMMA FÖNSTER) ===== */
+    .top-bar{
       background:var(--surface);
       border-radius:var(--r);
-      padding:22px 26px;
+      padding:16px 22px;
       margin-bottom:24px;
       box-shadow:var(--shadow-sm);
       border:1.5px solid var(--border);
-      display:grid;
-      grid-template-columns: 1fr auto 1fr;
+      display:flex;
+      justify-content:space-between;
       align-items:center;
       gap:16px;
+      flex-wrap:wrap;
     }
-    .hdr-left{display:flex;align-items:center;gap:16px;min-width:0}
-    .hdr-right{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap}
-    .hdr-bismillah{
-      font-family:var(--quran-font);
-      font-size:34px;font-weight:700;color:var(--primary);
-      text-align:center;line-height:1.3;padding:0 20px;
-      letter-spacing:.02em;white-space:nowrap;
-      text-shadow:0 1px 3px var(--primary-glow);
+    .top-bar-side-left{
+      display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0;
+    }
+    .top-bar-weather{
+      display:flex;align-items:center;gap:12px;
+      font-size:15px;font-weight:700;color:var(--text);
+      min-width:160px;
+      cursor:pointer;
+      padding:6px 10px;
+      border-radius:14px;
+      transition:all .2s;
+      user-select:none;
+    }
+    .top-bar-weather:hover{background:var(--primary-soft)}
+    .top-bar-weather:active{transform:scale(.97)}
+    .top-bar-weather .weather-icon-wrap{
+      width:44px;height:44px;border-radius:12px;
+      background:var(--amber-soft);
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;color:var(--amber);flex-shrink:0;
       transition:all .3s;
     }
-    .hdr-bismillah:hover{color:#9B59E8;text-shadow:0 2px 8px var(--primary-glow)}
-    body.night .hdr-bismillah{color:#C9B8FF;text-shadow:0 1px 4px rgba(201,184,255,.3)}
+    body.night .top-bar-weather .weather-icon-wrap{background:rgba(245,158,11,.15)}
+    .top-bar-weather .weather-info{display:flex;flex-direction:column;line-height:1.3}
+    .top-bar-weather .weather-temp{font-size:17px;font-weight:900;color:var(--text)}
+    .top-bar-weather .weather-desc{font-size:12px;font-weight:600;color:var(--text2)}
 
-    .hdr-logo{
-      width:56px;height:56px;border-radius:18px;
-      background:linear-gradient(135deg,var(--primary),#9B59E8);
+    .top-bar-azan{
+      display:flex;align-items:center;gap:12px;
+      font-size:15px;font-weight:700;color:var(--text);
+      min-width:150px;
+      cursor:pointer;
+      padding:6px 10px;
+      border-radius:14px;
+      transition:all .2s;
+      user-select:none;
+    }
+    .top-bar-azan:hover{background:var(--primary-soft)}
+    .top-bar-azan:active{transform:scale(.97)}
+    .top-bar-azan .azan-icon-wrap{
+      width:44px;height:44px;border-radius:12px;
+      background:var(--emerald-soft);
       display:flex;align-items:center;justify-content:center;
-      color:#fff;font-size:26px;flex-shrink:0;
-      box-shadow:0 4px 14px var(--primary-glow);
+      font-size:18px;color:var(--emerald);flex-shrink:0;
+      transition:all .3s;
     }
-    .hdr-info{flex:1;min-width:0}
-    .hdr-title{font-size:22px;font-weight:900;color:var(--text);line-height:1.2}
-    .hdr-sub{font-size:14px;color:var(--text3);font-weight:600;margin-top:2px;font-family:var(--kurdish-font)}
-    .icon-btn{
-      width:48px;height:48px;border-radius:15px;
-      border:1.5px solid var(--border);background:var(--surface2);
-      cursor:pointer;display:flex;align-items:center;justify-content:center;
-      color:var(--text2);font-size:18px;transition:all .2s;position:relative;
-    }
-    .icon-btn:active{background:var(--primary-soft);color:var(--primary);transform:scale(.92)}
-    .icon-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-    .bdg{
-      position:absolute;top:-4px;right:-4px;
-      min-width:18px;height:18px;border-radius:50%;
-      background:var(--rose);color:#fff;font-size:10px;font-weight:800;
-      display:flex;align-items:center;justify-content:center;
-      border:2px solid var(--surface);padding:0 3px;
-    }
-    .bdg.h{display:none}
+    body.night .top-bar-azan .azan-icon-wrap{background:rgba(34,192,138,.15)}
+    .top-bar-azan .azan-info{display:flex;flex-direction:column;line-height:1.3}
+    .top-bar-azan .azan-next-time{font-size:17px;font-weight:900;color:var(--text)}
+    .top-bar-azan .azan-next-label{font-size:12px;font-weight:600;color:var(--text2)}
 
-    .daily-aya{
-      background:linear-gradient(135deg,var(--primary),#9B59E8 60%,#7A3FE0);
-      color:#fff;border-radius:var(--r);padding:28px 32px;
-      margin-bottom:24px;box-shadow:0 12px 36px rgba(108,71,232,.35);
-      position:relative;overflow:hidden;
-    }
-    .daily-aya::before{
-      content:'';position:absolute;top:-60%;right:-25%;
-      width:260px;height:260px;
-      background:radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);
-      border-radius:50%;pointer-events:none;
-    }
-    .daily-aya::after{
-      content:'';position:absolute;bottom:-40%;left:-20%;
-      width:220px;height:220px;
-      background:radial-gradient(circle, rgba(255,255,255,.10), transparent 70%);
-      border-radius:50%;pointer-events:none;
-    }
-    .daily-aya-top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
-      position:relative;z-index:1;
-      flex-wrap:wrap;
-    }
-    .daily-aya-label{
-      font-size:12px;font-weight:800;text-transform:uppercase;
-      letter-spacing:.14em;opacity:.9;
-      display:flex;align-items:center;gap:8px;
-      padding-top:6px;
-    }
-    .daily-aya-actions{
-      display:flex;
-      gap:8px;
-      flex-shrink:0;
-      flex-wrap:wrap;
-      justify-content:flex-end;
+    .top-bar-title{
+      flex:1;
+      text-align:center;
       min-width:0;
     }
-    .day-action-btn{
-      width:38px;height:38px;border-radius:50%;
-      border:1.5px solid rgba(255,255,255,.5);
-      background:rgba(255,255,255,.18);
-      color:#fff;
-      cursor:pointer;
-      display:flex;align-items:center;justify-content:center;
-      font-size:15px;
-      transition:all .2s;
-      backdrop-filter:blur(4px);
-    }
-    .day-action-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
-    .day-action-btn:active{transform:scale(.9)}
-    .day-action-btn.saved{
-      background:#fff;
-      color:var(--amber);
-      border-color:#fff;
-    }
-    .day-action-btn.playing{
-      background:#fff;
-      color:var(--primary);
-      border-color:#fff;
-    }
-    .day-action-btn.active{
-      background:#fff;
-      color:var(--emerald);
-      border-color:#fff;
-    }
-    .daily-aya-qari-row{
-      display:flex;align-items:center;gap:10px;
-      margin-bottom:16px;position:relative;z-index:1;
-      background:rgba(255,255,255,.16);
-      border:1.5px solid rgba(255,255,255,.35);
-      border-radius:12px;padding:8px 14px;
-      backdrop-filter:blur(4px);
-    }
-    .daily-aya-qari-row i{color:#fff;font-size:14px;flex-shrink:0}
-    .daily-aya-qari-row select{
-      flex:1;height:38px;border:none;background:transparent;
-      color:#fff;font-family:var(--font);font-size:14px;font-weight:700;
-      outline:none;cursor:pointer;
-    }
-    .daily-aya-qari-row select option{color:var(--text);background:var(--surface)}
-    .daily-aya-ref{
-      font-size:13px;font-weight:800;opacity:.95;
-      background:rgba(255,255,255,.22);
-      padding:5px 14px;border-radius:50px;
-      display:inline-block;margin-bottom:16px;
-      position:relative;z-index:1;letter-spacing:.02em;
-    }
-    .daily-aya-arabic{
+    .top-bar-title .bismillah{
       font-family:var(--quran-font);
-      font-size:42px;line-height:2.4;direction:rtl;text-align:right;
-      margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);
-      position:relative;z-index:1;word-break:break-word;
-      font-feature-settings:"liga" 1, "calt" 1;
-      -webkit-font-smoothing:antialiased;
+      font-size:26px;
+      font-weight:700;
+      color:var(--primary);
+      line-height:1.4;
+      text-shadow:0 1px 3px var(--primary-glow);
+      letter-spacing:.01em;
     }
-    .daily-aya-text{
-      font-size:36px;line-height:1.8;
-      border-top:1.5px solid rgba(255,255,255,.3);
-      padding-top:16px;position:relative;z-index:1;
-      font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,.1);
+    body.night .top-bar-title .bismillah{color:#C9B8FF;text-shadow:0 1px 4px rgba(201,184,255,.3)}
+
+    .top-bar-clock{
+      display:flex;align-items:center;gap:10px;
+      font-size:18px;font-weight:900;color:var(--text);
+      font-variant-numeric:tabular-nums;
+      min-width:160px;
+      justify-content:flex-end;
+      cursor:pointer;
+      padding:6px 10px;
+      border-radius:14px;
+      transition:all .2s;
+      user-select:none;
+      flex-direction:column;
+      align-items:flex-end;
     }
-    .daily-aya-text.ku,
-    .daily-aya-text.ku-KM,
-    .daily-aya-text.fa{
-      font-family:var(--kurdish-font);font-style:normal;
-      font-size:38px;line-height:1.9;
+    .top-bar-clock:hover{background:var(--primary-soft)}
+    .top-bar-clock:active{transform:scale(.97)}
+    .top-bar-clock .clock-main{
+      display:flex;align-items:center;gap:10px;
     }
-    .daily-aya-text.phonetic{
-      font-family:'Times New Roman',Times,serif;
-      font-style:italic;
-      font-size:34px;
-      line-height:1.75;
-      direction:ltr;
-      text-align:left;
-      color:rgba(255,255,255,.97);
+    .top-bar-clock .clock-icon-wrap{
+      width:44px;height:44px;border-radius:12px;
+      background:var(--primary-soft);
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;color:var(--primary);flex-shrink:0;
     }
-    .daily-aya-loading{
-      font-size:16px;opacity:.85;font-style:italic;
-      padding:24px 0;text-align:center;
+    .top-bar-clock .clock-time{letter-spacing:.02em}
+    .top-bar-clock .clock-date{
+      font-size:11px;font-weight:700;color:var(--text2);
+      margin-top:2px;
+      text-align:right;
+      line-height:1.2;
+      min-height:14px;
+      transition:all .2s;
     }
+    .top-bar-clock .clock-date .date-label{
+      font-size:9px;font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      color:var(--primary);
+      margin-right:4px;
+    }
+
+    /* ===== VECKOVÄDER-MODAL ===== */
+    .weather-modal-ov{
+      position:fixed;inset:0;background:rgba(0,0,0,.5);
+      backdrop-filter:blur(6px);z-index:300;
+      display:flex;align-items:center;justify-content:center;padding:20px;
+    }
+    .weather-modal-ov.h{display:none}
+    .weather-modal-card{
+      background:var(--surface);border-radius:var(--r);
+      padding:26px;max-width:560px;width:100%;
+      max-height:90vh;overflow-y:auto;
+      border:1.5px solid var(--border);box-shadow:var(--shadow);
+      display:flex;flex-direction:column;
+    }
+    .weather-modal-header{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:20px;gap:10px;
+    }
+    .weather-modal-title{
+      font-size:19px;font-weight:900;color:var(--text);
+      display:flex;align-items:center;gap:10px;
+    }
+    .weather-modal-title i{color:var(--amber)}
+    .weather-modal-close{
+      width:40px;height:40px;border-radius:12px;border:none;
+      background:var(--surface2);color:var(--text2);
+      cursor:pointer;font-size:16px;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .2s;
+    }
+    .weather-modal-close:hover{background:var(--rose-soft);color:var(--rose)}
+    .weather-modal-close:active{transform:scale(.92)}
+
+    .weather-modal-location{
+      font-size:13px;font-weight:700;color:var(--text3);
+      margin-bottom:16px;
+      display:flex;align-items:center;gap:6px;
+    }
+
+    .weather-week-list{
+      display:flex;flex-direction:column;gap:8px;
+    }
+    .weather-day-item{
+      display:grid;
+      grid-template-columns: 1fr 44px 1fr;
+      align-items:center;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:12px;
+      background:var(--surface2);
+      border:1.5px solid var(--border);
+      transition:all .2s;
+    }
+    .weather-day-item.today{
+      background:var(--primary-soft);
+      border-color:var(--primary);
+    }
+    .weather-day-name{
+      font-size:14px;font-weight:800;color:var(--text);
+      text-transform:capitalize;
+    }
+    .weather-day-item.today .weather-day-name{color:var(--primary)}
+    .weather-day-icon{
+      width:44px;height:44px;border-radius:12px;
+      background:rgba(255,255,255,.5);
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;
+    }
+    body.night .weather-day-icon{background:rgba(0,0,0,.2)}
+    .weather-day-temps{
+      display:flex;flex-direction:column;align-items:flex-end;
+      line-height:1.3;
+    }
+    .weather-day-temp-max{font-size:16px;font-weight:900;color:var(--text)}
+    .weather-day-temp-min{font-size:12px;font-weight:700;color:var(--text2)}
+    .weather-day-desc{
+      font-size:11px;font-weight:700;color:var(--text3);
+      text-align:right;
+    }
+    .weather-loading{
+      text-align:center;padding:32px;color:var(--text2);
+      font-size:15px;font-weight:700;
+    }
+    .weather-loading i{font-size:28px;display:block;margin-bottom:10px;opacity:.6}
 
     /* ===== SÖKFUNKTION ===== */
     .search-toggle-btn{
@@ -272,7 +303,7 @@
     }
     .search-toggle-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
     .search-toggle-btn:active{transform:scale(.9)}
-    .search-toggle-btn.active{background:#fff;color:var(--primary);border-color:#fff}
+    .search-toggle-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
 
     .search-panel{
       display:none;
@@ -401,7 +432,6 @@
       text-align:center;margin-top:8px;font-weight:600;
     }
 
-    /* Paginering */
     .search-pagination {
       display: flex;
       justify-content: center;
@@ -503,6 +533,134 @@
       font-weight: 800;
     }
 
+    .daily-aya{
+      background:linear-gradient(135deg,var(--primary),#9B59E8 60%,#7A3FE0);
+      color:#fff;border-radius:var(--r);padding:28px 32px;
+      margin-bottom:24px;box-shadow:0 12px 36px rgba(108,71,232,.35);
+      position:relative;overflow:hidden;
+    }
+    .daily-aya::before{
+      content:'';position:absolute;top:-60%;right:-25%;
+      width:260px;height:260px;
+      background:radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);
+      border-radius:50%;pointer-events:none;
+    }
+    .daily-aya::after{
+      content:'';position:absolute;bottom:-40%;left:-20%;
+      width:220px;height:220px;
+      background:radial-gradient(circle, rgba(255,255,255,.10), transparent 70%);
+      border-radius:50%;pointer-events:none;
+    }
+    .daily-aya-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      position:relative;z-index:1;
+      flex-wrap:wrap;
+    }
+    .daily-aya-label{
+      font-size:12px;font-weight:800;text-transform:uppercase;
+      letter-spacing:.14em;opacity:.9;
+      display:flex;align-items:center;gap:8px;
+      padding-top:6px;
+    }
+    .daily-aya-actions{
+      display:flex;
+      gap:8px;
+      flex-shrink:0;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      min-width:0;
+    }
+    .day-action-btn{
+      width:38px;height:38px;border-radius:50%;
+      border:1.5px solid rgba(255,255,255,.5);
+      background:rgba(255,255,255,.18);
+      color:#fff;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:15px;
+      transition:all .2s;
+      backdrop-filter:blur(4px);
+    }
+    .day-action-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
+    .day-action-btn:active{transform:scale(.9)}
+    .day-action-btn.saved{
+      background:var(--amber);
+      color:#fff;
+      border-color:var(--amber);
+      box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18);
+    }
+    .day-action-btn.playing{
+      background:var(--emerald);
+      color:#fff;
+      border-color:var(--emerald);
+      box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18);
+    }
+    .day-action-btn.active{
+      background:var(--primary);
+      color:#fff;
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18);
+    }
+    .daily-aya-qari-row{
+      display:flex;align-items:center;gap:10px;
+      margin-bottom:16px;position:relative;z-index:1;
+      background:rgba(255,255,255,.16);
+      border:1.5px solid rgba(255,255,255,.35);
+      border-radius:12px;padding:8px 14px;
+      backdrop-filter:blur(4px);
+    }
+    .daily-aya-qari-row i{color:#fff;font-size:14px;flex-shrink:0}
+    .daily-aya-qari-row select{
+      flex:1;height:38px;border:none;background:transparent;
+      color:#fff;font-family:var(--font);font-size:14px;font-weight:700;
+      outline:none;cursor:pointer;
+    }
+    .daily-aya-qari-row select option{color:var(--text);background:var(--surface)}
+    .daily-aya-ref{
+      font-size:13px;font-weight:800;opacity:.95;
+      background:rgba(255,255,255,.22);
+      padding:5px 14px;border-radius:50px;
+      display:inline-block;margin-bottom:16px;
+      position:relative;z-index:1;letter-spacing:.02em;
+    }
+    .daily-aya-arabic{
+      font-family:var(--quran-font);
+      font-size:42px;line-height:2.4;direction:rtl;text-align:right;
+      margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);
+      position:relative;z-index:1;word-break:break-word;
+      font-feature-settings:"liga" 1, "calt" 1;
+      -webkit-font-smoothing:antialiased;
+    }
+    .daily-aya-text{
+      font-size:36px;line-height:1.8;
+      border-top:1.5px solid rgba(255,255,255,.3);
+      padding-top:16px;position:relative;z-index:1;
+      font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,.1);
+    }
+    .daily-aya-text.ku,
+    .daily-aya-text.ku-KM,
+    .daily-aya-text.fa{
+      font-family:var(--kurdish-font);font-style:normal;
+      font-size:38px;line-height:1.9;
+    }
+    .daily-aya-text.phonetic{
+      font-family:'Times New Roman',Times,serif;
+      font-style:italic;
+      font-size:34px;
+      line-height:1.75;
+      direction:ltr;
+      text-align:left;
+      color:rgba(255,255,255,.97);
+    }
+    .daily-aya-loading{
+      font-size:16px;opacity:.85;font-style:italic;
+      padding:24px 0;text-align:center;
+    }
+
     .section{
       background:linear-gradient(135deg, var(--section-bg-1) 0%, var(--section-bg-2) 100%);
       border-radius:var(--r);padding:26px 28px;
@@ -536,9 +694,9 @@
       backdrop-filter:blur(4px);
     }
     .verse-tool:active{transform:scale(.9)}
-    .verse-tool.copied{background:#fff;color:var(--emerald);border-color:#fff}
-    .verse-tool.playing{background:#fff;color:var(--arabic-grad-1);border-color:#fff}
-    .verse-tool.active{background:#fff;color:var(--emerald);border-color:#fff}
+    .verse-tool.copied{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
+    .verse-tool.playing{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
+    .verse-tool.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
     .verse-tool:disabled{opacity:.35;cursor:not-allowed}
     .verse-tool:disabled:active{transform:none}
     .arabic{
@@ -617,7 +775,6 @@
     }
     .sura-picker button:active{transform:scale(.97);opacity:.9}
 
-    /* FAVORITER */
     .fav-item{
       background:var(--surface);border:1.5px solid var(--border);
       border-radius:var(--rsm);padding:16px 18px;margin-bottom:12px;
@@ -679,7 +836,6 @@
     .fav-empty{text-align:center;padding:28px;color:var(--text3);font-weight:700}
     .fav-empty i{font-size:36px;margin-bottom:12px;display:block;opacity:.5}
 
-    /* Favorit-verktygsfält */
     .fav-toolbar{
       display:flex;align-items:center;justify-content:space-between;
       gap:10px;flex-wrap:wrap;
@@ -870,13 +1026,15 @@
       .section{padding:20px 18px}
       .arabic{font-size:32px;line-height:2.3;padding:16px 18px}
       .arabic-small{font-size:28px;line-height:2.2}
-      .hdr{padding:18px;grid-template-columns:1fr;gap:12px}
-      .hdr-left{justify-content:center;text-align:center;flex-direction:column;gap:8px}
-      .hdr-info{text-align:center}
-      .hdr-right{justify-content:center}
-      .hdr-bismillah{font-size:28px;padding:8px 0;white-space:normal;order:-1}
-      .hdr-logo{width:48px;height:48px;font-size:22px}
-      .hdr-title{font-size:19px}
+      .top-bar{padding:14px 16px;gap:10px}
+      .top-bar-title{order:-1;flex-basis:100%}
+      .top-bar-title .bismillah{font-size:20px}
+      .top-bar-weather,.top-bar-clock,.top-bar-azan{min-width:0;flex:1}
+      .top-bar-weather .weather-icon-wrap,
+      .top-bar-clock .clock-icon-wrap,
+      .top-bar-azan .azan-icon-wrap{width:38px;height:38px;font-size:17px}
+      .top-bar-clock{font-size:16px}
+      .top-bar-clock .clock-date{font-size:10px}
       .daily-aya{padding:22px}
       .daily-aya-top{
         flex-direction:column;
@@ -914,10 +1072,17 @@
       .section{padding:16px 14px}
       .arabic{font-size:27px;line-height:2.3;padding:14px 16px}
       .arabic-small{font-size:24px;line-height:2.2}
-      .hdr{padding:14px}
-      .hdr-bismillah{font-size:24px;padding:6px 0}
-      .hdr-logo{width:44px;height:44px;font-size:20px}
-      .hdr-title{font-size:17px}
+      .top-bar{padding:12px 14px;gap:8px}
+      .top-bar-title .bismillah{font-size:16px}
+      .top-bar-weather .weather-icon-wrap,
+      .top-bar-clock .clock-icon-wrap,
+      .top-bar-azan .azan-icon-wrap{width:34px;height:34px;font-size:15px;border-radius:10px}
+      .top-bar-weather .weather-temp{font-size:15px}
+      .top-bar-weather .weather-desc{font-size:11px}
+      .top-bar-azan .azan-next-time{font-size:15px}
+      .top-bar-azan .azan-next-label{font-size:11px}
+      .top-bar-clock{font-size:14px;gap:6px}
+      .top-bar-clock .clock-date{font-size:9px}
       .daily-aya{padding:18px 16px}
       .daily-aya-arabic{font-size:29px;line-height:2.3}
       .daily-aya-text{font-size:24px;line-height:1.7}
@@ -927,7 +1092,6 @@
       .daily-aya-text.phonetic{font-size:22px;line-height:1.7}
       .day-action-btn{width:34px;height:34px;font-size:13px}
       .search-toggle-btn{width:34px;height:34px;font-size:13px}
-      .icon-btn{width:44px;height:44px;font-size:17px}
       .verse-tools{top:6px;left:6px}
       .verse-tool{width:32px;height:32px;font-size:13px}
       .sura-picker select,.sura-picker button{font-size:15px;height:48px}
@@ -972,6 +1136,10 @@
       .fav-modal-icon-btn{width:38px;height:38px;font-size:14px}
       .fav-control-btn{height:34px;padding:0 10px;font-size:12px}
       .fav-checkbox{width:18px;height:18px}
+      .weather-day-item{grid-template-columns: 1fr 36px 1fr;gap:8px;padding:10px}
+      .weather-day-icon{width:36px;height:36px;font-size:17px;border-radius:10px}
+      .weather-day-name{font-size:13px}
+      .weather-day-temp-max{font-size:14px}
     }
   </style>
 </head>
@@ -979,29 +1147,46 @@
 
 <div class="container">
 
-  <div class="hdr">
-    <div class="hdr-left">
-      <div class="hdr-logo"><i class="fas fa-book-open"></i></div>
-      <div class="hdr-info">
-        <div class="hdr-title">Quran · Böner & Skydd</div>
-        <div class="hdr-sub">آیة الکرسی · قنوت · الفاتحة · ٤ قل</div>
+  <!-- TOPPBAR: VÄDER | BISMILLAH | KLOCKA -->
+  <div class="top-bar">
+    <div class="top-bar-side-left">
+      <!-- VÄDER (VÄNSTER) - klickbar -->
+      <div class="top-bar-weather" onclick="openWeatherModal()" title="Klicka för veckans väder">
+        <div class="weather-icon-wrap">
+          <i class="fas fa-cloud-sun" id="weatherIcon"></i>
+        </div>
+        <div class="weather-info">
+          <span class="weather-temp" id="weatherTemp">--°C</span>
+          <span class="weather-desc" id="weatherDesc">Laddar…</span>
+        </div>
+      </div>
+
+      <!-- BÖNETID / AZAN - klickbar -->
+      <div class="top-bar-azan" onclick="openAzanModal()" title="Klicka för dagens bönetider">
+        <div class="azan-icon-wrap">
+          <i class="fas fa-mosque"></i>
+        </div>
+        <div class="azan-info">
+          <span class="azan-next-time" id="azanNextTime">--:--</span>
+          <span class="azan-next-label" id="azanNextLabel">Laddar…</span>
+        </div>
       </div>
     </div>
-    <div class="hdr-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-    <div class="hdr-right">
-      <button class="icon-btn" onclick="openFavorites()" title="Favoriter" id="favBtn">
-        <i class="fas fa-star"></i>
-        <span class="bdg h" id="favBdg">0</span>
-      </button>
-      <button class="icon-btn" onclick="toggleFullscreen()" title="Helskärm" id="fsBtn">
-        <i class="fas fa-expand" id="fsIcon"></i>
-      </button>
-      <button class="icon-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
-        <i class="fas fa-moon" id="nightIcon"></i>
-      </button>
-      <button class="icon-btn" onclick="toggleAllSections()" title="Visa/Göm allt under Dagens aya" id="toggleSectionsBtn">
-        <i class="fas fa-eye" id="toggleSectionsIcon"></i>
-      </button>
+
+    <!-- BISMILLAH (MITTERST) -->
+    <div class="top-bar-title">
+      <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    </div>
+
+    <!-- KLOCKA (HÖGER) - klickbar för datumväxling -->
+    <div class="top-bar-clock" onclick="cycleClockDate()" title="Klicka för att växla datum">
+      <div class="clock-main">
+        <div class="clock-icon-wrap">
+          <i class="fas fa-clock"></i>
+        </div>
+        <span class="clock-time" id="clockTime">--:--:--</span>
+      </div>
+      <div class="clock-date" id="clockDate"></div>
     </div>
   </div>
 
@@ -1371,7 +1556,57 @@
   </div>
 </div>
 
-<!-- FAVORIT-MODAL med alla funktioner -->
+<!-- VECKOVÄDER-MODAL -->
+<div class="weather-modal-ov h" id="weatherModal" onclick="if(event.target===this)closeWeatherModal()">
+  <div class="weather-modal-card">
+    <div class="weather-modal-header">
+      <div class="weather-modal-title">
+        <i class="fas fa-cloud-sun"></i>
+        <span>Veckans väder</span>
+      </div>
+      <button class="weather-modal-close" onclick="closeWeatherModal()" title="Stäng">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="weather-modal-location">
+      <i class="fas fa-location-dot"></i>
+      <span id="weatherLocation">Laddar plats…</span>
+    </div>
+    <div class="weather-week-list" id="weatherWeekList">
+      <div class="weather-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Laddar veckans väder…
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BÖNETIDER-MODAL -->
+<div class="weather-modal-ov h" id="azanModal" onclick="if(event.target===this)closeAzanModal()">
+  <div class="weather-modal-card">
+    <div class="weather-modal-header">
+      <div class="weather-modal-title">
+        <i class="fas fa-mosque" style="color:var(--emerald)"></i>
+        <span>Dagens bönetider</span>
+      </div>
+      <button class="weather-modal-close" onclick="closeAzanModal()" title="Stäng">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="weather-modal-location">
+      <i class="fas fa-location-dot"></i>
+      <span id="azanLocation">Laddar plats…</span>
+    </div>
+    <div class="weather-week-list" id="azanList">
+      <div class="weather-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Laddar bönetider…
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAVORIT-MODAL -->
 <div class="modal-ov h" id="favModal" onclick="if(event.target===this)closeFavorites()">
   <div class="modal-card" id="favModalCard">
     <div class="fav-modal-header">
@@ -1570,6 +1805,419 @@ function escapeHtml(str){
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+/* ============================================================
+   KLOCKA MED DATUMVÄXLING (HIJRI → IRANSK → MILADI)
+   ============================================================ */
+const HIJRI_MONTHS_SV = ['Muharram','Safar','Rabi al-Awwal','Rabi al-Thani','Jumada al-Awwal','Jumada al-Thani','Rajab','Shaban','Ramadan','Shawwal','Dhu al-Qadah','Dhu al-Hijjah'];
+const HIJRI_MONTHS_AR = ['محرم','صفر','ربيع الأول','ربيع الثاني','جمادى الأولى','جمادى الثانية','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+const SHAMSI_MONTHS_SV = ['Farvardin','Ordibehesht','Khordad','Tir','Mordad','Shahrivar','Mehr','Aban','Azar','Dey','Bahman','Esfand'];
+const SHAMSI_MONTHS_FA = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const GREG_MONTHS_SV = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
+
+const WEEKDAYS_SV = ['söndag','måndag','tisdag','onsdag','torsdag','fredag','lördag'];
+
+let clockDateMode = 0; // 0 = hijri, 1 = iransk, 2 = miladi
+
+function toHijri(date){
+  // Konvertering via Intl om tillgängligt, annars manuell algorithm
+  try{
+    const fmt = new Intl.DateTimeFormat('sv-SE-u-ca-islamic-umalqura', {
+      day: 'numeric', month: 'numeric', year: 'numeric'
+    });
+    const parts = fmt.formatToParts(date);
+    const day = parseInt(parts.find(p=>p.type==='day').value, 10);
+    const month = parseInt(parts.find(p=>p.type==='month').value, 10);
+    const year = parseInt(parts.find(p=>p.type==='year').value, 10);
+    return { day, month, year };
+  }catch(e){
+    // Fallback: ungefärlig konvertering
+    const jd = gregorianToJD(date.getFullYear(), date.getMonth()+1, date.getDate());
+    return jdToHijri(jd);
+  }
+}
+
+function toShamsi(date){
+  // Iransk (shamsi) kalender — använd Intl med persiska
+  try{
+    const fmt = new Intl.DateTimeFormat('sv-SE-u-ca-persian', {
+      day: 'numeric', month: 'numeric', year: 'numeric'
+    });
+    const parts = fmt.formatToParts(date);
+    const day = parseInt(parts.find(p=>p.type==='day').value, 10);
+    const month = parseInt(parts.find(p=>p.type==='month').value, 10);
+    const year = parseInt(parts.find(p=>p.type==='year').value, 10);
+    return { day, month, year };
+  }catch(e){
+    return null;
+  }
+}
+
+function gregorianToJD(y, m, d){
+  if(m <= 2){ y -= 1; m += 12; }
+  const a = Math.floor(y/100);
+  const b = 2 - a + Math.floor(a/4);
+  return Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + b - 1524.5;
+}
+
+function jdToHijri(jd){
+  const l = jd - 1948440 + 10632;
+  const n = Math.floor((l - 1) / 10631);
+  const l2 = l - 10631 * n + 354;
+  const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+  const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+  const m = Math.floor((24 * l3) / 709);
+  const d = l3 - Math.floor((709 * m) / 24);
+  const y = 30 * n + j - 30;
+  return { day: d, month: m, year: y };
+}
+
+function updateClock(){
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  const el = document.getElementById('clockTime');
+  if(el) el.textContent = h + ':' + m + ':' + s;
+  renderClockDate(now);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function renderClockDate(now){
+  now = now || new Date();
+  const el = document.getElementById('clockDate');
+  if(!el) return;
+  const weekday = WEEKDAYS_SV[now.getDay()];
+  const capWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+
+  if(clockDateMode === 0){
+    // Hijri qamari
+    const h = toHijri(now);
+    el.innerHTML = `<span class="date-label">هجري</span> ${h.day} ${HIJRI_MONTHS_SV[h.month-1]} ${h.year} هـ`;
+  } else if(clockDateMode === 1){
+    // Iransk (shamsi)
+    const s = toShamsi(now);
+    if(s){
+      el.innerHTML = `<span class="date-label">شمسی</span> ${s.day} ${SHAMSI_MONTHS_SV[s.month-1]} ${s.year}`;
+    } else {
+      el.innerHTML = `<span class="date-label">شمسی</span> —`;
+    }
+  } else {
+    // Miladi (gregoriansk)
+    el.innerHTML = `<span class="date-label">میلادی</span> ${capWeekday} ${now.getDate()} ${GREG_MONTHS_SV[now.getMonth()]} ${now.getFullYear()}`;
+  }
+}
+
+function cycleClockDate(){
+  clockDateMode = (clockDateMode + 1) % 3;
+  const labels = ['🕌 Hijri (qamari)', '🇮🇷 Iransk (shamsi)', '🌍 Miladi (gregoriansk)'];
+  renderClockDate(new Date());
+  toast(labels[clockDateMode]);
+}
+
+/* ============================================================
+   VÄDER — NUVARANDE + VECKOPROGNOS
+   ============================================================ */
+let currentWeatherLat = 59.33;
+let currentWeatherLon = 18.07;
+let currentWeatherLocationName = 'Stockholm';
+
+function getWeatherInfo(code){
+  const weatherMap = {
+    0: { desc: 'Klart', icon: 'fa-sun', color: '#F59E0B' },
+    1: { desc: 'Mestadels klart', icon: 'fa-sun', color: '#F59E0B' },
+    2: { desc: 'Delvis molnigt', icon: 'fa-cloud-sun', color: '#F59E0B' },
+    3: { desc: 'Mulet', icon: 'fa-cloud', color: '#7168A0' },
+    45: { desc: 'Dimma', icon: 'fa-smog', color: '#A89FCE' },
+    48: { desc: 'Dimma', icon: 'fa-smog', color: '#A89FCE' },
+    51: { desc: 'Lätt duggregn', icon: 'fa-cloud-rain', color: '#6C47E8' },
+    53: { desc: 'Duggregn', icon: 'fa-cloud-rain', color: '#6C47E8' },
+    55: { desc: 'Tätt duggregn', icon: 'fa-cloud-rain', color: '#6C47E8' },
+    61: { desc: 'Lätt regn', icon: 'fa-cloud-rain', color: '#6C47E8' },
+    63: { desc: 'Regn', icon: 'fa-cloud-rain', color: '#6C47E8' },
+    65: { desc: 'Kraftigt regn', icon: 'fa-cloud-showers-heavy', color: '#6C47E8' },
+    71: { desc: 'Lätt snö', icon: 'fa-snowflake', color: '#22C08A' },
+    73: { desc: 'Snö', icon: 'fa-snowflake', color: '#22C08A' },
+    75: { desc: 'Kraftig snö', icon: 'fa-snowflake', color: '#22C08A' },
+    80: { desc: 'Regnskurar', icon: 'fa-cloud-rain', color: '#6C47E8' },
+    81: { desc: 'Regnskurar', icon: 'fa-cloud-rain', color: '#6C47E8' },
+    82: { desc: 'Kraftiga skurar', icon: 'fa-cloud-showers-heavy', color: '#6C47E8' },
+    95: { desc: 'Åska', icon: 'fa-bolt', color: '#F59E0B' },
+    96: { desc: 'Åska med hagel', icon: 'fa-bolt', color: '#F59E0B' },
+    99: { desc: 'Åska med hagel', icon: 'fa-bolt', color: '#F59E0B' }
+  };
+  return weatherMap[code] || { desc: 'Okänt', icon: 'fa-cloud', color: '#7168A0' };
+}
+
+async function getLocationName(lat, lon){
+  try{
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=sv`);
+    if(!res.ok) return 'Din plats';
+    const data = await res.json();
+    return data.address?.city || data.address?.town || data.address?.village || data.address?.county || 'Din plats';
+  }catch(e){
+    return 'Din plats';
+  }
+}
+
+async function fetchWeather(){
+  const weatherTemp = document.getElementById('weatherTemp');
+  const weatherDesc = document.getElementById('weatherDesc');
+  const weatherIcon = document.getElementById('weatherIcon');
+  if(!weatherTemp) return;
+
+  try{
+    let lat = 59.33, lon = 18.07;
+    if(navigator.geolocation){
+      try{
+        const pos = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000, maximumAge: 600000 });
+        });
+        lat = pos.coords.latitude;
+        lon = pos.coords.longitude;
+      }catch(e){ /* fallback */ }
+    }
+    currentWeatherLat = lat;
+    currentWeatherLon = lon;
+
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Weather fetch failed');
+    const data = await res.json();
+    const cw = data.current_weather;
+    if(!cw) throw new Error('No weather data');
+
+    const temp = Math.round(cw.temperature);
+    const w = getWeatherInfo(cw.weathercode);
+
+    weatherTemp.textContent = temp + '°C';
+    weatherDesc.textContent = w.desc;
+    if(weatherIcon){
+      weatherIcon.className = 'fas ' + w.icon;
+      weatherIcon.style.color = w.color;
+    }
+
+    // Hämta platsnamn i bakgrunden
+    getLocationName(lat, lon).then(name => {
+      currentWeatherLocationName = name;
+      const locEl = document.getElementById('weatherLocation');
+      if(locEl) locEl.textContent = name;
+      const azanLocEl = document.getElementById('azanLocation');
+      if(azanLocEl) azanLocEl.textContent = name;
+    });
+
+    // Hämta bönetider för samma plats
+    fetchAzanTimings();
+  }catch(e){
+    weatherTemp.textContent = '--°C';
+    weatherDesc.textContent = 'Ej tillgängligt';
+    if(weatherIcon){
+      weatherIcon.className = 'fas fa-cloud';
+      weatherIcon.style.color = '#A89FCE';
+    }
+    fetchAzanTimings();
+  }
+}
+fetchWeather();
+setInterval(fetchWeather, 900000);
+
+function openWeatherModal(){
+  document.getElementById('weatherModal').classList.remove('h');
+  loadWeekWeather();
+}
+function closeWeatherModal(){
+  document.getElementById('weatherModal').classList.add('h');
+}
+
+async function loadWeekWeather(){
+  const list = document.getElementById('weatherWeekList');
+  const locEl = document.getElementById('weatherLocation');
+  if(!list) return;
+  if(locEl) locEl.textContent = currentWeatherLocationName || 'Laddar plats…';
+  list.innerHTML = '<div class="weather-loading"><i class="fas fa-spinner fa-spin"></i>Laddar veckans väder…</div>';
+
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${currentWeatherLat}&longitude=${currentWeatherLon}&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Failed');
+    const data = await res.json();
+    const daily = data.daily;
+    if(!daily || !daily.time){
+      throw new Error('No daily data');
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    let html = '';
+
+    for(let i = 0; i < daily.time.length; i++){
+      const dateStr = daily.time[i];
+      const date = new Date(dateStr + 'T12:00:00');
+      const weekday = WEEKDAYS_SV[date.getDay()];
+      const capWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+      const code = daily.weathercode[i];
+      const w = getWeatherInfo(code);
+      const maxT = Math.round(daily.temperature_2m_max[i]);
+      const minT = Math.round(daily.temperature_2m_min[i]);
+      const isToday = dateStr === todayStr;
+
+      html += `
+        <div class="weather-day-item ${isToday ? 'today' : ''}">
+          <div>
+            <div class="weather-day-name">${isToday ? 'Idag · ' : ''}${capWeekday}</div>
+            <div class="weather-day-desc">${date.getDate()}/${date.getMonth()+1}</div>
+          </div>
+          <div class="weather-day-icon">
+            <i class="fas ${w.icon}" style="color:${w.color}"></i>
+          </div>
+          <div class="weather-day-temps">
+            <span class="weather-day-temp-max">${maxT}°</span>
+            <span class="weather-day-temp-min">${minT}°</span>
+            <span class="weather-day-desc">${w.desc}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    list.innerHTML = html;
+  }catch(e){
+    list.innerHTML = '<div class="weather-loading"><i class="fas fa-exclamation-triangle"></i>Kunde inte hämta veckans väder.<br><span style="font-size:12px">Kontrollera internetanslutningen.</span></div>';
+  }
+}
+
+/* ============================================================
+   BÖNETIDER (AZAN) — BASERAT PÅ PLATS
+   ============================================================ */
+let azanTimings = null;
+let azanTimingsDateKey = null;
+let azanFetchInProgress = false;
+
+const AZAN_ORDER = ['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+const AZAN_NAMES_SV = {
+  Fajr: 'Fajr · Gryningsbön',
+  Dhuhr: 'Dhuhr · Middagsbön',
+  Asr: 'Asr · Eftermiddagsbön',
+  Maghrib: 'Maghrib · Solnedgångsbön',
+  Isha: 'Isha · Kvällsbön'
+};
+
+function azanDateKey(d){
+  return String(d.getDate()).padStart(2,'0') + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + d.getFullYear();
+}
+
+async function fetchAzanTimings(){
+  if(azanFetchInProgress) return;
+  azanFetchInProgress = true;
+  try{
+    const now = new Date();
+    const dateStr = azanDateKey(now);
+    const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${currentWeatherLat}&longitude=${currentWeatherLon}&method=3`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Azan fetch failed');
+    const data = await res.json();
+    if(!data || !data.data || !data.data.timings) throw new Error('No azan data');
+    azanTimings = data.data.timings;
+    azanTimingsDateKey = dateStr;
+    updateAzanTopBar();
+  }catch(e){
+    const timeEl = document.getElementById('azanNextTime');
+    const labelEl = document.getElementById('azanNextLabel');
+    if(timeEl) timeEl.textContent = '--:--';
+    if(labelEl) labelEl.textContent = 'Ej tillgängligt';
+  }finally{
+    azanFetchInProgress = false;
+  }
+}
+setInterval(fetchAzanTimings, 6*3600*1000);
+
+function parseAzanTime(str){
+  if(!str) return null;
+  const clean = String(str).split(' ')[0];
+  const parts = clean.split(':');
+  if(parts.length < 2) return null;
+  const h = parseInt(parts[0], 10);
+  const m = parseInt(parts[1], 10);
+  if(isNaN(h) || isNaN(m)) return null;
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function getNextPrayer(){
+  if(!azanTimings) return null;
+  const now = new Date();
+  for(const name of AZAN_ORDER){
+    const t = parseAzanTime(azanTimings[name]);
+    if(t && t > now) return { name, time: t, tomorrow:false };
+  }
+  const fajr = parseAzanTime(azanTimings['Fajr']);
+  if(fajr){
+    fajr.setDate(fajr.getDate()+1);
+    return { name:'Fajr', time: fajr, tomorrow:true };
+  }
+  return null;
+}
+
+function updateAzanTopBar(){
+  const timeEl = document.getElementById('azanNextTime');
+  const labelEl = document.getElementById('azanNextLabel');
+  if(!timeEl || !labelEl) return;
+  const todayKey = azanDateKey(new Date());
+  if(azanTimingsDateKey && azanTimingsDateKey !== todayKey){
+    fetchAzanTimings();
+  }
+  const next = getNextPrayer();
+  if(!next){
+    timeEl.textContent = '--:--';
+    labelEl.textContent = azanTimings ? 'Beräknar…' : 'Laddar…';
+    return;
+  }
+  const hh = String(next.time.getHours()).padStart(2,'0');
+  const mm = String(next.time.getMinutes()).padStart(2,'0');
+  timeEl.textContent = hh + ':' + mm;
+  labelEl.textContent = (AZAN_NAMES_SV[next.name] ? AZAN_NAMES_SV[next.name].split(' · ')[0] : next.name) + (next.tomorrow ? ' · imorgon' : ' · nästa bön');
+}
+setInterval(updateAzanTopBar, 30000);
+
+function openAzanModal(){
+  document.getElementById('azanModal').classList.remove('h');
+  renderAzanModalList();
+  const locEl = document.getElementById('azanLocation');
+  if(locEl) locEl.textContent = currentWeatherLocationName || 'Laddar plats…';
+}
+function closeAzanModal(){
+  document.getElementById('azanModal').classList.add('h');
+}
+
+function renderAzanModalList(){
+  const list = document.getElementById('azanList');
+  if(!list) return;
+  if(!azanTimings){
+    list.innerHTML = '<div class="weather-loading"><i class="fas fa-spinner fa-spin"></i>Laddar bönetider…</div>';
+    return;
+  }
+  const next = getNextPrayer();
+  let html = '';
+  AZAN_ORDER.forEach(name => {
+    const t = parseAzanTime(azanTimings[name]);
+    const isNext = next && next.name === name && !next.tomorrow;
+    const hh = t ? String(t.getHours()).padStart(2,'0') : '--';
+    const mm = t ? String(t.getMinutes()).padStart(2,'0') : '--';
+    html += `
+      <div class="weather-day-item ${isNext ? 'today' : ''}">
+        <div>
+          <div class="weather-day-name">${AZAN_NAMES_SV[name] || name}</div>
+          ${isNext ? '<div class="weather-day-desc">Nästa bön</div>' : ''}
+        </div>
+        <div class="weather-day-icon"><i class="fas fa-mosque" style="color:var(--emerald)"></i></div>
+        <div class="weather-day-temps">
+          <span class="weather-day-temp-max">${hh}:${mm}</span>
+        </div>
+      </div>
+    `;
+  });
+  list.innerHTML = html;
 }
 
 /* ============================================================
@@ -2618,7 +3266,7 @@ const FAV_KEY = 'quranFavorites';
 let favorites = [];
 try{ favorites = JSON.parse(localStorage.getItem(FAV_KEY)) || []; }catch(e){ favorites = []; }
 
-let favLoopMode = 'off'; // 'off' | 'all' | 'one'
+let favLoopMode = 'off';
 let favCurrentPlayingId = null;
 let favQueue = null;
 
@@ -2694,7 +3342,6 @@ function closeFavorites(){
   document.getElementById('favModal').classList.add('h');
 }
 
-/* ===== HELSKÄRM FÖR FAVORITMODAL ===== */
 function toggleFavFullscreen(){
   const el = document.getElementById('favModalCard');
   if(!el) return;
@@ -2716,7 +3363,6 @@ function updateFavFullscreenIcon(){
 document.addEventListener('fullscreenchange', updateFavFullscreenIcon);
 document.addEventListener('webkitfullscreenchange', updateFavFullscreenIcon);
 
-/* ===== CHECKBOX-URVAL ===== */
 function toggleSelectAllFavorites(checkbox){
   document.querySelectorAll('.fav-checkbox').forEach(cb => { cb.checked = checkbox.checked; });
   updateSelectedCount();
@@ -2730,7 +3376,6 @@ function getCheckedFavoriteIds(){
   return Array.from(document.querySelectorAll('.fav-checkbox:checked')).map(cb => parseInt(cb.dataset.favId, 10));
 }
 
-/* ===== BYGG LJUDEKÖ FRÅN FAVORITER ===== */
 function buildFavoriteQueueUrls(ids){
   let urls = [];
   ids.forEach(id => {
@@ -2748,7 +3393,6 @@ function buildFavoriteQueueUrls(ids){
   return urls;
 }
 
-/* ===== SPELA FAVORITER I SEKVENS ===== */
 function playFavoritesSequence(){
   let ids = getCheckedFavoriteIds();
   if(!ids.length){
@@ -2770,7 +3414,6 @@ function playFavoritesSequence(){
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
   btn.classList.add('primary');
 
-  // Bygg en kö med metadata om vilken favorit varje URL tillhör
   const urlItems = [];
   ids.forEach(id => {
     const f = favorites.find(x => x.id === id);
@@ -2808,7 +3451,6 @@ function playFavoritesStep(){
     if(favLoopMode === 'all'){
       q.index = 0;
     } else {
-      // Klart
       resetPlayBtn(q.btn);
       const q2 = q.btn.querySelector('#favPlayText');
       if(q2) q2.textContent = 'Spela';
@@ -2824,7 +3466,6 @@ function playFavoritesStep(){
   const url = item.url;
   favCurrentPlayingId = item.favId;
 
-  // Markera aktuell favorit
   document.querySelectorAll('.fav-item').forEach(el => el.classList.remove('playing-now'));
   const el = document.querySelector(`.fav-item[data-fav-id="${item.favId}"]`);
   if(el) el.classList.add('playing-now');
@@ -2848,7 +3489,6 @@ function playFavoritesStep(){
   });
   audio.addEventListener('error', ()=>{
     if(currentQueue !== q) return;
-    // Prova Alafasy som fallback
     const fallbackMatch = url.match(/^(https:\/\/cdn\.islamic\.network\/quran\/audio(?:-surah)?\/128\/)(ar\.[a-zA-Z]+)(\/.+\.mp3)$/);
     if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy'){
       q.urls[q.index] = fallbackMatch[1] + 'ar.alafasy' + fallbackMatch[3];
@@ -2856,7 +3496,6 @@ function playFavoritesStep(){
       playFavoritesStep();
       return;
     }
-    // Hoppa över
     q.index++;
     playFavoritesStep();
   });
@@ -2907,7 +3546,6 @@ function cycleFavLoopMode(){
     toast('➡️ Upprepning avstängd');
   }
 
-  // Applicera på pågående uppspelning
   if(currentQueue && currentQueue.isFavorites){
     if(currentAudio){
       currentAudio.loop = (favLoopMode === 'one');
@@ -2915,12 +3553,10 @@ function cycleFavLoopMode(){
   }
 }
 
-/* ===== SPELA EN ENSKILD FAVORIT ===== */
 function playFavorite(id, btn){
   const f = favorites.find(x => x.id === id);
   if(!f) return;
 
-  // Om samma spelas – pausa
   if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
     currentAudio.pause();
     resetPlayBtn(btn);
@@ -3002,7 +3638,6 @@ function renderFavorites(){
     `;
   }).join('');
 
-  // Återställ checkboxar
   const selAll = document.getElementById('favSelectAll');
   if(selAll) selAll.checked = false;
   updateSelectedCount();
@@ -3106,9 +3741,6 @@ function copyVerse(btn){
   });
 }
 
-/* ============================================================
-   VISA/GÖM ALLT UNDER DAGENS AYA
-   ============================================================ */
 let sectionsHidden = localStorage.getItem('quranSectionsHidden') === 'true';
 function applySectionsVisibility(){
   const el = document.getElementById('collapsibleSections');
