@@ -350,7 +350,7 @@
     .vk-key.enter:active{background:#1AA876}
 
     .search-results{
-      max-height:480px;overflow-y:auto;
+      max-height:520px;overflow-y:auto;
       margin-top:12px;
       border-radius:12px;
       background:rgba(255,255,255,.95);
@@ -399,7 +399,7 @@
       text-align:center;margin-top:8px;font-weight:600;
     }
 
-    /* Paginering för sökresultat */
+    /* Paginering */
     .search-pagination {
       display: flex;
       justify-content: center;
@@ -443,6 +443,34 @@
       font-weight: 800;
       color: var(--text3);
       padding: 0 6px;
+    }
+    .search-load-more-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 8px 4px 4px;
+    }
+    .search-load-more-btn {
+      padding: 12px 26px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary), #9B59E8);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: all .2s;
+    }
+    .search-load-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+    .search-load-more-btn:active {
+      transform: scale(.96);
     }
     .search-loading-bar {
       height: 6px;
@@ -813,7 +841,7 @@
       .vk-key.wide,.vk-key.space,.vk-key.backspace,.vk-key.enter{font-size:11px}
       .search-input-row input{font-size:15px;height:42px}
       .search-input-row button{height:42px;padding:0 12px;font-size:13px}
-      .search-results{max-height:360px}
+      .search-results{max-height:380px}
       .search-pagination button{min-width:32px;height:32px;font-size:12px;padding:0 6px}
     }
   </style>
@@ -894,6 +922,12 @@
 
       <div class="search-results" id="searchResults"></div>
       <div class="search-pagination" id="searchPagination" style="display:none"></div>
+      <div class="search-load-more-wrap" id="searchLoadMoreWrap" style="display:none">
+        <button class="search-load-more-btn" id="searchLoadMoreBtn" onclick="loadMoreSearchResults()">
+          <i class="fas fa-plus-circle"></i>
+          <span id="searchLoadMoreText">Ladda fler resultat</span>
+        </button>
+      </div>
     </div>
 
     <div class="daily-aya-qari-row">
@@ -1208,7 +1242,7 @@
 
 <script>
 /* ============================================================
-   ÖVERSÄTTNINGAR (statiska verser i appen)
+   ÖVERSÄTTNINGAR
    ============================================================ */
 const TRANSLATIONS = {
   sv: {
@@ -1439,7 +1473,7 @@ function toggleSearchPanel(){
 }
 
 /* ============================================================
-   QURAN-SÖKNING – med paginering (10 per sida)
+   QURAN-SÖKNING med paginering + "Ladda fler"
    ============================================================ */
 let searchInProgress = false;
 let lastSearchQuery = '';
@@ -1534,12 +1568,14 @@ async function performQuranSearch(){
   const inp = document.getElementById('quranSearchInput');
   const results = document.getElementById('searchResults');
   const pagination = document.getElementById('searchPagination');
+  const loadMoreWrap = document.getElementById('searchLoadMoreWrap');
   if(!inp || !results) return;
 
   const query = inp.value.trim();
   if(query.length < 2){
     results.innerHTML = '<div class="search-empty"><i class="fas fa-keyboard"></i>Skriv minst 2 tecken att söka efter.</div>';
     if(pagination) pagination.style.display = 'none';
+    if(loadMoreWrap) loadMoreWrap.style.display = 'none';
     return;
   }
 
@@ -1556,6 +1592,7 @@ async function performQuranSearch(){
       <div class="search-index-progress" id="indexProgress">0 / 114 suror</div>
     `;
     if(pagination) pagination.style.display = 'none';
+    if(loadMoreWrap) loadMoreWrap.style.display = 'none';
     try {
       await buildQuranIndex((loaded, total) => {
         const el = document.getElementById('indexProgress');
@@ -1603,6 +1640,7 @@ async function performQuranSearch(){
   if(!matches.length){
     results.innerHTML = '<div class="search-empty"><i class="fas fa-search-minus"></i>Inga träffar hittades för "' + escapeHtml(query) + '".<br><span style="font-size:13px">Prova ett annat ord eller stavning (erab ignoreras).</span></div>';
     if(pagination) pagination.style.display = 'none';
+    if(loadMoreWrap) loadMoreWrap.style.display = 'none';
     searchInProgress = false;
     return;
   }
@@ -1615,6 +1653,7 @@ async function performQuranSearch(){
 function renderSearchResultsPage(page){
   const results = document.getElementById('searchResults');
   const pagination = document.getElementById('searchPagination');
+  const loadMoreWrap = document.getElementById('searchLoadMoreWrap');
   if(!results) return;
 
   searchCurrentPage = page;
@@ -1624,7 +1663,7 @@ function renderSearchResultsPage(page){
   const pageItems = searchResultsAll.slice(startIdx, startIdx + RESULTS_PER_PAGE);
 
   let html = `<div style="font-size:12px;font-weight:800;color:var(--text3);padding:4px 8px 10px;text-transform:uppercase;letter-spacing:.06em">
-    <i class="fas fa-list"></i> ${total} träffar för "${escapeHtml(lastSearchQuery)}" (erab ignoreras) – sida ${page} av ${totalPages}
+    <i class="fas fa-list"></i> ${total} träffar för "${escapeHtml(lastSearchQuery)}" – sida ${page} av ${totalPages} (visar ${startIdx + 1}–${Math.min(startIdx + RESULTS_PER_PAGE, total)})
   </div>`;
 
   pageItems.forEach(m => {
@@ -1638,6 +1677,18 @@ function renderSearchResultsPage(page){
 
   results.innerHTML = html;
   results.scrollTop = 0;
+
+  if(loadMoreWrap){
+    if(page < totalPages){
+      loadMoreWrap.style.display = 'flex';
+      const remaining = total - (page * RESULTS_PER_PAGE);
+      const nextBatch = Math.min(RESULTS_PER_PAGE, remaining);
+      const txt = document.getElementById('searchLoadMoreText');
+      if(txt) txt.textContent = `Ladda fler (${nextBatch} till, ${remaining} kvar)`;
+    } else {
+      loadMoreWrap.style.display = 'none';
+    }
+  }
 
   if(pagination){
     if(totalPages <= 1){
@@ -1676,13 +1727,22 @@ function renderSearchResultsPage(page){
   }
 }
 
+function loadMoreSearchResults(){
+  const totalPages = Math.ceil(searchResultsAll.length / RESULTS_PER_PAGE);
+  if(searchCurrentPage < totalPages){
+    renderSearchResultsPage(searchCurrentPage + 1);
+  }
+}
+
 function goToSearchResult(surah, ayah){
   const panel = document.getElementById('searchPanel');
   const btn = document.getElementById('searchToggleBtn');
   const pagination = document.getElementById('searchPagination');
+  const loadMoreWrap = document.getElementById('searchLoadMoreWrap');
   if(panel) panel.classList.remove('open');
   if(btn) btn.classList.remove('active');
   if(pagination) pagination.style.display = 'none';
+  if(loadMoreWrap) loadMoreWrap.style.display = 'none';
 
   fetchAya(surah, ayah);
   window.scrollTo({top: 0, behavior: 'smooth'});
@@ -1693,9 +1753,11 @@ function clearQuranSearch(){
   const inp = document.getElementById('quranSearchInput');
   const results = document.getElementById('searchResults');
   const pagination = document.getElementById('searchPagination');
+  const loadMoreWrap = document.getElementById('searchLoadMoreWrap');
   if(inp) inp.value = '';
   if(results) results.innerHTML = '';
   if(pagination) pagination.style.display = 'none';
+  if(loadMoreWrap) loadMoreWrap.style.display = 'none';
   lastSearchQuery = '';
   searchResultsAll = [];
   searchCurrentPage = 1;
