@@ -614,12 +614,34 @@
       transition:all .2s;
     }
     .sura-picker button:active{transform:scale(.97);opacity:.9}
+
+    /* FAVORITER */
     .fav-item{
       background:var(--surface);border:1.5px solid var(--border);
       border-radius:var(--rsm);padding:16px 18px;margin-bottom:12px;
       position:relative;
+      transition:all .2s;
     }
-    .fav-ref{font-size:13px;font-weight:800;color:var(--primary);margin-bottom:8px}
+    .fav-item.selected{
+      border-color:var(--primary);
+      background:var(--primary-soft);
+      box-shadow:0 4px 14px var(--primary-glow);
+    }
+    .fav-item.playing-now{
+      border-color:var(--emerald);
+      box-shadow:0 0 0 2px var(--emerald-soft), 0 6px 18px rgba(34,192,138,.25);
+    }
+    .fav-ref{
+      font-size:13px;font-weight:800;color:var(--primary);
+      margin-bottom:8px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .fav-checkbox{
+      width:20px;height:20px;
+      accent-color:var(--primary);
+      cursor:pointer;
+      flex-shrink:0;
+    }
     .fav-arabic{
       font-family:var(--quran-font);
       font-size:26px;line-height:2.2;direction:rtl;text-align:right;
@@ -654,6 +676,64 @@
     .fav-actions button:active{transform:scale(.92)}
     .fav-empty{text-align:center;padding:28px;color:var(--text3);font-weight:700}
     .fav-empty i{font-size:36px;margin-bottom:12px;display:block;opacity:.5}
+
+    /* Favorit-verktygsfält */
+    .fav-toolbar{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;flex-wrap:wrap;
+      padding:12px 14px;
+      background:var(--surface2);
+      border:1.5px solid var(--border);
+      border-radius:12px;
+      margin-bottom:16px;
+    }
+    .fav-toolbar-left{
+      display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    }
+    .fav-toolbar-right{
+      display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    }
+    .fav-select-all{
+      display:flex;align-items:center;gap:8px;
+      font-size:13px;font-weight:800;color:var(--text2);
+      cursor:pointer;user-select:none;
+    }
+    .fav-select-all input{
+      width:18px;height:18px;accent-color:var(--primary);cursor:pointer;
+    }
+    .fav-count{
+      font-size:12px;font-weight:800;
+      padding:4px 10px;border-radius:50px;
+      background:var(--primary-soft);color:var(--primary);
+    }
+    .fav-control-btn{
+      height:38px;min-width:38px;
+      padding:0 14px;border-radius:50px;
+      border:1.5px solid var(--border);
+      background:var(--surface);
+      color:var(--text2);
+      font-family:var(--font);
+      font-size:13px;font-weight:800;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:all .2s;
+    }
+    .fav-control-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .fav-control-btn:active{transform:scale(.95)}
+    .fav-control-btn.primary{
+      background:var(--primary);color:#fff;border-color:var(--primary);
+      box-shadow:0 4px 12px var(--primary-glow);
+    }
+    .fav-control-btn.primary:hover{background:#5B39D6;border-color:#5B39D6}
+    .fav-control-btn.danger{
+      background:var(--rose-soft);color:var(--rose);border-color:var(--rose-soft);
+    }
+    .fav-control-btn.danger:hover{background:var(--rose);color:#fff;border-color:var(--rose)}
+    .fav-control-btn.active{
+      background:var(--emerald);color:#fff;border-color:var(--emerald);
+    }
+    .fav-control-btn:disabled{opacity:.4;cursor:not-allowed}
+
     .modal-ov{
       position:fixed;inset:0;background:rgba(0,0,0,.5);
       backdrop-filter:blur(6px);z-index:200;
@@ -662,9 +742,17 @@
     .modal-ov.h{display:none}
     .modal-card{
       background:var(--surface);border-radius:var(--r);
-      padding:28px;max-width:700px;width:100%;
-      max-height:85vh;overflow-y:auto;
+      padding:28px;max-width:800px;width:100%;
+      max-height:90vh;overflow-y:auto;
       border:1.5px solid var(--border);box-shadow:var(--shadow);
+      display:flex;flex-direction:column;
+    }
+    .modal-card:fullscreen,
+    .modal-card:-webkit-full-screen{
+      max-width:100vw;max-height:100vh;
+      width:100vw;height:100vh;
+      border-radius:0;
+      padding:24px;
     }
     .modal-card .modal-ref{font-size:14px;font-weight:800;color:var(--primary);margin-bottom:12px}
     .modal-card .modal-arabic{
@@ -703,6 +791,28 @@
       cursor:pointer;transition:all .2s;
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
+
+    .fav-modal-header{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:18px;gap:10px;
+      flex-shrink:0;
+    }
+    .fav-modal-title{
+      font-size:20px;font-weight:900;color:var(--text);
+      display:flex;align-items:center;gap:10px;
+    }
+    .fav-modal-actions{
+      display:flex;gap:8px;flex-shrink:0;
+    }
+    .fav-modal-icon-btn{
+      width:42px;height:42px;border-radius:12px;border:none;
+      background:var(--surface2);color:var(--text2);
+      cursor:pointer;font-size:16px;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .2s;
+    }
+    .fav-modal-icon-btn:hover{background:var(--primary-soft);color:var(--primary)}
+    .fav-modal-icon-btn:active{transform:scale(.92)}
 
     .bottom-lang-bar{
       position:fixed;
@@ -783,6 +893,8 @@
       .bottom-lang-inner button[data-lang="fa"]{font-size:14px}
       .vk-key{height:40px;font-size:18px}
       .vk-key.wide,.vk-key.space,.vk-key.backspace,.vk-key.enter{font-size:12px}
+      .fav-modal-header{flex-wrap:wrap}
+      .fav-toolbar{padding:10px}
     }
     @media (max-width:480px){
       body{padding:12px 10px calc(var(--bottom-bar-height) + 15px)}
@@ -843,6 +955,10 @@
       .search-input-row button{height:42px;padding:0 12px;font-size:13px}
       .search-results{max-height:380px}
       .search-pagination button{min-width:32px;height:32px;font-size:12px;padding:0 6px}
+      .fav-modal-title{font-size:16px}
+      .fav-modal-icon-btn{width:38px;height:38px;font-size:14px}
+      .fav-control-btn{height:34px;padding:0 10px;font-size:12px}
+      .fav-checkbox{width:18px;height:18px}
     }
   </style>
 </head>
@@ -1220,18 +1336,48 @@
   </div>
 </div>
 
+<!-- FAVORIT-MODAL med alla funktioner -->
 <div class="modal-ov h" id="favModal" onclick="if(event.target===this)closeFavorites()">
-  <div class="modal-card" style="max-width:700px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-      <div style="font-size:20px;font-weight:900;color:var(--text)">
-        <i class="fas fa-star" style="color:var(--amber)"></i> Mina favoriter
+  <div class="modal-card" id="favModalCard">
+    <div class="fav-modal-header">
+      <div class="fav-modal-title">
+        <i class="fas fa-star" style="color:var(--amber)"></i>
+        <span>Mina favoriter</span>
+        <span class="fav-count" id="favCount">0</span>
       </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="closeFavorites()" style="width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:17px">
+      <div class="fav-modal-actions">
+        <button class="fav-modal-icon-btn" onclick="toggleFavFullscreen()" title="Helskärm" id="favFsBtn">
+          <i class="fas fa-expand" id="favFsIcon"></i>
+        </button>
+        <button class="fav-modal-icon-btn" onclick="closeFavorites()" title="Stäng">
           <i class="fas fa-times"></i>
         </button>
       </div>
     </div>
+
+    <div class="fav-toolbar" id="favToolbar" style="display:none">
+      <div class="fav-toolbar-left">
+        <label class="fav-select-all">
+          <input type="checkbox" id="favSelectAll" onchange="toggleSelectAllFavorites(this)">
+          <span>Markera alla</span>
+        </label>
+        <span class="fav-count" id="favSelectedCount">0 valda</span>
+      </div>
+      <div class="fav-toolbar-right">
+        <button class="fav-control-btn primary" id="favPlayBtn" onclick="playFavoritesSequence()" title="Spela markerade (eller alla om inget är markerat)">
+          <i class="fas fa-play"></i>
+          <span id="favPlayText">Spela</span>
+        </button>
+        <button class="fav-control-btn" id="favLoopBtn" onclick="cycleFavLoopMode()" title="Upprepning: av">
+          <i class="fas fa-repeat" id="favLoopIcon"></i>
+          <span id="favLoopText">Av</span>
+        </button>
+        <button class="fav-control-btn danger" id="favStopBtn" onclick="stopFavoritesSequence()" title="Stoppa">
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
+    </div>
+
     <div id="favList"></div>
   </div>
 </div>
@@ -1386,7 +1532,7 @@ function escapeHtml(str){
 }
 
 /* ============================================================
-   VIRTUELLT TANGENTBORD (endast arabiska)
+   VIRTUELLT TANGENTBORD
    ============================================================ */
 const VK_LAYOUT = {
   name: 'العربية',
@@ -1473,7 +1619,7 @@ function toggleSearchPanel(){
 }
 
 /* ============================================================
-   QURAN-SÖKNING med paginering + "Ladda fler"
+   QURAN-SÖKNING
    ============================================================ */
 let searchInProgress = false;
 let lastSearchQuery = '';
@@ -1939,7 +2085,7 @@ function toggleAudio(url, btn){
     if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy' && !btn.dataset.triedFallback){
       btn.dataset.triedFallback = '1';
       const fallbackUrl = fallbackMatch[1] + 'ar.alafasy' + fallbackMatch[3];
-      toast('⚠️ Ljud saknas för vald qari – spelar Alafasy istället');
+      toast('⚠️ Ljud saknas – spelar Alafasy istället');
       currentAudio = null; currentPlayBtn = null; currentAudioUrl = null;
       toggleAudio(fallbackUrl, btn);
       return;
@@ -1980,7 +2126,7 @@ function playQueueStep(){
   const q = currentQueue;
   const loopMode = q.btn.dataset.loopMode || (q.btn.dataset.loop === '1' ? 'sura' : 'off');
   if(q.index >= q.urls.length){
-    if(loopMode === 'sura'){
+    if(loopMode === 'sura' || loopMode === 'all'){
       q.index = 0;
     } else {
       resetPlayBtn(q.btn);
@@ -1991,7 +2137,7 @@ function playQueueStep(){
   }
   const url = q.urls[q.index];
   const audio = new Audio(url);
-  audio.loop = (loopMode === 'ayah');
+  audio.loop = (loopMode === 'ayah' || loopMode === 'one');
   currentAudio = audio;
   currentAudioUrl = url;
   audio.addEventListener('playing', ()=>{
@@ -2431,6 +2577,10 @@ const FAV_KEY = 'quranFavorites';
 let favorites = [];
 try{ favorites = JSON.parse(localStorage.getItem(FAV_KEY)) || []; }catch(e){ favorites = []; }
 
+let favLoopMode = 'off'; // 'off' | 'all' | 'one'
+let favCurrentPlayingId = null;
+let favQueue = null;
+
 function saveFavorites(){
   try{ localStorage.setItem(FAV_KEY, JSON.stringify(favorites)); }catch(e){}
   updateFavBadge();
@@ -2440,6 +2590,8 @@ function updateFavBadge(){
   if(!b) return;
   b.textContent = favorites.length;
   b.classList.toggle('h', favorites.length === 0);
+  const fc = document.getElementById('favCount');
+  if(fc) fc.textContent = favorites.length;
 }
 function isCurrentAyaSaved(){
   if(!currentAyaData) return false;
@@ -2495,14 +2647,253 @@ function removeFavorite(id){
 function openFavorites(){
   renderFavorites();
   document.getElementById('favModal').classList.remove('h');
+  updateFavFullscreenIcon();
 }
 function closeFavorites(){
   document.getElementById('favModal').classList.add('h');
 }
 
+/* ===== HELSKÄRM FÖR FAVORITMODAL ===== */
+function toggleFavFullscreen(){
+  const el = document.getElementById('favModalCard');
+  if(!el) return;
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if(!isFs){
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if(req) req.call(el);
+  } else {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    if(exit) exit.call(document);
+  }
+}
+function updateFavFullscreenIcon(){
+  const icon = document.getElementById('favFsIcon');
+  if(!icon) return;
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+}
+document.addEventListener('fullscreenchange', updateFavFullscreenIcon);
+document.addEventListener('webkitfullscreenchange', updateFavFullscreenIcon);
+
+/* ===== CHECKBOX-URVAL ===== */
+function toggleSelectAllFavorites(checkbox){
+  document.querySelectorAll('.fav-checkbox').forEach(cb => { cb.checked = checkbox.checked; });
+  updateSelectedCount();
+}
+function updateSelectedCount(){
+  const count = document.querySelectorAll('.fav-checkbox:checked').length;
+  const el = document.getElementById('favSelectedCount');
+  if(el) el.textContent = count + ' valda';
+}
+function getCheckedFavoriteIds(){
+  return Array.from(document.querySelectorAll('.fav-checkbox:checked')).map(cb => parseInt(cb.dataset.favId, 10));
+}
+
+/* ===== BYGG LJUDEKÖ FRÅN FAVORITER ===== */
+function buildFavoriteQueueUrls(ids){
+  let urls = [];
+  ids.forEach(id => {
+    const f = favorites.find(x => x.id === id);
+    if(!f) return;
+    if((f.type || 'ayah') === 'surah'){
+      urls = urls.concat(buildSurahAyahUrls(f.surahNum));
+    } else {
+      if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
+        urls.push(buildBismillahUrl());
+      }
+      urls.push(buildAyahAudioUrl(f.surahNum, f.ayahNum));
+    }
+  });
+  return urls;
+}
+
+/* ===== SPELA FAVORITER I SEKVENS ===== */
+function playFavoritesSequence(){
+  let ids = getCheckedFavoriteIds();
+  if(!ids.length){
+    ids = favorites.slice().reverse().map(f => f.id);
+  }
+  if(!ids.length){ toast('❌ Inga favoriter att spela'); return; }
+
+  const urls = buildFavoriteQueueUrls(ids);
+  if(!urls.length){ toast('❌ Inga ljud att spela'); return; }
+
+  const btn = document.getElementById('favPlayBtn');
+  if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
+    currentAudio.pause();
+    resetPlayBtn(btn);
+    return;
+  }
+
+  stopCurrentAudio();
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.classList.add('primary');
+
+  // Bygg en kö med metadata om vilken favorit varje URL tillhör
+  const urlItems = [];
+  ids.forEach(id => {
+    const f = favorites.find(x => x.id === id);
+    if(!f) return;
+    if((f.type || 'ayah') === 'surah'){
+      const surahUrls = buildSurahAyahUrls(f.surahNum);
+      surahUrls.forEach(u => urlItems.push({ url: u, favId: id }));
+    } else {
+      if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
+        urlItems.push({ url: buildBismillahUrl(), favId: id });
+      }
+      urlItems.push({ url: buildAyahAudioUrl(f.surahNum, f.ayahNum), favId: id });
+    }
+  });
+
+  currentQueue = {
+    urls: urlItems.map(x => x.url),
+    items: urlItems,
+    index: 0,
+    btn,
+    favIds: ids,
+    isFavorites: true,
+    hasBismillah: false,
+    surahNum: null
+  };
+  currentPlayBtn = btn;
+  playFavoritesStep();
+}
+
+function playFavoritesStep(){
+  if(!currentQueue || !currentQueue.isFavorites) return;
+  const q = currentQueue;
+
+  if(q.index >= q.urls.length){
+    if(favLoopMode === 'all'){
+      q.index = 0;
+    } else {
+      // Klart
+      resetPlayBtn(q.btn);
+      const q2 = q.btn.querySelector('#favPlayText');
+      if(q2) q2.textContent = 'Spela';
+      document.querySelectorAll('.fav-item.playing-now').forEach(el => el.classList.remove('playing-now'));
+      favCurrentPlayingId = null;
+      currentAudio = null; currentPlayBtn = null; currentAudioUrl = null; currentQueue = null;
+      toast('✅ Uppspelning klar');
+      return;
+    }
+  }
+
+  const item = q.items[q.index];
+  const url = item.url;
+  favCurrentPlayingId = item.favId;
+
+  // Markera aktuell favorit
+  document.querySelectorAll('.fav-item').forEach(el => el.classList.remove('playing-now'));
+  const el = document.querySelector(`.fav-item[data-fav-id="${item.favId}"]`);
+  if(el) el.classList.add('playing-now');
+
+  const audio = new Audio(url);
+  audio.loop = (favLoopMode === 'one');
+  currentAudio = audio;
+  currentAudioUrl = url;
+
+  audio.addEventListener('playing', ()=>{
+    if(currentAudio === audio){
+      q.btn.innerHTML = '<i class="fas fa-pause"></i>';
+      q.btn.classList.add('playing');
+    }
+  });
+  audio.addEventListener('ended', ()=>{
+    if(currentAudio === audio && currentQueue === q && !audio.loop){
+      q.index++;
+      playFavoritesStep();
+    }
+  });
+  audio.addEventListener('error', ()=>{
+    if(currentQueue !== q) return;
+    // Prova Alafasy som fallback
+    const fallbackMatch = url.match(/^(https:\/\/cdn\.islamic\.network\/quran\/audio(?:-surah)?\/128\/)(ar\.[a-zA-Z]+)(\/.+\.mp3)$/);
+    if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy'){
+      q.urls[q.index] = fallbackMatch[1] + 'ar.alafasy' + fallbackMatch[3];
+      q.items[q.index].url = q.urls[q.index];
+      playFavoritesStep();
+      return;
+    }
+    // Hoppa över
+    q.index++;
+    playFavoritesStep();
+  });
+  audio.play().catch(()=>{
+    if(currentQueue === q){
+      q.index++;
+      playFavoritesStep();
+    }
+  });
+}
+
+function stopFavoritesSequence(){
+  if(currentQueue && currentQueue.isFavorites){
+    stopCurrentAudio();
+    document.querySelectorAll('.fav-item.playing-now').forEach(el => el.classList.remove('playing-now'));
+    favCurrentPlayingId = null;
+    const btn = document.getElementById('favPlayBtn');
+    if(btn){
+      btn.innerHTML = '<i class="fas fa-play"></i> <span id="favPlayText">Spela</span>';
+    }
+    toast('⏹️ Uppspelning stoppad');
+  }
+}
+
+function cycleFavLoopMode(){
+  const btn = document.getElementById('favLoopBtn');
+  const icon = document.getElementById('favLoopIcon');
+  const txt = document.getElementById('favLoopText');
+  if(!btn || !icon || !txt) return;
+
+  if(favLoopMode === 'off'){
+    favLoopMode = 'all';
+    icon.className = 'fas fa-repeat';
+    txt.textContent = 'Alla';
+    btn.classList.add('active');
+    toast('🔁 Upprepar alla favoriter');
+  } else if(favLoopMode === 'all'){
+    favLoopMode = 'one';
+    icon.className = 'fas fa-arrow-rotate-left';
+    txt.textContent = 'En';
+    btn.classList.add('active');
+    toast('🔂 Upprepar en i taget (samma tills vidare)');
+  } else {
+    favLoopMode = 'off';
+    icon.className = 'fas fa-repeat';
+    txt.textContent = 'Av';
+    btn.classList.remove('active');
+    toast('➡️ Upprepning avstängd');
+  }
+
+  // Applicera på pågående uppspelning
+  if(currentQueue && currentQueue.isFavorites){
+    if(currentAudio){
+      currentAudio.loop = (favLoopMode === 'one');
+    }
+  }
+}
+
+/* ===== SPELA EN ENSKILD FAVORIT ===== */
 function playFavorite(id, btn){
   const f = favorites.find(x => x.id === id);
   if(!f) return;
+
+  // Om samma spelas – pausa
+  if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
+    currentAudio.pause();
+    resetPlayBtn(btn);
+    return;
+  }
+  if(currentPlayBtn === btn && currentAudio && currentAudio.paused && !currentQueue?.isFavorites){
+    currentAudio.play().catch(()=>toast('❌ Kunde inte spela upp ljud'));
+    btn.innerHTML = '<i class="fas fa-pause"></i>';
+    btn.classList.add('playing');
+    return;
+  }
+
+  stopCurrentAudio();
+
   if((f.type || 'ayah') === 'surah'){
     toggleAudioQueue(buildSurahAyahUrls(f.surahNum), btn, f.surahNum);
   } else {
@@ -2517,15 +2908,22 @@ function playFavorite(id, btn){
 
 function renderFavorites(){
   const c = document.getElementById('favList');
+  const toolbar = document.getElementById('favToolbar');
   if(!favorites.length){
     c.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.<br><span style="font-size:13px;font-weight:600">Tryck på stjärnan vid en aya eller en sura.</span></div>';
+    if(toolbar) toolbar.style.display = 'none';
     return;
   }
+  if(toolbar) toolbar.style.display = 'flex';
+
   c.innerHTML = favorites.slice().reverse().map(f => {
     if((f.type || 'ayah') === 'surah'){
       return `
-        <div class="fav-item">
-          <div class="fav-ref"><i class="fas fa-book"></i> ${f.surahName} · sura ${f.surahNum} · ${f.ayahCount} verser</div>
+        <div class="fav-item" data-fav-id="${f.id}">
+          <div class="fav-ref">
+            <input type="checkbox" class="fav-checkbox" data-fav-id="${f.id}" onchange="updateSelectedCount()">
+            <span><i class="fas fa-book"></i> ${f.surahName} · sura ${f.surahNum} · ${f.ayahCount} verser</span>
+          </div>
           <div class="fav-actions" style="justify-content:space-between">
             <button class="fav-view" onclick="playFavorite(${f.id}, this)" title="Spela upp" style="flex:1"><i class="fas fa-play"></i></button>
             <div style="display:flex;gap:8px">
@@ -2547,8 +2945,11 @@ function renderFavorites(){
     }
     if(!text) text = '—';
     return `
-      <div class="fav-item">
-        <div class="fav-ref">${f.surahName} ${f.surahNum}:${f.ayahNum}</div>
+      <div class="fav-item" data-fav-id="${f.id}">
+        <div class="fav-ref">
+          <input type="checkbox" class="fav-checkbox" data-fav-id="${f.id}" onchange="updateSelectedCount()">
+          <span>${f.surahName} ${f.surahNum}:${f.ayahNum}</span>
+        </div>
         <div class="fav-arabic">${f.arabic}</div>
         <div class="fav-text${extraClass}">${text}</div>
         <div class="fav-actions">
@@ -2559,6 +2960,11 @@ function renderFavorites(){
       </div>
     `;
   }).join('');
+
+  // Återställ checkboxar
+  const selAll = document.getElementById('favSelectAll');
+  if(selAll) selAll.checked = false;
+  updateSelectedCount();
 }
 
 function goToSuraFromFavorite(surahNum){
