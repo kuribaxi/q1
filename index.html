@@ -934,12 +934,6 @@
       </div>
 
       <div class="vk-container">
-        <div class="vk-lang-tabs">
-          <button class="active" data-vk="ar" onclick="switchVkLang('ar')">🇸🇦 العربية</button>
-          <button data-vk="fa" onclick="switchVkLang('fa')">🇮🇷 فارسی</button>
-          <button data-vk="ku" onclick="switchVkLang('ku')">🏳️ کوردی</button>
-          <button data-vk="latin" onclick="switchVkLang('latin')">🔤 Latin</button>
-        </div>
         <div class="vk-keys" id="vkKeys"></div>
       </div>
 
@@ -1465,59 +1459,26 @@ function normalizeSearchTerm(text){
 }
 
 /* ============================================================
-   VIRTUELLT TANGENTBORD
+   VIRTUELLT TANGENTBORD (endast arabiska)
    ============================================================ */
-const VK_LAYOUTS = {
-  ar: {
-    name: 'العربية',
-    rows: [
-      ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
-      ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
-      ['ئ','ء','ؤ','ر','لا','ى','ة','و','ز','ظ'],
-      ['ذ','\u200c','\u200d','،','؟','!','.','؛',':']
-    ]
-  },
-  fa: {
-    name: 'فارسی',
-    rows: [
-      ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','چ'],
-      ['ش','س','ی','ب','ل','ا','ت','ن','م','ک','گ'],
-      ['پ','ژ','ذ','ر','ز','ط','ظ','و','ء','آ'],
-      ['ئ','ء','ؤ','\u200c','،','؟','!','.','؛',':']
-    ]
-  },
-  ku: {
-    name: 'کوردی',
-    rows: [
-      ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','چ'],
-      ['ش','س','ی','ب','ل','ا','ت','ن','م','ک','گ'],
-      ['پ','ژ','ڕ','ڵ','ۆ','ێ','و','وو','ی','ە','ڕ'],
-      ['ئ','ء','ؤ','ڕ','ڵ','ۆ','ێ','،','؟','!','.']
-    ]
-  },
-  latin: {
-    name: 'Latin',
-    rows: [
-      ['q','w','e','r','t','y','u','i','o','p','å'],
-      ['a','s','d','f','g','h','j','k','l','ö','ä'],
-      ['z','x','c','v','b','n','m','-','_','@'],
-      ['.',',','?','!',':',';',"'",'"','(',')']
-    ]
-  }
+const VK_LAYOUT = {
+  name: 'العربية',
+  rows: [
+    ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
+    ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
+    ['ئ','ء','ؤ','ر','لا','ى','ة','و','ز','ظ'],
+    ['ذ','\u200c','\u200d','،','؟','!','.','؛',':']
+  ]
 };
-
-let currentVkLang = 'ar';
 
 function renderVkKeyboard(){
   const container = document.getElementById('vkKeys');
   if(!container) return;
-  const layout = VK_LAYOUTS[currentVkLang];
-  if(!layout) return;
 
   let html = '';
-  layout.rows.forEach((row, idx) => {
+  VK_LAYOUT.rows.forEach((row, idx) => {
     html += '<div class="vk-row">';
-    if(idx === layout.rows.length - 1){
+    if(idx === VK_LAYOUT.rows.length - 1){
       html += '<button class="vk-key backspace" onclick="vkBackspace()" title="Radera"><i class="fas fa-delete-left"></i></button>';
       row.forEach(k => {
         html += `<button class="vk-key" onclick="vkInsert('${k.replace(/'/g, "\\'")}')">${k}</button>`;
@@ -1537,24 +1498,6 @@ function renderVkKeyboard(){
   html += '</div>';
 
   container.innerHTML = html;
-}
-
-function switchVkLang(lang){
-  currentVkLang = lang;
-  document.querySelectorAll('.vk-lang-tabs button').forEach(b => {
-    b.classList.toggle('active', b.dataset.vk === lang);
-  });
-  renderVkKeyboard();
-  const inp = document.getElementById('quranSearchInput');
-  if(inp){
-    if(lang === 'latin'){
-      inp.setAttribute('dir','ltr');
-      inp.setAttribute('placeholder','Search words in Quran…');
-    } else {
-      inp.setAttribute('dir','rtl');
-      inp.setAttribute('placeholder','Sök ord i Quran…');
-    }
-  }
 }
 
 function vkInsert(char){
@@ -1875,22 +1818,16 @@ function buildAyahAudioUrl(surah, ayah, overrideQariId){
   return `https://cdn.islamic.network/quran/audio/128/${qari}/${global}.mp3`;
 }
 
-/* Bismillah är vers 1:1 – bygg en URL för den */
 function buildBismillahUrl(overrideQariId){
   return buildAyahAudioUrl(1, 1, overrideQariId);
 }
 
-/* Suror som INTE ska ha separat Bismillah inlagt före:
-   - Sura 1 (Al-Fatiha) har Bismillah som sin första vers
-   - Sura 9 (At-Tawbah) har ingen Bismillah alls
-   - Sura 109 (Al-Kafirun) enligt användarens önskemål */
 const SURAHS_WITHOUT_BISMILLAH = [1, 9, 109];
 
 function surahNeedsBismillah(surahNum){
   return !SURAHS_WITHOUT_BISMILLAH.includes(surahNum);
 }
 
-/* Bygger en lista med Bismillah + alla verser i suran (om tillämpligt) */
 function buildSurahAyahUrls(surah, overrideQariId){
   const count = SURAH_AYAH_COUNTS[surah - 1];
   const urls = [];
@@ -2020,10 +1957,8 @@ function playQueueStep(){
       q.btn.classList.add('playing');
       if(q.btn.id === 'playSuraBtn' && q.surahNum){
         updateSuraProgress(q);
-        // Beräkna vilken vers i suran som spelas (hänsyn till Bismillah-extra)
         const hasBismillah = q.hasBismillah;
         const ayahIndex = hasBismillah ? q.index : q.index + 1;
-        // Om Bismillah spelas (index 0 när hasBismillah) visa vers 1 ändå
         if(ayahIndex >= 1){
           loadAndRenderAya(q.surahNum, Math.min(ayahIndex, SURAH_AYAH_COUNTS[q.surahNum - 1]));
         }
@@ -2080,20 +2015,17 @@ function updateSuraProgress(q){
   if(!el) return;
   if(!q){ el.textContent = ''; return; }
   const surahName = q.surahNum ? SURAH_NAMES[q.surahNum - 1] : '';
-  // Om kön har Bismillah först, visa "Bismillah" för index 0
   let displayIndex = q.index + 1;
   let suffix = '';
   if(q.hasBismillah && q.index === 0){
     suffix = ' · Bismillah';
   } else if(q.hasBismillah){
-    displayIndex = q.index; // Versnummer i suran (1-baserat)
+    displayIndex = q.index;
   }
   el.textContent = 'Vers ' + displayIndex + ' av ' + (q.surahNum ? SURAH_AYAH_COUNTS[q.surahNum - 1] : q.urls.length) + (surahName ? ' · ' + surahName : '') + suffix;
 }
 
 async function playAyah(surah, ayah, btn){
-  // Om det är första versen i en sura (och suran ska ha Bismillah),
-  // spela Bismillah först och sedan versen
   if(ayah === 1 && surahNeedsBismillah(surah)){
     const urls = [buildBismillahUrl(), buildAyahAudioUrl(surah, ayah)];
     toggleAudioQueue(urls, btn, surah);
@@ -2109,8 +2041,6 @@ async function playSurah(surah, btn){
 async function playDailyAya(btn){
   if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
   const { surahNum, ayahNum } = currentAyaData;
-  // Om det är första versen i en sura (och suran ska ha Bismillah),
-  // spela Bismillah först och sedan versen
   if(ayahNum === 1 && surahNeedsBismillah(surahNum)){
     const urls = [buildBismillahUrl(), buildAyahAudioUrl(surahNum, ayahNum)];
     toggleAudioQueue(urls, btn, surahNum);
@@ -2533,7 +2463,6 @@ function playFavorite(id, btn){
   if((f.type || 'ayah') === 'surah'){
     toggleAudioQueue(buildSurahAyahUrls(f.surahNum), btn, f.surahNum);
   } else {
-    // För enskild vers-favorit: om vers 1 i sura (som ska ha Bismillah), spela Bismillah först
     if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
       const urls = [buildBismillahUrl(), buildAyahAudioUrl(f.surahNum, f.ayahNum)];
       toggleAudioQueue(urls, btn, f.surahNum);
@@ -2559,7 +2488,6 @@ function buildFavoriteQueueUrls(ids){
     if((f.type || 'ayah') === 'surah'){
       urls = urls.concat(buildSurahAyahUrls(f.surahNum));
     } else {
-      // Enskild vers: Bismillah först om vers 1 i sura som ska ha Bismillah
       if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
         urls.push(buildBismillahUrl());
       }
@@ -2829,7 +2757,6 @@ populateSuraSelect();
 populatePlaySuraSelect();
 populateQariSelect();
 updateFavBadge();
-renderTafsirTranslateBar();
 fetchRandomAya();
 renderVkKeyboard();
 </script>
