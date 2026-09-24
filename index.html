@@ -160,6 +160,7 @@
       gap:12px;
       margin-bottom:14px;
       position:relative;z-index:1;
+      flex-wrap:wrap;
     }
     .daily-aya-label{
       font-size:12px;font-weight:800;text-transform:uppercase;
@@ -173,6 +174,7 @@
       flex-shrink:0;
       flex-wrap:wrap;
       justify-content:flex-end;
+      min-width:0;
     }
     .day-action-btn{
       width:38px;height:38px;border-radius:50%;
@@ -876,6 +878,17 @@
       .hdr-logo{width:48px;height:48px;font-size:22px}
       .hdr-title{font-size:19px}
       .daily-aya{padding:22px}
+      .daily-aya-top{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .daily-aya-actions{
+        justify-content:flex-start;
+        width:100%;
+      }
+      .daily-aya-label{
+        padding-top:0;
+      }
       .daily-aya-arabic{font-size:34px;line-height:2.3}
       .daily-aya-text{font-size:30px;line-height:1.75}
       .daily-aya-text.ku,
@@ -986,6 +999,9 @@
       <button class="icon-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
         <i class="fas fa-moon" id="nightIcon"></i>
       </button>
+      <button class="icon-btn" onclick="toggleAllSections()" title="Visa/Göm allt under Dagens aya" id="toggleSectionsBtn">
+        <i class="fas fa-eye" id="toggleSectionsIcon"></i>
+      </button>
     </div>
   </div>
 
@@ -1078,6 +1094,8 @@
       <div class="daily-aya-loading">Laddar…</div>
     </div>
   </div>
+
+  <div id="collapsibleSections">
 
   <div class="section">
     <div class="section-title"><i class="fas fa-search"></i> Hoppa till sura</div>
@@ -1256,6 +1274,21 @@
       </div>
     </div>
     <div class="translation" data-tr="ruqya4"></div>
+
+    <hr class="divider">
+
+    <span class="pill">سورة القلم ٦٨:٥١ · Al-Qalam 68:51</span>
+    <div class="verse-block">
+      <div class="verse-tools">
+        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playAyah(68,51,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
+      </div>
+      <div class="arabic arabic-small">
+        وَإِنْ يَكَادُ الَّذِينَ كَفَرُوا لَيُزْلِقُونَكَ بِأَبْصَارِهِمْ لَمَّا سَمِعُوا الذِّكْرَ وَيَقُولُونَ إِنَّهُ لَمَجْنُونٌ
+      </div>
+    </div>
+    <div class="translation" data-tr="qalam51"></div>
   </div>
 
   <div class="section">
@@ -1316,6 +1349,8 @@
       </div>
     </div>
     <div class="translation" data-tr="nur"></div>
+  </div>
+
   </div>
 
   <div class="footer">
@@ -1403,6 +1438,7 @@ const TRANSLATIONS = {
     ruqya2: '”O Allah, människornas Herre, ta bort lidandet. Bota honom, för Du är den som botar. Det finns ingen bot utom Din bot – en bot som inte lämnar någon sjukdom kvar.”',
     ruqya3: '”I Guds namn, vid vars namn inget på jorden eller i himlen kan skada, och Han är den Hörande, den Vetande.”',
     ruqya4: '”O Allah, inget är lätt utom det Du gör lätt, och Du gör sorgen lätt när Du vill.”',
+    qalam51: '”De som förnekar sanningen är nära att fälla dig med sina onda blickar när de hör Påminnelsen (Koranen), och de säger: ’Han är sannerligen besatt.’”',
     nasr: '”När Allahs hjälp och seger kommer, och du ser människorna gå in i Allahs religion i skaror, prisa då din Herre och be Honom om förlåtelse. Han tar alltid emot ånger.”',
     tasbihcombo: '”Prisad vare Allah och allt lov tillhör Allah. Det finns ingen gud utom Allah, och Allah är större. Det finns ingen makt och ingen kraft utom genom Allah. Jag ber den Väldige Allah om förlåtelse och vänder mig till Honom i ånger. Prisad vare Allah och allt lov tillhör Allah, prisad vare den Väldige Allah. Allah är oss nog, och Han är den bäste beskyddaren och den bäste hjälparen.”',
     kifayah: '”O Allah, låt det Du gjort tillåtet vara nog för mig så att jag slipper det förbjudna, och gör mig genom Din nåd oberoende av alla andra än Dig.”',
@@ -1420,6 +1456,7 @@ const TRANSLATIONS = {
     ruqya2: '"O Allah, Lord of mankind, remove the affliction. Heal, for You are the Healer. There is no healing except Your healing – a healing that leaves no illness behind."',
     ruqya3: '"In the name of Allah, with whose name nothing on earth or in heaven can cause harm, and He is the All-Hearing, the All-Knowing."',
     ruqya4: '"O Allah, nothing is easy except what You make easy, and You make sorrow easy when You will."',
+    qalam51: '"And indeed, those who disbelieve would almost make you slip with their eyes when they hear the message (the Quran), and they say, \'Indeed, he is mad.\'"',
     nasr: '"When the help of Allah has come and the conquest, and you see the people entering into the religion of Allah in multitudes, then exalt Him with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance."',
     tasbihcombo: '"Glory be to Allah and praise be to Allah. There is no deity but Allah, and Allah is the Greatest. There is no power and no strength except through Allah. I seek forgiveness from Allah the Mighty and turn to Him in repentance. Glory be to Allah and praise be to Allah, glory be to Allah the Mighty. Allah is sufficient for us, and He is the best Disposer of affairs and the best Helper."',
     kifayah: '"O Allah, suffice me with what You have made lawful instead of what You have made unlawful, and make me independent of all others besides You by Your grace."',
@@ -1437,6 +1474,7 @@ const TRANSLATIONS = {
     ruqya2: '«خدایا، پروردگار مردمان! رنج را ببر. شفا ده، که تو شفا دهنده‌ای. هیچ شفایی جز شفای تو نیست – شفایی که هیچ بیماری را باقی نگذارد.»',
     ruqya3: '«به نام خدایی که با نام او هیچ چیز در زمین و آسمان آسیب نمی‌رساند، و او شنوا و داناست.»',
     ruqya4: '«خدایا! هیچ چیز آسان نیست مگر آنچه تو آسان کنی، و تو غم را هنگامی که بخواهی آسان می‌کنی.»',
+    qalam51: '«و کافران چون قرآن را شنیدند، نزدیک بود تو را با چشمان خود بلغزانند، و می‌گویند: راستی که او دیوانه است.»',
     nasr: '«چون یاری خدا و پیروزی فرارسد، و ببینی که مردم دسته‌دسته به دین خدا درمی‌آیند، پس به ستایش پروردگارت تسبیح گوی و از او آمرزش بخواه، که او همواره توبه‌پذیر است.»',
     tasbihcombo: '«پاک و منزه است خدا و ستایش او راست. هیچ معبودی جز خدا نیست و خدا بزرگ‌تر است. هیچ نیرو و توانی جز به خدا نیست. از خدای بزرگ آمرزش می‌خواهم و به سوی او بازمی‌گردم. پاک و منزه است خدا و ستایش او راست، پاک و منزه است خدای بزرگ. خدا ما را کافی است و او بهترین کارساز و بهترین یاور است.»',
     kifayah: '«خدایا، مرا با حلالت از حرامت بی‌نیاز کن، و با فضل خودت از غیر خودت بی‌نیازم گردان.»',
@@ -1454,6 +1492,7 @@ const TRANSLATIONS = {
     ruqya2: '«خوایە، پەروەردگاری خەڵکی! ناخۆشی بەرەوە. شیفای بدە، چونکە تۆ شیفادەری. هیچ شیفایەک نییە جگە لە شیفای تۆ – شیفایەک کە هیچ نەخۆشییەک بەجێ نەهێڵێت.»',
     ruqya3: '«بە ناوی ئەو خوایەی کە بە ناوی ئەو هیچ شتێک لە زەوی و ئاسمان زیانی پێ ناگات، و ئەو بیسەر و زانایە.»',
     ruqya4: '«خوایە! هیچ شتێک ئاسان نییە جگە لەوەی تۆ ئاسانی دەکەیت، و تۆ خەفەت ئاسان دەکەیت کاتێک بیەوێت.»',
+    qalam51: '«بێباوەڕان کاتێک قورئانیان بیست، خەریک بوو بە سووکایەتی چاوەکانیان تۆ بخەنە خوارەوە، و دەڵێن: بەڕاستی ئەو شێتە.»',
     nasr: '«کاتێک یارمەتی خودا و سەرکەوتن دێت، و دەبینیت خەڵکی بە کۆمەڵ دەچنە ناو ئایینی خودا، ئەوا ستایشی پەروەردگارت بکە و داوای لێخۆشبوونی لێ بکە، بێگومان ئەو زۆر تۆبەوەرگرە.»',
     tasbihcombo: '«پاکی بۆ خوایە و سوپاس بۆ خوایە. هیچ خوایەک نییە جگە لە خوا، و خوا گەورەترە. هیچ هێز و تواناییەک نییە جگە بە خوا. داوای لێخۆشبوون لە خوای مەزن دەکەم و بۆ لای دەگەڕێمەوە. پاکی بۆ خوایە و سوپاس بۆ خوایە، پاکی بۆ خوای مەزن. خوا بەسمانە، باشترین یارمەتیدەر و باشترین سەرکەوتووکەر.»',
     kifayah: '«خوایە، بە حەڵاڵی خۆت بێنیازم بکە لە حەرامی خۆت، و بە فەزڵی خۆت بێنیازم بکە لە کەسانی تر جگە لە خۆت.»',
@@ -1471,6 +1510,7 @@ const TRANSLATIONS = {
     ruqya2: '«Ya Allah, xwedanê mirovan! Nexweşiyê rake. Şifayê bide, ji ber ku tu şîfakar î. Tu şifayek tune ji bilî şifaya te – şifayek ku tu nexweşiyê li pey xwe nehêle.»',
     ruqya3: '«Bi navê wî Xwedayê ku bi navê wî tiştek li ser zemîn û ezmanan zerarê nagihîne, û ew guhdar û zana ye.»',
     ruqya4: '«Ya Allah! Tiştek hêsan nîne ji bilî tiştê ku te hêsan kir, û tu xemgînî hêsan dikî dema ku bixwazî.»',
+    qalam51: '«Kafiran gava ku Zîkr (Quran) bihîstin, hindik ma ku bi çavên xwe te bixin (bilerizînin), û dibêjin: Bi rastî ew dîn e.»',
     nasr: '«Dema alîkariya Xwedê û serkeftin bê, û tu bibînî ku mirov bi kom-kom dikevin dîna Xwedê, êdî bi pesnê Perwerdekarê xwe tesbîh bike û jê lêborînê bixwaze. Bêguman ew her tobevegerîner e.»',
     tasbihcombo: '«Paqijî ji Xwedê re ye û pesn ji Xwedê re ye. Ji bilî Xwedê tu xuda tune ye, û Xwedê mezintir e. Ne hêz û ne jî tîner heye ji bilî bi Xwedê. Ez ji Xwedayê Mezin lêborînê dixwazim û ber bi wî ve vedigerim. Paqijî ji Xwedê re ye û pesn ji Xwedê re ye, paqijî ji Xwedayê Mezin re ye. Xwedê ji me re bes e, û ew çêtirîn wekîl û çêtirîn alîkar e.»',
     kifayah: '«Ya Xwedê, min bi helala xwe ji herama xwe serbixwe bike, û bi qenciya xwe min ji kesên din ji xeynî te serbixwe bike.»',
@@ -1490,6 +1530,7 @@ const PHONETIC = {
   ruqya2: 'Allāhumma rabban-nās, adhhibil-bāsa, ishfihi wa antash-shāfī, lā shifāʾa illā shifāʾuk, shifāʾan lā yughādiru saqamā.',
   ruqya3: 'Bismillāhil-ladhī lā yaḍurru maʿasmihī shayʾun fil-arḍi wa lā fis-samāʾ, wa huwas-samīʿul-ʿalīm.',
   ruqya4: 'Allāhumma lā sahla illā mā jaʿaltahū sahlā, wa anta tajʿalul-ḥazna idhā shiʾta sahlā.',
+  qalam51: 'Wa in yakādul-ladhīna kafarū layuzliqūnaka bi-abṣārihim lammā samiʿūdh-dhikra wa yaqūlūna innahū lamajnūn.',
   nasr: 'Idhā jāʾa naṣrullāhi wal-fatḥ. Wa raʾaytan-nāsa yadkhulūna fī dīnillāhi afwājā. Fa-sabbiḥ bi-ḥamdi rabbika wastaghfirh, innahū kāna tawwābā.',
   tasbihcombo: 'Subḥānallāhi wal-ḥamdu lillāh, wa lā ilāha illallāhu wallāhu akbar, wa lā ḥawla wa lā quwwata illā billāh. Astaghfirullāhal-ʿaẓīma wa atūbu ilayh. Subḥānallāhi wal-ḥamdu lillāhi subḥānallāhil-ʿaẓīm. Ḥasbunallāhu wa niʿmal-wakīlu wa niʿman-naṣīr.',
   kifayah: 'Allāhumma-kfinī bi-ḥalālika ʿan ḥarāmik, wa aghninī bi-faḍlika ʿamman siwāk.',
@@ -3065,6 +3106,29 @@ function copyVerse(btn){
   });
 }
 
+/* ============================================================
+   VISA/GÖM ALLT UNDER DAGENS AYA
+   ============================================================ */
+let sectionsHidden = localStorage.getItem('quranSectionsHidden') === 'true';
+function applySectionsVisibility(){
+  const el = document.getElementById('collapsibleSections');
+  const icon = document.getElementById('toggleSectionsIcon');
+  const btn = document.getElementById('toggleSectionsBtn');
+  if(!el) return;
+  el.style.display = sectionsHidden ? 'none' : '';
+  if(icon) icon.className = sectionsHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+  if(btn){
+    btn.classList.toggle('active', sectionsHidden);
+    btn.title = sectionsHidden ? 'Visa allt under Dagens aya' : 'Göm allt under Dagens aya';
+  }
+}
+function toggleAllSections(){
+  sectionsHidden = !sectionsHidden;
+  localStorage.setItem('quranSectionsHidden', sectionsHidden);
+  applySectionsVisibility();
+  toast(sectionsHidden ? '🙈 Innehåll gömt' : '👁️ Innehåll synligt');
+}
+
 let night = localStorage.getItem('quranNightMode') === 'true';
 function applyNight(){
   document.body.classList.toggle('night', night);
@@ -3123,6 +3187,7 @@ function toast(msg){
 }
 
 applyNight();
+applySectionsVisibility();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
