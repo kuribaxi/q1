@@ -79,131 +79,91 @@
         radial-gradient(circle at 0% 0%, rgba(108,71,232,.20) 0%, transparent 45%),
         radial-gradient(circle at 100% 100%, rgba(34,192,138,.12) 0%, transparent 45%);
     }
-    body.chrome-hidden{
-      padding-top:12px;
-      padding-bottom:24px;
-    }
+    body.chrome-hidden{padding-top:12px;padding-bottom:24px}
     body.chrome-hidden .bottom-lang-bar{display:none !important}
     body.chrome-hidden .top-bar{display:none !important}
     .container{max-width:1400px;width:100%;margin:0 auto;display:flex;flex-direction:column}
 
-    .top-bar{
-      background:var(--surface);border-radius:var(--r);padding:14px 18px;
-      margin-bottom:24px;box-shadow:var(--shadow-sm);border:1.5px solid var(--border);
-      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-      transition:opacity .3s, transform .3s;
-    }
+    .top-bar{background:var(--surface);border-radius:var(--r);padding:14px 18px;margin-bottom:24px;box-shadow:var(--shadow-sm);border:1.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;transition:opacity .3s, transform .3s}
     .top-bar-side-left{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
     .top-bar-weather{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;padding:6px 10px;border-radius:14px;transition:all .2s;user-select:none}
     .top-bar-weather:hover{background:var(--primary-soft)}
-    .top-bar-weather:active{transform:scale(.97)}
-    .top-bar-weather .weather-icon-wrap{width:40px;height:40px;border-radius:12px;background:var(--amber-soft);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--amber);flex-shrink:0;transition:all .3s}
-    body.night .top-bar-weather .weather-icon-wrap{background:rgba(245,158,11,.15)}
+    .top-bar-weather .weather-icon-wrap{width:40px;height:40px;border-radius:12px;background:var(--amber-soft);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--amber);flex-shrink:0}
     .top-bar-weather .weather-info{display:flex;flex-direction:column;line-height:1.3}
     .top-bar-weather .weather-temp{font-size:15px;font-weight:900;color:var(--text)}
     .top-bar-weather .weather-desc{font-size:11px;font-weight:600;color:var(--text2)}
-
     .top-bar-azan{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;padding:6px 10px;border-radius:14px;transition:all .2s;user-select:none}
     .top-bar-azan:hover{background:var(--primary-soft)}
-    .top-bar-azan:active{transform:scale(.97)}
-    .top-bar-azan .azan-icon-wrap{width:40px;height:40px;border-radius:12px;background:var(--emerald-soft);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--emerald);flex-shrink:0;transition:all .3s}
-    body.night .top-bar-azan .azan-icon-wrap{background:rgba(34,192,138,.15)}
+    .top-bar-azan .azan-icon-wrap{width:40px;height:40px;border-radius:12px;background:var(--emerald-soft);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--emerald);flex-shrink:0}
     .top-bar-azan .azan-info{display:flex;flex-direction:column;line-height:1.3}
     .top-bar-azan .azan-next-time{font-size:15px;font-weight:900;color:var(--text)}
     .top-bar-azan .azan-next-label{font-size:11px;font-weight:600;color:var(--text2)}
-
     .top-bar-title{flex:1;text-align:center;min-width:0}
     .top-bar-title .bismillah{font-family:var(--quran-font);font-size:24px;font-weight:700;color:var(--primary);line-height:1.4;text-shadow:0 1px 3px var(--primary-glow);letter-spacing:.01em}
-    body.night .top-bar-title .bismillah{color:#C9B8FF;text-shadow:0 1px 4px rgba(201,184,255,.3)}
-
+    body.night .top-bar-title .bismillah{color:#C9B8FF}
     .top-bar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
     .top-bar-icons{display:flex;align-items:center;gap:6px}
     .icon-btn{width:42px;height:42px;border-radius:13px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:17px;transition:all .2s;position:relative}
     .icon-btn:active{background:var(--primary-soft);color:var(--primary);transform:scale(.92)}
     .icon-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
-    .bdg{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;border-radius:50%;background:var(--rose);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--surface);padding:0 4px;box-shadow:0 2px 6px rgba(240,94,122,.4)}
+    .bdg{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;border-radius:50%;background:var(--rose);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--surface);padding:0 4px}
     .bdg.h{display:none}
-
     .top-bar-clock{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:900;color:var(--text);font-variant-numeric:tabular-nums;cursor:pointer;padding:6px 10px;border-radius:14px;transition:all .2s;user-select:none;flex-direction:column;align-items:flex-end;max-width:100%;overflow:hidden}
     .top-bar-clock:hover{background:var(--primary-soft)}
-    .top-bar-clock:active{transform:scale(.97)}
     .top-bar-clock .clock-main{display:flex;align-items:center;gap:8px}
     .top-bar-clock .clock-icon-wrap{width:40px;height:40px;border-radius:12px;background:var(--primary-soft);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--primary);flex-shrink:0}
     .top-bar-clock .clock-time{letter-spacing:.02em;white-space:nowrap}
-    .top-bar-clock .clock-date{font-size:10px;font-weight:700;color:var(--text2);margin-top:2px;text-align:right;line-height:1.2;min-height:13px;transition:all .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+    .top-bar-clock .clock-date{font-size:10px;font-weight:700;color:var(--text2);margin-top:2px;text-align:right;line-height:1.2;min-height:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
     .top-bar-clock .clock-date .date-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--primary);margin-right:4px}
 
     .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
     .modal-ov.h{display:none}
     .modal-card{background:var(--surface);border-radius:var(--r);padding:28px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;border:1.5px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column}
-    .modal-card:fullscreen,.modal-card:-webkit-full-screen{max-width:100vw;max-height:100vh;width:100vw;height:100vh;border-radius:0;padding:24px}
     .modal-card .modal-ref{font-size:14px;font-weight:800;color:var(--primary);margin-bottom:12px}
-    .modal-card .modal-arabic{font-family:var(--quran-font);font-size:34px;line-height:2.4;direction:rtl;text-align:right;color:#fff;padding:20px;background:linear-gradient(135deg,var(--arabic-grad-1),var(--arabic-grad-2));border-radius:var(--rsm);box-shadow:0 8px 22px var(--arabic-glow);margin-bottom:16px;word-break:break-word;font-feature-settings:"liga" 1, "calt" 1;text-shadow:0 2px 4px rgba(0,0,0,.18)}
+    .modal-card .modal-arabic{font-family:var(--quran-font);font-size:34px;line-height:2.4;direction:rtl;text-align:right;color:#fff;padding:20px;background:linear-gradient(135deg,var(--arabic-grad-1),var(--arabic-grad-2));border-radius:var(--rsm);box-shadow:0 8px 22px var(--arabic-glow);margin-bottom:16px;word-break:break-word}
     .modal-card .modal-text{font-size:34px;color:var(--text);line-height:1.75;border-left:4px solid var(--emerald);background:var(--translation-bg);padding:14px 16px;border-radius:0 10px 10px 0;margin-bottom:20px}
     .modal-card .modal-text.ku,.modal-card .modal-text.ku-KM,.modal-card .modal-text.fa{font-family:var(--kurdish-font);font-size:36px;line-height:1.9;direction:rtl;text-align:right}
     .modal-card .modal-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:32px;line-height:1.8;direction:ltr;text-align:left}
-    body.night .modal-card .modal-text{color:#D8F5E8}
-    .modal-card .modal-close{width:100%;height:52px;border-radius:var(--rsm);border:none;background:var(--primary);color:#fff;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:all .2s}
-    .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
+    .modal-card .modal-close{width:100%;height:52px;border-radius:var(--rsm);border:none;background:var(--primary);color:#fff;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer}
 
     .tafsir-card{max-width:800px;width:100%;padding:0;display:flex;flex-direction:column;max-height:90vh;overflow:hidden}
     .tafsir-card:fullscreen,.tafsir-card:-webkit-full-screen{max-width:100vw;max-height:100vh;width:100vw;height:100vh;border-radius:0;background:var(--surface)}
-    .tafsir-card:fullscreen .tafsir-scroll,.tafsir-card:-webkit-full-screen .tafsir-scroll{flex:1}
     .tafsir-topbar{display:flex;justify-content:space-between;align-items:center;padding:22px 24px 14px;flex-shrink:0}
     .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3}
-    .tafsir-close{width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;flex-shrink:0;transition:all .2s}
-    .tafsir-close:active{transform:scale(.92)}
+    .tafsir-close{width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;flex-shrink:0}
     .tafsir-translate-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:12px 24px;background:var(--surface2);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);flex-shrink:0}
     .tafsir-translate-bar .label{font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-right:4px;display:flex;align-items:center;gap:6px}
     .tafsir-translate-bar button{padding:6px 12px;border-radius:50px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
     .tafsir-translate-bar button.active{background:var(--emerald);color:#fff;border-color:var(--emerald)}
-    .tafsir-translate-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
-
     .tafsir-tools-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 24px;background:var(--surface);border-bottom:1.5px solid var(--border);flex-shrink:0}
     .tafsir-tools-bar .tool-label{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:5px}
-    .tafsir-tools-bar .font-btn{padding:5px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px}
+    .tafsir-tools-bar .font-btn{padding:5px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
     .tafsir-tools-bar .font-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-    .tafsir-tools-bar .font-btn:active{transform:scale(.95)}
-    .tafsir-tools-bar .size-btn{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-    .tafsir-tools-bar .size-btn:active{transform:scale(.92)}
+    .tafsir-tools-bar .size-btn{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center}
     .tafsir-tools-bar .size-display{font-size:13px;font-weight:900;color:var(--primary);min-width:44px;text-align:center;padding:5px 8px;border-radius:8px;background:var(--primary-soft)}
-    .tafsir-tools-bar .gt-btn{padding:5px 12px;border-radius:8px;border:1.5px solid var(--emerald);background:var(--emerald-soft);color:#1a7a58;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px;margin-left:auto}
+    .tafsir-tools-bar .gt-btn{padding:5px 12px;border-radius:8px;border:1.5px solid var(--emerald);background:var(--emerald-soft);color:#1a7a58;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:4px;margin-left:auto}
     .tafsir-tools-bar .gt-btn:hover{background:var(--emerald);color:#fff}
-    .tafsir-tools-bar .gt-btn:active{transform:scale(.95)}
 
     .gt-panel{display:none;padding:12px 24px;background:linear-gradient(135deg, rgba(34,192,138,.12), rgba(34,192,138,.05));border-bottom:1.5px solid var(--border);flex-shrink:0;gap:8px;flex-wrap:wrap;align-items:center}
     .gt-panel.open{display:flex}
     .gt-panel .gt-label{font-size:12px;font-weight:800;color:var(--text2);display:flex;align-items:center;gap:5px}
     .gt-panel select{padding:6px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer}
-    .gt-panel button{padding:6px 14px;border-radius:8px;border:none;background:var(--emerald);color:#fff;font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
-    .gt-panel button:active{transform:scale(.95)}
+    .gt-panel button{padding:6px 14px;border-radius:8px;border:none;background:var(--emerald);color:#fff;font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:5px}
 
     .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
     .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
-    .tafsir-body{font-size:var(--tafsir-font-size);line-height:1.9;color:var(--text);transition:font-size .2s;font-family:var(--tafsir-font-family)}
+    .tafsir-body{font-size:var(--tafsir-font-size);line-height:1.9;color:var(--text);font-family:var(--tafsir-font-family)}
     .tafsir-body.rtl{direction:rtl;text-align:right}
     .tafsir-body p{margin-bottom:14px}
-    .tafsir-body h2{font-size:16px;font-weight:900;color:var(--primary);margin:18px 0 8px;padding-bottom:6px;border-bottom:1.5px solid var(--border)}
-    .tafsir-body h2:first-child{margin-top:0}
     .tafsir-verse-block{margin-bottom:24px;padding-bottom:18px;border-bottom:1px dashed var(--border)}
-    .tafsir-verse-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
     .tafsir-verse-num{font-size:12px;font-weight:800;color:var(--primary);background:var(--primary-soft);display:inline-block;padding:4px 12px;border-radius:50px;margin-bottom:10px}
 
     .tafsir-body .tafsir-aya-green,
     .tafsir-body .arabic,
     .tafsir-body .arabic-small,
-    .tafsir-body .tafsir-aya-arabic,
-    .tafsir-body .aya-text,
-    .tafsir-body .quran,
-    .tafsir-body .quran-text,
     .tafsir-body .arabic-text,
-    .tafsir-body .aya,
-    .tafsir-body .ayah,
+    .tafsir-body .quran-text,
     .tafsir-body span[lang="ar"],
-    .tafsir-body div[lang="ar"],
-    .tafsir-body em.arabic,
-    .tafsir-body i.arabic,
-    .tafsir-body b.arabic,
     .tafsir-body [dir="rtl"][lang="ar"] {
       background: none !important;
       color: var(--emerald) !important;
@@ -223,174 +183,111 @@
     .aya-picker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px}
     .aya-picker-title{font-size:19px;font-weight:900;color:var(--text);display:flex;align-items:center;gap:10px}
     .aya-picker-title i{color:var(--primary)}
-    .aya-picker-close{width:40px;height:40px;border-radius:12px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-    .aya-picker-close:hover{background:var(--rose-soft);color:var(--rose)}
-    .aya-picker-close:active{transform:scale(.92)}
+    .aya-picker-close{width:40px;height:40px;border-radius:12px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .aya-picker-info{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .aya-picker-info .sura-name{color:var(--primary);font-weight:900;font-size:16px}
     .aya-picker-info .count-badge{background:var(--primary-soft);color:var(--primary);padding:3px 10px;border-radius:50px;font-size:12px;font-weight:800}
     .aya-picker-grid{display:grid;grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));gap:8px;max-height:60vh;overflow-y:auto;padding:4px;margin-bottom:18px}
-    .aya-num-btn{aspect-ratio:1;min-height:52px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;user-select:none}
-    .aya-num-btn:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary);transform:translateY(-2px);box-shadow:0 4px 10px var(--primary-glow)}
-    .aya-num-btn:active{transform:scale(.92)}
-    .aya-num-btn.selected{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 14px var(--primary-glow)}
+    .aya-num-btn{aspect-ratio:1;min-height:52px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .aya-num-btn.selected{background:var(--primary);color:#fff;border-color:var(--primary)}
     .aya-picker-actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:14px;border-top:1.5px solid var(--border)}
-    .aya-picker-actions button{flex:1;min-width:120px;height:52px;border-radius:var(--rsm);border:none;font-family:var(--font);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-    .aya-picker-actions .aya-play-from{background:linear-gradient(135deg,var(--primary),#9B59E8);color:#fff;box-shadow:0 4px 14px var(--primary-glow)}
-    .aya-picker-actions .aya-play-from:active{transform:scale(.97);opacity:.9}
-    .aya-picker-actions .aya-play-single{background:var(--emerald);color:#fff;box-shadow:0 4px 14px rgba(34,192,138,.35)}
-    .aya-picker-actions .aya-play-single:active{transform:scale(.97);opacity:.9}
-    .aya-picker-actions .aya-cancel{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);flex:0 1 auto;min-width:100px}
-    .aya-picker-actions .aya-cancel:active{transform:scale(.97)}
+    .aya-picker-actions button{flex:1;min-width:120px;height:52px;border-radius:var(--rsm);border:none;font-family:var(--font);font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+    .aya-picker-actions .aya-play-from{background:linear-gradient(135deg,var(--primary),#9B59E8);color:#fff}
+    .aya-picker-actions .aya-play-single{background:var(--emerald);color:#fff}
+    .aya-picker-actions .aya-cancel{background:var(--surface2);color:var(--text2);border:1.5px solid var(--border)}
 
-    .search-toggle-btn{width:42px;height:42px;border-radius:13px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all .2s;backdrop-filter:blur(4px)}
-    .search-toggle-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
-    .search-toggle-btn:active{transform:scale(.9)}
-    .search-toggle-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
-
-    .search-panel{display:none;margin-top:16px;position:relative;z-index:1;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.35);border-radius:16px;padding:16px;backdrop-filter:blur(6px)}
+    .search-toggle-btn{width:42px;height:42px;border-radius:13px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:all .2s}
+    .search-panel{display:none;margin-top:16px;position:relative;z-index:1;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.35);border-radius:16px;padding:16px}
     .search-panel.open{display:block}
     .search-input-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
     .search-input-row input{flex:1;min-width:0;height:46px;border-radius:12px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.95);color:#1E1535;font-family:var(--font);font-size:17px;font-weight:700;padding:0 16px;outline:none;direction:rtl;text-align:right}
-    .search-input-row input[dir="ltr"]{direction:ltr;text-align:left}
-    .search-input-row input::placeholder{color:#A89FCE;font-weight:600;font-size:15px}
-    .search-input-row button{height:46px;padding:0 18px;border-radius:12px;border:none;cursor:pointer;font-family:var(--font);font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;flex-shrink:0}
-    .search-input-row .search-go{background:#fff;color:var(--primary);box-shadow:0 4px 14px rgba(0,0,0,.15)}
-    .search-input-row .search-go:active{transform:scale(.96)}
+    .search-input-row button{height:46px;padding:0 18px;border-radius:12px;border:none;cursor:pointer;font-family:var(--font);font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px}
+    .search-input-row .search-go{background:#fff;color:var(--primary)}
     .search-input-row .search-clear{background:rgba(255,255,255,.25);color:#fff;border:1.5px solid rgba(255,255,255,.4)}
-    .search-input-row .search-clear:active{transform:scale(.96)}
-
     .vk-container{margin-top:10px;border-radius:14px;background:rgba(0,0,0,.18);padding:10px;border:1.5px solid rgba(255,255,255,.25)}
     .vk-keys{display:flex;flex-direction:column;gap:6px}
     .vk-row{display:flex;gap:5px;justify-content:center}
-    .vk-key{flex:1;min-width:0;height:44px;border-radius:9px;border:none;cursor:pointer;background:rgba(255,255,255,.92);color:#1E1535;font-family:var(--quran-font);font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .1s;user-select:none;padding:0 2px}
-    .vk-key:active{background:#fff;transform:scale(.93)}
+    .vk-key{flex:1;min-width:0;height:44px;border-radius:9px;border:none;cursor:pointer;background:rgba(255,255,255,.92);color:#1E1535;font-family:var(--quran-font);font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 2px}
     .vk-key.wide{flex:1.5;font-size:14px;font-family:var(--font);font-weight:800}
     .vk-key.backspace{flex:1.5;background:rgba(240,94,122,.9);color:#fff;font-size:16px;font-family:var(--font)}
-    .vk-key.backspace:active{background:var(--rose)}
     .vk-key.enter{flex:1.5;background:var(--emerald);color:#fff;font-size:14px;font-family:var(--font);font-weight:800}
-    .vk-key.enter:active{background:#1AA876}
-
     .search-results{max-height:520px;overflow-y:auto;margin-top:12px;border-radius:12px;background:rgba(255,255,255,.95);padding:10px}
-    .search-results:empty{display:none}
-    .search-result-item{padding:12px 14px;border-radius:10px;background:var(--surface);border:1.5px solid var(--border);margin-bottom:8px;cursor:pointer;transition:all .2s;text-align:left}
-    .search-result-item:hover{border-color:var(--primary);background:var(--primary-soft);transform:translateX(4px)}
-    .search-result-item:last-child{margin-bottom:0}
-    .sr-ref{font-size:12px;font-weight:800;color:var(--primary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
-    .sr-arabic{font-family:var(--quran-font);font-size:20px;line-height:1.9;direction:rtl;text-align:right;color:var(--text);margin-bottom:6px}
-    .search-loading{text-align:center;padding:20px;color:var(--text2);font-size:15px;font-weight:700}
-    .search-empty{text-align:center;padding:20px;color:var(--text3);font-size:15px;font-weight:700}
-    .search-empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.5}
-    .search-hint{font-size:12px;color:rgba(255,255,255,.8);text-align:center;margin-top:8px;font-weight:600}
-    .search-loading-bar{height:6px;background:var(--primary-soft);border-radius:4px;overflow:hidden;margin:12px 0;position:relative}
-    .search-loading-bar::after{content:'';position:absolute;top:0;left:0;bottom:0;width:40%;background:linear-gradient(90deg,var(--primary),var(--emerald));border-radius:4px;animation:loadingBar 1.2s infinite ease-in-out}
-    @keyframes loadingBar{0%{left:-40%}100%{left:100%}}
 
     .daily-aya{background:linear-gradient(135deg,var(--primary),#9B59E8 60%,#7A3FE0);color:#fff;border-radius:var(--r);padding:28px 32px;margin-bottom:24px;box-shadow:0 12px 36px rgba(108,71,232,.35);position:relative;overflow:hidden}
-    .daily-aya::before{content:'';position:absolute;top:-60%;right:-25%;width:260px;height:260px;background:radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);border-radius:50%;pointer-events:none}
-    .daily-aya::after{content:'';position:absolute;bottom:-40%;left:-20%;width:220px;height:220px;background:radial-gradient(circle, rgba(255,255,255,.10), transparent 70%);border-radius:50%;pointer-events:none}
     .daily-aya-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;position:relative;z-index:1;flex-wrap:wrap}
     .daily-aya-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;opacity:.9;display:flex;align-items:center;gap:8px;padding-top:6px}
     .daily-aya-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;min-width:0}
-    .day-action-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
-    .day-action-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
-    .day-action-btn:active{transform:scale(.9)}
-    .day-action-btn.saved{background:var(--amber);color:#fff;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
-    .day-action-btn.playing{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
-    .day-action-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
-    .daily-aya-qari-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;position:relative;z-index:1;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.55);border-radius:12px;padding:8px 14px;backdrop-filter:blur(6px);box-shadow:0 2px 8px rgba(0,0,0,.08);min-width:0;overflow:hidden}
-    .daily-aya-qari-row i{color:#fff;font-size:15px;flex-shrink:0;text-shadow:0 1px 2px rgba(0,0,0,.2)}
-    .daily-aya-qari-row select{flex:1;min-width:0;height:40px;border:none;background:rgba(255,255,255,.95);color:#1E1535;font-family:var(--font);font-size:15px;font-weight:800;outline:none;cursor:pointer;border-radius:8px;padding:0 12px;box-shadow:0 2px 6px rgba(0,0,0,.1);transition:all .2s;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
-    .daily-aya-qari-row select:hover{background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.15)}
-    .daily-aya-qari-row select option{color:#1E1535;background:#fff;font-weight:700;padding:8px}
-    .daily-aya-ref{font-size:13px;font-weight:800;opacity:.95;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:50px;display:inline-block;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.02em}
-    .daily-aya-arabic{font-family:var(--quran-font);font-size:42px;line-height:2.4;direction:rtl;text-align:right;margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);position:relative;z-index:1;word-break:break-word;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased}
-    .daily-aya-text{font-size:36px;line-height:1.8;border-top:1.5px solid rgba(255,255,255,.3);padding-top:16px;position:relative;z-index:1;font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+    .day-action-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s}
+    .day-action-btn.saved{background:var(--amber);color:#fff;border-color:var(--amber)}
+    .day-action-btn.playing{background:var(--emerald);color:#fff;border-color:var(--emerald)}
+    .day-action-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .daily-aya-qari-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;position:relative;z-index:1;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.55);border-radius:12px;padding:8px 14px;min-width:0;overflow:hidden}
+    .daily-aya-qari-row i{color:#fff;font-size:15px;flex-shrink:0}
+    .daily-aya-qari-row select{flex:1;min-width:0;height:40px;border:none;background:rgba(255,255,255,.95);color:#1E1535;font-family:var(--font);font-size:15px;font-weight:800;outline:none;cursor:pointer;border-radius:8px;padding:0 12px}
+    .daily-aya-ref{font-size:13px;font-weight:800;opacity:.95;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:50px;display:inline-block;margin-bottom:16px;position:relative;z-index:1}
+    .daily-aya-arabic{font-family:var(--quran-font);font-size:42px;line-height:2.4;direction:rtl;text-align:right;margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);position:relative;z-index:1;word-break:break-word}
+    .daily-aya-text{font-size:36px;line-height:1.8;border-top:1.5px solid rgba(255,255,255,.3);padding-top:16px;position:relative;z-index:1;font-style:italic}
     .daily-aya-text.ku,.daily-aya-text.ku-KM,.daily-aya-text.fa{font-family:var(--kurdish-font);font-style:normal;font-size:38px;line-height:1.9}
-    .daily-aya-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:34px;line-height:1.75;direction:ltr;text-align:left;color:rgba(255,255,255,.97)}
+    .daily-aya-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:34px;line-height:1.75;direction:ltr;text-align:left}
     .daily-aya-loading{font-size:16px;opacity:.85;font-style:italic;padding:24px 0;text-align:center}
 
     .section{background:linear-gradient(135deg, var(--section-bg-1) 0%, var(--section-bg-2) 100%);border-radius:var(--r);padding:26px 28px;margin-bottom:22px;box-shadow:var(--shadow-sm);border:1.5px solid var(--border);position:relative;overflow:hidden}
-    .section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--emerald),var(--amber));opacity:.65}
     .section-title{font-size:19px;font-weight:900;color:var(--primary);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:2px solid var(--border)}
-    .section-title i{font-size:20px}
     .verse-block{position:relative;margin-bottom:16px}
     .verse-tools{display:flex;gap:6px;position:absolute;top:10px;left:10px;z-index:2;opacity:.9}
-    .verse-tool{width:38px;height:38px;border-radius:11px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.12);backdrop-filter:blur(4px)}
-    .verse-tool:active{transform:scale(.9)}
-    .verse-tool.copied{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
-    .verse-tool.playing{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
-    .verse-tool.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
-    .arabic{font-family:var(--quran-font);font-size:40px;line-height:2.5;direction:rtl;text-align:right;color:#fff;padding:20px 24px;background:linear-gradient(135deg,var(--arabic-grad-1),var(--arabic-grad-2));border-radius:var(--rsm);box-shadow:0 10px 28px var(--arabic-glow);word-break:break-word;position:relative;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased;text-shadow:0 2px 4px rgba(0,0,0,.18)}
+    .verse-tool{width:38px;height:38px;border-radius:11px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}
+    .verse-tool.copied{background:var(--emerald);color:#fff;border-color:var(--emerald)}
+    .arabic{font-family:var(--quran-font);font-size:40px;line-height:2.5;direction:rtl;text-align:right;color:#fff;padding:20px 24px;background:linear-gradient(135deg,var(--arabic-grad-1),var(--arabic-grad-2));border-radius:var(--rsm);box-shadow:0 10px 28px var(--arabic-glow);word-break:break-word}
     .arabic-small{font-size:34px;line-height:2.3;padding:18px 22px}
-    .translation{font-size:34px;color:var(--text);padding:14px 20px;margin:12px 0 18px;border-left:4px solid var(--translation-border);background:var(--translation-bg);border-radius:0 12px 12px 0;min-height:26px;line-height:1.8;box-shadow:0 2px 8px rgba(34,192,138,.08)}
+    .translation{font-size:34px;color:var(--text);padding:14px 20px;margin:12px 0 18px;border-left:4px solid var(--translation-border);background:var(--translation-bg);border-radius:0 12px 12px 0;line-height:1.8}
     .translation.ku,.translation.ku-KM,.translation.fa{font-family:var(--kurdish-font);font-size:36px;line-height:1.9;direction:rtl;text-align:right}
     .translation.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:32px;line-height:1.8;direction:ltr;text-align:left;color:var(--text2)}
-    body.night .translation{color:#D8F5E8;border-left-color:var(--emerald);box-shadow:0 2px 8px rgba(34,192,138,.18)}
     .divider{height:1px;background:var(--border);margin:22px 0;border:none}
     .pill{display:inline-block;font-size:13px;font-weight:800;padding:5px 14px;border-radius:50px;background:var(--primary-soft);color:var(--primary);margin-bottom:12px}
     .footer{text-align:center;font-size:14px;color:var(--text3);padding:24px 0 12px;font-weight:600}
-    .footer span{font-family:var(--quran-font)}
     .sura-picker{display:flex;gap:10px;flex-wrap:wrap}
     .sura-picker select{flex:1;min-width:180px;height:52px;border-radius:var(--rsm);border:2px solid var(--border);background:var(--surface);padding:0 16px;font-family:var(--font);font-size:16px;font-weight:700;color:var(--text);cursor:pointer;outline:none}
     .sura-picker input{flex:0 0 110px;height:52px;border-radius:var(--rsm);border:2px solid var(--border);background:var(--surface);padding:0 16px;font-family:var(--font);font-size:16px;font-weight:700;color:var(--text);outline:none;text-align:center}
-    .sura-picker button{flex:1;min-width:140px;height:52px;border-radius:var(--rsm);border:none;background:linear-gradient(135deg,var(--primary),#9B59E8);color:#fff;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px var(--primary-glow);transition:all .2s}
-    .sura-picker button:active{transform:scale(.97);opacity:.9}
+    .sura-picker button{flex:1;min-width:140px;height:52px;border-radius:var(--rsm);border:none;background:linear-gradient(135deg,var(--primary),#9B59E8);color:#fff;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
 
-    .fav-item{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rsm);padding:16px 18px;margin-bottom:12px;position:relative;transition:all .2s}
-    .fav-item.playing-now{border-color:var(--emerald);box-shadow:0 0 0 2px var(--emerald-soft), 0 6px 18px rgba(34,192,138,.25)}
+    .fav-item{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rsm);padding:16px 18px;margin-bottom:12px;position:relative}
+    .fav-item.playing-now{border-color:var(--emerald)}
     .fav-ref{font-size:13px;font-weight:800;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:10px}
     .fav-checkbox{width:20px;height:20px;accent-color:var(--primary);cursor:pointer;flex-shrink:0}
-    .fav-arabic{font-family:var(--quran-font);font-size:26px;line-height:2.2;direction:rtl;text-align:right;color:var(--text);margin-bottom:10px;word-break:break-word;font-feature-settings:"liga" 1, "calt" 1}
+    .fav-arabic{font-family:var(--quran-font);font-size:26px;line-height:2.2;direction:rtl;text-align:right;color:var(--text);margin-bottom:10px;word-break:break-word}
     .fav-text{font-size:30px;color:var(--text);line-height:1.7;border-left:3px solid var(--emerald);background:var(--translation-bg);padding:10px 14px;border-radius:0 8px 8px 0}
     .fav-text.ku,.fav-text.ku-KM,.fav-text.fa{font-family:var(--kurdish-font);font-size:32px;line-height:1.85;direction:rtl;text-align:right}
     .fav-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:30px;line-height:1.7;direction:ltr;text-align:left}
     .fav-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
-    .fav-actions button{width:40px;height:40px;border-radius:11px;border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .fav-actions button{width:40px;height:40px;border-radius:11px;border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
     .fav-actions .fav-view{background:var(--primary-soft);color:var(--primary)}
     .fav-actions .fav-del{background:var(--rose-soft);color:var(--rose)}
-    .fav-actions button:active{transform:scale(.92)}
     .fav-empty{text-align:center;padding:28px;color:var(--text3);font-weight:700}
     .fav-empty i{font-size:36px;margin-bottom:12px;display:block;opacity:.5}
-
     .fav-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:16px}
     .fav-toolbar-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
     .fav-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .fav-select-all{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--text2);cursor:pointer;user-select:none}
-    .fav-select-all input{width:18px;height:18px;accent-color:var(--primary);cursor:pointer}
     .fav-count{font-size:12px;font-weight:800;padding:4px 10px;border-radius:50px;background:var(--primary-soft);color:var(--primary)}
-    .fav-control-btn{height:38px;min-width:38px;padding:0 14px;border-radius:50px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
-    .fav-control-btn:hover{border-color:var(--primary);color:var(--primary)}
-    .fav-control-btn:active{transform:scale(.95)}
-    .fav-control-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 12px var(--primary-glow)}
+    .fav-control-btn{height:38px;min-width:38px;padding:0 14px;border-radius:50px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+    .fav-control-btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
     .fav-control-btn.danger{background:var(--rose-soft);color:var(--rose);border-color:var(--rose-soft)}
     .fav-control-btn.active{background:var(--emerald);color:#fff;border-color:var(--emerald)}
-
     .fav-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px;flex-shrink:0}
     .fav-modal-title{font-size:20px;font-weight:900;color:var(--text);display:flex;align-items:center;gap:10px}
     .fav-modal-actions{display:flex;gap:8px;flex-shrink:0}
-    .fav-modal-icon-btn{width:42px;height:42px;border-radius:12px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
-    .fav-modal-icon-btn:hover{background:var(--primary-soft);color:var(--primary)}
-    .fav-modal-icon-btn:active{transform:scale(.92)}
+    .fav-modal-icon-btn{width:42px;height:42px;border-radius:12px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
 
-    .bottom-lang-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surface);border-top:1.5px solid var(--border);box-shadow:0 -4px 20px rgba(108,71,232,.12);padding:10px 16px max(10px, env(safe-area-inset-bottom));display:flex;justify-content:center;backdrop-filter:blur(10px);transition:transform .3s, opacity .3s}
-    body.night .bottom-lang-bar{background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.3)}
-    .bottom-lang-inner{max-width:1400px;width:100%;display:flex;gap:6px;background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .bottom-lang-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surface);border-top:1.5px solid var(--border);box-shadow:0 -4px 20px rgba(108,71,232,.12);padding:10px 16px max(10px, env(safe-area-inset-bottom));display:flex;justify-content:center}
+    .bottom-lang-inner{max-width:1400px;width:100%;display:flex;gap:6px;background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:6px;overflow-x:auto;scrollbar-width:none}
     .bottom-lang-inner::-webkit-scrollbar{display:none}
-    .bottom-lang-inner button{flex:1 1 auto;min-width:60px;height:48px;border:none;border-radius:11px;background:transparent;font-family:var(--font);font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
-    .bottom-lang-inner button.active{background:var(--primary);color:#fff;box-shadow:0 4px 14px var(--primary-glow)}
-    .bottom-lang-inner button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
+    .bottom-lang-inner button{flex:1 1 auto;min-width:60px;height:48px;border:none;border-radius:11px;background:transparent;font-family:var(--font);font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+    .bottom-lang-inner button.active{background:var(--primary);color:#fff}
     .bottom-lang-inner button[data-lang="ku"],.bottom-lang-inner button[data-lang="ku-KM"],.bottom-lang-inner button[data-lang="fa"]{font-family:var(--kurdish-font);font-size:15px}
 
-    .restore-chrome-btn{position:fixed;top:12px;right:12px;z-index:120;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);color:var(--primary);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 14px var(--primary-glow);transition:all .2s}
-    .restore-chrome-btn:active{transform:scale(.92)}
+    .restore-chrome-btn{position:fixed;top:12px;right:12px;z-index:120;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);color:var(--primary);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:16px}
     .restore-chrome-btn.show{display:flex}
 
-    @media (max-width:1100px){
-      .top-bar-title{order:-2;flex-basis:100%}
-      .top-bar-side-left{order:-1;flex-basis:100%;justify-content:space-between}
-      .top-bar-right{order:0;flex-basis:100%;justify-content:space-between}
-    }
     @media (max-width:768px){
       body{padding:16px 14px calc(var(--bottom-bar-height) + 20px)}
       .section{padding:20px 18px}
@@ -401,118 +298,23 @@
       .top-bar-title .bismillah{font-size:20px}
       .top-bar-side-left{order:2;flex-basis:auto;width:100%;justify-content:space-between;gap:8px}
       .top-bar-right{order:3;flex-basis:auto;width:100%;justify-content:space-between;gap:8px;flex-wrap:nowrap}
-      .top-bar-weather,.top-bar-azan{flex:1 1 0;min-width:0}
-      .top-bar-weather .weather-icon-wrap,.top-bar-azan .azan-icon-wrap{width:36px;height:36px;font-size:16px;border-radius:10px}
-      .top-bar-weather .weather-temp,.top-bar-azan .azan-next-time{font-size:14px}
-      .top-bar-weather .weather-desc,.top-bar-azan .azan-next-label{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .top-bar-icons{flex-shrink:0}
-      .top-bar-clock{font-size:14px;align-items:flex-end;flex:1 1 auto;min-width:0;padding:6px 8px}
-      .top-bar-clock .clock-icon-wrap{width:36px;height:36px;font-size:16px;border-radius:10px}
-      .top-bar-clock .clock-time{font-size:14px}
-      .top-bar-clock .clock-date{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      .icon-btn{width:38px;height:38px;font-size:15px;border-radius:11px}
       .daily-aya{padding:22px}
-      .daily-aya-top{flex-direction:column;align-items:stretch}
-      .daily-aya-actions{justify-content:flex-start;width:100%}
-      .daily-aya-label{padding-top:0}
       .daily-aya-arabic{font-size:34px;line-height:2.3}
       .daily-aya-text{font-size:30px;line-height:1.75}
-      .daily-aya-text.ku,.daily-aya-text.ku-KM,.daily-aya-text.fa{font-size:32px;line-height:1.85}
-      .daily-aya-text.phonetic{font-size:28px}
       .translation{font-size:28px;line-height:1.75}
       .translation.ku,.translation.ku-KM,.translation.fa{font-size:30px;line-height:1.85}
-      .translation.phonetic{font-size:26px}
-      .bottom-lang-inner button{font-size:13px;height:46px}
-      .vk-key{height:40px;font-size:18px}
-      .fav-modal-header{flex-wrap:wrap}
-      .fav-toolbar{padding:10px}
-      .daily-aya-qari-row{padding:8px 12px;gap:10px}
-      .daily-aya-qari-row select{height:42px;font-size:14px;padding:0 12px}
-      .aya-picker-grid{grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));gap:6px}
-      .aya-num-btn{min-height:46px;font-size:14px;border-radius:10px}
-      .aya-picker-actions button{height:48px;font-size:14px;min-width:100px}
-      .tafsir-topbar{padding:16px 16px 10px}
-      .tafsir-title{font-size:16px}
-      .tafsir-translate-bar{padding:10px 16px;gap:5px}
-      .tafsir-translate-bar button{font-size:11px;padding:5px 10px}
       .tafsir-tools-bar{padding:8px 16px;gap:5px}
       .tafsir-tools-bar .font-btn{font-size:11px;padding:4px 8px}
-      .tafsir-tools-bar .size-btn{width:30px;height:30px;font-size:13px}
-      .tafsir-tools-bar .size-display{font-size:12px;min-width:38px}
-      .tafsir-scroll{padding:14px 16px 20px}
       .tafsir-body{font-size:17px;line-height:1.8}
     }
     @media (max-width:480px){
       body{padding:12px 10px calc(var(--bottom-bar-height) + 15px)}
       .section{padding:16px 14px}
       .arabic{font-size:27px;line-height:2.3;padding:14px 16px}
-      .arabic-small{font-size:24px;line-height:2.2}
-      .top-bar{padding:10px 12px;gap:8px}
-      .top-bar-title .bismillah{font-size:16px}
-      .top-bar-weather .weather-icon-wrap,.top-bar-azan .azan-icon-wrap,.top-bar-clock .clock-icon-wrap{width:32px;height:32px;font-size:14px;border-radius:9px}
-      .top-bar-weather .weather-temp,.top-bar-azan .azan-next-time{font-size:13px}
-      .top-bar-weather .weather-desc,.top-bar-azan .azan-next-label{font-size:9px}
-      .top-bar-clock{font-size:12px;gap:5px}
-      .top-bar-clock .clock-time{font-size:13px}
-      .top-bar-clock .clock-date{font-size:8px}
-      .icon-btn{width:34px;height:34px;font-size:14px;border-radius:10px}
-      .daily-aya{padding:18px 16px}
       .daily-aya-arabic{font-size:29px;line-height:2.3}
       .daily-aya-text{font-size:24px;line-height:1.7}
-      .daily-aya-text.ku,.daily-aya-text.ku-KM,.daily-aya-text.fa{font-size:26px;line-height:1.8}
-      .daily-aya-text.phonetic{font-size:22px;line-height:1.7}
-      .day-action-btn{width:34px;height:34px;font-size:13px}
-      .search-toggle-btn{width:34px;height:34px;font-size:13px}
-      .verse-tools{top:6px;left:6px}
-      .verse-tool{width:32px;height:32px;font-size:13px}
-      .sura-picker select,.sura-picker button{font-size:15px;height:48px}
-      .sura-picker input{height:48px;font-size:15px}
-      .daily-aya-qari-row{padding:6px 10px;gap:8px}
-      .daily-aya-qari-row select{height:40px;font-size:13px;padding:0 10px}
-      .aya-picker-grid{grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));gap:5px}
-      .aya-num-btn{min-height:40px;font-size:13px;border-radius:9px}
-      .aya-picker-actions{flex-direction:column}
-      .aya-picker-actions button{width:100%}
-      .fav-arabic{font-size:22px;line-height:2.1}
-      .fav-text{font-size:24px}
-      .fav-text.ku,.fav-text.ku-KM,.fav-text.fa{font-size:26px}
-      .modal-card{padding:20px}
-      .tafsir-card{padding:0}
-      .tafsir-topbar{padding:14px 14px 8px}
-      .tafsir-title{font-size:15px}
-      .tafsir-translate-bar{padding:8px 14px;gap:4px}
-      .tafsir-translate-bar button{font-size:10px;padding:4px 8px}
-      .tafsir-translate-bar .label{font-size:10px}
-      .tafsir-tools-bar{padding:6px 14px;gap:4px}
-      .tafsir-tools-bar .tool-label{font-size:10px}
-      .tafsir-tools-bar .font-btn{font-size:10px;padding:3px 7px}
-      .tafsir-tools-bar .size-btn{width:28px;height:28px;font-size:12px}
-      .tafsir-tools-bar .size-display{font-size:11px;min-width:34px;padding:4px 6px}
-      .tafsir-tools-bar .gt-btn{font-size:10px;padding:4px 8px}
-      .gt-panel{padding:8px 14px;gap:5px}
-      .gt-panel select{font-size:12px;padding:5px 8px}
-      .gt-panel button{font-size:11px;padding:5px 10px}
-      .tafsir-scroll{padding:12px 14px 18px}
-      .tafsir-body{font-size:16px;line-height:1.75}
-      .modal-card .modal-arabic{font-size:28px;line-height:2.3}
       .translation{font-size:24px;padding:12px 16px;line-height:1.75}
-      .translation.ku,.translation.ku-KM,.translation.fa{font-size:26px;line-height:1.85}
-      .translation.phonetic{font-size:22px}
-      .bottom-lang-bar{padding:8px 10px max(8px, env(safe-area-inset-bottom))}
-      .bottom-lang-inner{padding:5px;border-radius:14px;flex-wrap:wrap;overflow-x:visible}
-      .bottom-lang-inner button{height:42px;font-size:11px;padding:0 2px;flex:1 1 30%;min-width:0}
-      .bottom-lang-inner button[data-lang="ku"],.bottom-lang-inner button[data-lang="ku-KM"],.bottom-lang-inner button[data-lang="fa"]{font-size:12px}
       :root{ --bottom-bar-height: 152px; }
-      .vk-key{height:36px;font-size:16px}
-      .vk-key.wide,.vk-key.backspace,.vk-key.enter{font-size:11px}
-      .search-input-row input{font-size:15px;height:42px}
-      .search-input-row button{height:42px;padding:0 12px;font-size:13px}
-      .search-results{max-height:380px}
-      .fav-modal-title{font-size:16px}
-      .fav-modal-icon-btn{width:38px;height:38px;font-size:14px}
-      .fav-control-btn{height:34px;padding:0 10px;font-size:12px}
-      .fav-checkbox{width:18px;height:18px}
-      .restore-chrome-btn{width:38px;height:38px;font-size:14px;top:8px;right:8px}
     }
   </style>
 </head>
@@ -526,14 +328,14 @@
 
   <div class="top-bar" id="topBar">
     <div class="top-bar-side-left">
-      <div class="top-bar-weather" onclick="openWeatherModal()" title="Klicka för veckans väder">
+      <div class="top-bar-weather">
         <div class="weather-icon-wrap"><i class="fas fa-cloud-sun" id="weatherIcon"></i></div>
         <div class="weather-info">
           <span class="weather-temp" id="weatherTemp">--°C</span>
           <span class="weather-desc" id="weatherDesc">Laddar…</span>
         </div>
       </div>
-      <div class="top-bar-azan" onclick="openAzanModal()" title="Klicka för dagens bönetider">
+      <div class="top-bar-azan">
         <div class="azan-icon-wrap"><i class="fas fa-mosque"></i></div>
         <div class="azan-info">
           <span class="azan-next-time" id="azanNextTime">--:--</span>
@@ -556,11 +358,11 @@
         <button class="icon-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
           <i class="fas fa-moon" id="nightIcon"></i>
         </button>
-        <button class="icon-btn" onclick="eyeBtnClick(event)" title="Visa/göm toppbar & språkfält" id="toggleSectionsBtn">
+        <button class="icon-btn" onclick="eyeBtnClick(event)" title="Visa/göm" id="toggleSectionsBtn">
           <i class="fas fa-eye" id="toggleSectionsIcon"></i>
         </button>
       </div>
-      <div class="top-bar-clock" onclick="cycleClockDate()" title="Klicka för att växla datum">
+      <div class="top-bar-clock" onclick="cycleClockDate()" title="Klicka för datum">
         <div class="clock-main">
           <div class="clock-icon-wrap"><i class="fas fa-clock"></i></div>
           <span class="clock-time" id="clockTime">--:--:--</span>
@@ -592,7 +394,6 @@
         <button class="search-clear" onclick="clearQuranSearch()" title="Rensa"><i class="fas fa-times"></i></button>
       </div>
       <div class="vk-container"><div class="vk-keys" id="vkKeys"></div></div>
-      <div class="search-hint"><i class="fas fa-lightbulb"></i> Skriv ett ord och tryck <i class="fas fa-search"></i> för att söka i hela Quran</div>
       <div class="search-results" id="searchResults"></div>
     </div>
 
@@ -604,7 +405,7 @@
     <div class="daily-aya-qari-row">
       <i class="fas fa-book"></i>
       <select id="playSuraSelect"></select>
-      <button class="day-action-btn" id="favSuraBtn" onclick="toggleSuraFavorite()" title="Spara sura som favorit"><i class="far fa-star"></i></button>
+      <button class="day-action-btn" id="favSuraBtn" onclick="toggleSuraFavorite()" title="Spara sura"><i class="far fa-star"></i></button>
     </div>
 
     <div class="daily-aya-qari-row" style="justify-content:center;gap:8px;flex-wrap:wrap">
@@ -636,7 +437,6 @@
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playAyah(2,255,this)" title="Spela upp"><i class="fas fa-play"></i></button>
-        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa"><i class="fas fa-repeat"></i></button>
         <button class="verse-tool" onclick="openTafsirAyah(2,255,'Ayat al-Kursi · 2:255')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic">اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ</div>
@@ -655,60 +455,6 @@
       <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾</div>
     </div>
     <div class="translation" data-tr="fatiha"></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title"><i class="fas fa-shield-halved"></i> ٤ قل · De fyra ”Qul”</div>
-
-    <span class="pill">١ · Al-Kāfirūn</span>
-    <div class="verse-block">
-      <div class="verse-tools">
-        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" data-role="play" onclick="playSurah(109,this)" title="Spela upp"><i class="fas fa-play"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(109,'Al-Kāfirūn')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-      </div>
-      <div class="arabic arabic-small">قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ ﴿٤﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾</div>
-    </div>
-    <div class="translation" data-tr="kafirun"></div>
-
-    <hr class="divider">
-
-    <span class="pill">٢ · Al-Ikhlāṣ</span>
-    <div class="verse-block">
-      <div class="verse-tools">
-        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" data-role="play" onclick="playSurah(112,this)" title="Spela upp"><i class="fas fa-play"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(112,'Al-Ikhlāṣ')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-      </div>
-      <div class="arabic arabic-small">قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾</div>
-    </div>
-    <div class="translation" data-tr="ikhlas"></div>
-
-    <hr class="divider">
-
-    <span class="pill">٣ · Al-Falaq</span>
-    <div class="verse-block">
-      <div class="verse-tools">
-        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" data-role="play" onclick="playSurah(113,this)" title="Spela upp"><i class="fas fa-play"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(113,'Al-Falaq')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-      </div>
-      <div class="arabic arabic-small">قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾</div>
-    </div>
-    <div class="translation" data-tr="falaq"></div>
-
-    <hr class="divider">
-
-    <span class="pill">٤ · An-Nās</span>
-    <div class="verse-block">
-      <div class="verse-tools">
-        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" data-role="play" onclick="playSurah(114,this)" title="Spela upp"><i class="fas fa-play"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(114,'An-Nās')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-      </div>
-      <div class="arabic arabic-small">قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾</div>
-    </div>
-    <div class="translation" data-tr="nas"></div>
   </div>
 
   </div>
@@ -750,25 +496,17 @@
     </div>
     <div class="tafsir-tools-bar">
       <span class="tool-label"><i class="fas fa-font"></i> Font:</span>
-      <button class="font-btn" data-font="Inter, system-ui, -apple-system, sans-serif" onclick="setTafsirFont(this, 'Inter, system-ui, -apple-system, sans-serif')">Inter</button>
-      <button class="font-btn" data-font="Georgia, serif" onclick="setTafsirFont(this, 'Georgia, serif')">Georgia</button>
       <button class="font-btn active" data-font="Times New Roman, Times, serif" onclick="setTafsirFont(this, 'Times New Roman, Times, serif')">Times</button>
-      <button class="font-btn" data-font="Arial, Helvetica, sans-serif" onclick="setTafsirFont(this, 'Arial, Helvetica, sans-serif')">Arial</button>
-      <button class="font-btn" data-font="Roboto, sans-serif" onclick="setTafsirFont(this, 'Roboto, sans-serif')">Roboto</button>
-      <button class="font-btn" data-font="Open Sans, sans-serif" onclick="setTafsirFont(this, 'Open Sans, sans-serif')">Open Sans</button>
-      <button class="font-btn" data-font="Verdana, sans-serif" onclick="setTafsirFont(this, 'Verdana, sans-serif')">Verdana</button>
-      <button class="font-btn" data-font="Courier New, Courier, monospace" onclick="setTafsirFont(this, 'Courier New, Courier, monospace')">Courier</button>
       <button class="font-btn" data-font="Amiri, serif" onclick="setTafsirFont(this, 'Amiri, serif')">Amiri</button>
       <button class="font-btn" data-font="K24 Kurdish, sans-serif" onclick="setTafsirFont(this, 'K24 Kurdish, sans-serif')">K24 Kurdish</button>
       <span class="tool-label" style="margin-left:8px"><i class="fas fa-text-height"></i> Storlek:</span>
       <button class="size-btn" onclick="changeTafsirFontSize(-1)">A-</button>
       <span class="size-display" id="tafsirSizeDisplay">19px</span>
       <button class="size-btn" onclick="changeTafsirFontSize(1)">A+</button>
-      <button class="size-btn" onclick="resetTafsirFontSize()" title="Återställ"><i class="fas fa-rotate-left" style="font-size:12px"></i></button>
       <button class="gt-btn" onclick="toggleGtPanel()" title="Översätt"><i class="fas fa-globe"></i> Översätt</button>
     </div>
     <div class="gt-panel" id="gtPanel">
-      <span class="gt-label"><i class="fas fa-language"></i> Översätt tafsir till:</span>
+      <span class="gt-label"><i class="fas fa-language"></i> Översätt till:</span>
       <select id="gtTargetLang">
         <option value="fa">🇮🇷 Persiska (فارسی)</option>
         <option value="ckb">🏳️ Sorani kurdiska (کوردی)</option>
@@ -824,7 +562,6 @@
       </div>
       <div class="fav-toolbar-right">
         <button class="fav-control-btn primary" id="favPlayBtn" onclick="playFavoritesSequence()"><i class="fas fa-play"></i><span id="favPlayText">Spela</span></button>
-        <button class="fav-control-btn" id="favLoopBtn" onclick="cycleFavLoopMode()"><i class="fas fa-repeat" id="favLoopIcon"></i><span id="favLoopText">Av</span></button>
         <button class="fav-control-btn danger" id="favStopBtn" onclick="stopFavoritesSequence()"><i class="fas fa-stop"></i></button>
       </div>
     </div>
@@ -843,53 +580,29 @@
 const TRANSLATIONS = {
   sv: {
     kursi: '”Allah – det finns ingen gud utom Han, den Levande, den Evigt Bestående. Varken slummer eller sömn drabbar Honom. Honom tillhör allt i himlarna och på jorden. Vem kan väl tala för någon inför Honom utan Hans tillstånd? Han vet vad som varit och vad som ska komma, och de omfattar inget av Hans kunskap utom vad Han vill. Hans tron omfattar himlarna och jorden, och att bevara dem är inte betungande för Honom. Han är den Upphöjde, den Väldige.”',
-    fatiha: '”I Guds, den Nåderikes, den Barmhärtiges namn. All lov och pris tillhör Allah, världarnas Herre, den Nåderike, den Barmhärtige, Domedagens Konung. Dig tillber vi och Dig ber vi om hjälp. Led oss på den raka vägen – vägen för dem som Du har välsignat, inte för dem som har drabbats av vrede eller för dem som har gått vilse.”',
-    kafirun: '”Säg: O ni otrogna! Jag tillber inte det ni tillber, och ni tillber inte det jag tillber. Jag är inte en tillbedjare av det ni tillber, och ni är inte tillbedjare av det jag tillber. Ni har er religion och jag har min religion.”',
-    ikhlas: '”Säg: Han är Allah, den Ende. Allah, den Evige, den som allt beror av. Han har inte fött någon och inte blivit född, och ingen är Hans like.”',
-    falaq: '”Säg: Jag söker skydd hos morgonrodnadens Herre, mot det onda i det Han har skapat, mot mörkrets ondska när den sänker sig, mot ondska från dem som blåser på knutar, och mot en avundsjuk mans ondska när han avundas.”',
-    nas: '”Säg: Jag söker skydd hos människornas Herre, människornas Konung, människornas Gud, mot det onda i den smygande ingivaren, som viskar i människornas bröst, bland jinn och människor.”'
+    fatiha: '”I Guds, den Nåderikes, den Barmhärtiges namn. All lov och pris tillhör Allah, världarnas Herre, den Nåderike, den Barmhärtige, Domedagens Konung. Dig tillber vi och Dig ber vi om hjälp. Led oss på den raka vägen – vägen för dem som Du har välsignat, inte för dem som har drabbats av vrede eller för dem som har gått vilse.”'
   },
   en: {
     kursi: '"Allah – there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great."',
-    fatiha: '"In the name of Allah, the Most Gracious, the Most Merciful. All praise is due to Allah, Lord of the worlds, the Most Gracious, the Most Merciful, Master of the Day of Judgment. You alone we worship, and You alone we ask for help. Guide us to the straight path – the path of those upon whom You have bestowed favor, not of those who have earned Your anger or of those who have gone astray."',
-    kafirun: '"Say: O disbelievers! I do not worship what you worship, nor do you worship what I worship. I will never worship what you worship, nor will you ever worship what I worship. You have your religion and I have my religion."',
-    ikhlas: '"Say: He is Allah, the One. Allah, the Eternal Refuge. He neither begets nor is born, nor is there to Him any equivalent."',
-    falaq: '"Say: I seek refuge in the Lord of daybreak, from the evil of that which He created, and from the evil of darkness when it settles, and from the evil of the blowers in knots, and from the evil of an envier when he envies."',
-    nas: '"Say: I seek refuge in the Lord of mankind, the Sovereign of mankind, the God of mankind, from the evil of the retreating whisperer, who whispers in the breasts of mankind, from among the jinn and mankind."'
+    fatiha: '"In the name of Allah, the Most Gracious, the Most Merciful. All praise is due to Allah, Lord of the worlds, the Most Gracious, the Most Merciful, Master of the Day of Judgment. You alone we worship, and You alone we ask for help. Guide us to the straight path – the path of those upon whom You have bestowed favor, not of those who have earned Your anger or of those who have gone astray."'
   },
   fa: {
     kursi: '«الله، خدایی جز او نیست، زنده و پاینده است. نه خواب سبک او را می‌گیرد و نه خواب سنگین. آنچه در آسمان‌ها و زمین است از اوست. کیست که بدون اجازه او نزدش شفاعت کند؟ آنچه پیش روی آنان و پشت سرشان است می‌داند، و به چیزی از علم او احاطه ندارند مگر آنچه او بخواهد. کرسی او آسمان‌ها و زمین را فرا گرفته، و نگهداری آن‌ها بر او سنگین نیست. و او بلندمرتبه و بزرگ است.»',
-    fatiha: '«به نام خداوند بخشنده مهربان. ستایش از آن خداوند، پروردگار جهانیان است. بخشنده مهربان، مالک روز جزا. تنها تو را می‌پرستیم و تنها از تو یاری می‌جوییم. ما را به راه راست هدایت کن – راه کسانی که به آنان نعمت داده‌ای، نه راه کسانی که بر آنان خشم گرفته‌ای و نه راه گمراهان.»',
-    kafirun: '«بگو: ای کافران! آنچه شما می‌پرستید، من نمی‌پرستم. و شما پرستنده آنچه من می‌پرستم نیستید. من پرستنده آنچه شما پرستیده‌اید نیستم، و شما پرستنده آنچه من می‌پرستم نیستید. دین شما برای شما و دین من برای من.»',
-    ikhlas: '«بگو: او الله یکتاست. الله بی‌نیاز است. نه زاده و نه زاده شده است. و هیچ‌کس همتای او نیست.»',
-    falaq: '«بگو: پناه می‌برم به پروردگار سپیده دم، از شر آنچه آفریده است، و از شر تاریکی هنگامی که فرا می‌رسد، و از شر دمندگان در گره‌ها، و از شر حسود هنگامی که حسد می‌ورزد.»',
-    nas: '«بگو: پناه می‌برم به پروردگار مردمان، پادشاه مردمان، خدای مردمان، از شر وسوسه‌گر پنهان‌شونده، آن‌که در سینه‌های مردمان وسوسه می‌کند، از میان جن و انس.»'
+    fatiha: '«به نام خداوند بخشنده مهربان. ستایش از آن خداوند، پروردگار جهانیان است. بخشنده مهربان، مالک روز جزا. تنها تو را می‌پرستیم و تنها از تو یاری می‌جوییم. ما را به راه راست هدایت کن – راه کسانی که به آنان نعمت داده‌ای، نه راه کسانی که بر آنان خشم گرفته‌ای و نه راه گمراهان.»'
   },
   ku: {
     kursi: '«خوا، هیچ خوایەک نییە جگە لە ئەو، ئەو ژیاوە و ڕاگرە. نە خەوێکی سووک و نە خەوێکی قوڕس دەستی پێ ناگات. هەرچی لە ئاسمانەکان و زەویدا هەیە هی ئەوە. کێیە کە بەبێ فەرمانی ئەو تکا بکات؟ دەزانێت چیان لەبەردەم و چیان لە پشتیەوەیە، و بە هیچ شتێک لە زانینی ئەو ئاگادار نابن مەگەر ئەوەی ئەو بیەوێت. کورسییەکەی ئاسمانەکان و زەوی گرتووە، و پاراستنیان لەسەر ئەو گران نییە. و ئەو بەرز و گەورەیە.»',
-    fatiha: '«بە ناوی خوای میهرەبان و بەخشندە. سوپاس بۆ خوا، پەروەردگاری جیهانیان. میهرەبان و بەخشندە، خاوەنی ڕۆژی دادوەری. تەنها تۆ دەپەرستین و تەنها لە تۆ داوای یارمەتی دەکەین. ڕێنماییمان بکە بۆ ڕێگای ڕاست – ڕێگای ئەوانەی کە نیعمەتت پێدان، نە ڕێگای ئەوانەی تووڕەبوویت لێیان و نە ڕێگای گومڕایان.»',
-    kafirun: '«بڵێ: ئەی بێباوەڕان! ئەوەی ئێوە دەیپەرستن، من نایپەرستم. و ئێوە پەرستنی ئەوەی من دەیپەرستم ناکەن. من پەرستنی ئەوەی ئێوە پەرستوتانە ناکەم، و ئێوە پەرستنی ئەوەی من دەیپەرستم ناکەن. دینی ئێوە بۆ ئێوە و دینی من بۆ من.»',
-    ikhlas: '«بڵێ: ئەو خوایە یەکتایە. خوای بێنیاز. نە زاوە و نە زێدی لێوە نەبووە. و هیچ کەس هاوتای ئەو نییە.»',
-    falaq: '«بڵێ: پەنا دەبەم بە پەروەردگاری بەیان، لە شەڕی ئەوەی دروستی کردووە، و لە شەڕی تاریکی کاتێک دادێت، و لە شەڕی ئەوانەی بە گره‌کاندا فوو دەکەن، و لە شەڕی حەسوود کاتێک حەسوودی دەبات.»',
-    nas: '«بڵێ: پەنا دەبەم بە پەروەردگاری خەڵکی، پاشای خەڵکی، خوای خەڵکی، لە شەڕی وەسوەسەکەری خۆشاراوە، ئەوەی لە سنگى خەڵکی وەسوەسە دەکات، لە جنۆکە و خەڵکی.»'
+    fatiha: '«بە ناوی خوای میهرەبان و بەخشندە. سوپاس بۆ خوا، پەروەردگاری جیهانیان. میهرەبان و بەخشندە، خاوەنی ڕۆژی دادوەری. تەنها تۆ دەپەرستین و تەنها لە تۆ داوای یارمەتی دەکەین. ڕێنماییمان بکە بۆ ڕێگای ڕاست – ڕێگای ئەوانەی کە نیعمەتت پێدان، نە ڕێگای ئەوانەی تووڕەبوویت لێیان و نە ڕێگای گومڕایان.»'
   },
   'ku-KM': {
     kursi: '«Allah – ji bilî wî xwedayek tune, ew yê jîndar û domdar e. Ne xew û ne jî xewnê wî nagire. Her tiştê li ezmanan û li ser zemînê ji wî re ye. Kî ye ku bê destûra wî li bal wî şefaetê bike? Ew dizane çi li ber wan û çi li pişt wan e, û ew bi tiştek ji zanîna wî ne agahdar in, ji bilî tiştê ku ew bixwaze. Kursiya wî ezmanan û zemînê digire, û parastina wan li ser wî ne giran e. Û ew bilind û mezin e.»',
-    fatiha: '«Bi navê Xwedayê dilovan û bexşende. Sipas ji bo Xwedayê perwerdekarê hemû cîhanan. Dilovan û bexşende, xwedanê roja dadmendiyê. Tenê te diperistin û tenê ji te alîkarîyê dixwazin. Me ber bi rêya rast ve rêberî bike – rêya yên ku te nîmeta xwe daye wan, ne rêya yên ku te li wan xeyidî û ne jî rêya yên gom bûne.»',
-    kafirun: '«Bêje: Ya gawir! Ez tiştê ku hûn diperistin naperêsim. Û hûn perestvanê tiştê ku ez diperêsim nînin. Ez perestvanê tiştê ku we perestî ne me, û hûn perestvanê tiştê ku ez diperêsim nînin. Dîna we ji we re ye û dîna min ji min re ye.»',
-    ikhlas: '«Bêje: Ew Xwedayê yekta ye. Xwedayê bêhtac. Ne zaye û ne jî hatiye zayînê. Û tu kes wek wî tune ye.»',
-    falaq: '«Bêje: Ez penaberî xwedanê sibehê dikim, ji xirabiya tiştê ku wî afirandiye, û ji xirabiya tarîtiyê dema ku tê, û ji xirabiya yên ku li girêkan pif dikin, û ji xirabiya hesûd dema ku hesûdiyê dike.»',
-    nas: '«Bêje: Ez penaberî xwedanê mirovan dikim, padîşahê mirovan, xwedayê mirovan, ji xirabiya waswaskerê ku xwe vedişêre, ew ê ku di sînga mirovan de waswase dike, ji cin û mirovan.»'
+    fatiha: '«Bi navê Xwedayê dilovan û bexşende. Sipas ji bo Xwedayê perwerdekarê hemû cîhanan. Dilovan û bexşende, xwedanê roja dadmendiyê. Tenê te diperistin û tenê ji te alîkarîyê dixwazin. Me ber bi rêya rast ve rêberî bike – rêya yên ku te nîmeta xwe daye wan, ne rêya yên ku te li wan xeyidî û ne jî rêya yên gom bûne.»'
   }
 };
 
 const PHONETIC = {
   kursi: 'Allāhu lā ilāha illā huwal-ḥayyul-qayyūm. Lā taʾkhudhuhū sinatun wa lā nawm. Lahū mā fis-samāwāti wa mā fil-arḍ. Man dhal-ladhī yashfaʿu ʿindahū illā bi-idhnih. Yaʿlamu mā bayna aydīhim wa mā khalfahum. Wa lā yuḥīṭūna bishayʾin min ʿilmihī illā bimā shāʾ. Wasiʿa kursiyyuhus-samāwāti wal-arḍ. Wa lā yaʾūduhū ḥifẓuhumā. Wa huwal-ʿaliyyul-ʿaẓīm.',
-  fatiha: 'Bismillāhir-raḥmānir-raḥīm. Al-ḥamdu lillāhi rabbil-ʿālamīn. Ar-raḥmānir-raḥīm. Māliki yawmid-dīn. Iyyāka naʿbudu wa iyyāka nastaʿīn. Ihdinaṣ-ṣirāṭal-mustaqīm. Ṣirāṭal-ladhīna anʿamta ʿalayhim, ghayril-maghḍūbi ʿalayhim wa laḍ-ḍāllīn.',
-  kafirun: 'Qul yā ayyuhal-kāfirūn. Lā aʿbudu mā taʿbudūn. Wa lā antum ʿābidūna mā aʿbud. Wa lā anā ʿābidun mā ʿabadtum. Wa lā antum ʿābidūna mā aʿbud. Lakum dīnukum wa liya dīn.',
-  ikhlas: 'Qul huwallāhu aḥad. Allāhuṣ-ṣamad. Lam yalid wa lam yūlad. Wa lam yakun lahū kufuwan aḥad.',
-  falaq: 'Qul aʿūdhu bi-rabbil-falaq. Min sharri mā khalaq. Wa min sharri ghāsiqin idhā waqab. Wa min sharrin-naffāthāti fil-ʿuqad. Wa min sharri ḥāsidin idhā ḥasad.',
-  nas: 'Qul aʿūdhu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min sharril-waswāsil-khannās. Alladhī yuwaswisu fī ṣudūrin-nās. Minal-jinnati wan-nās.'
+  fatiha: 'Bismillāhir-raḥmānir-raḥīm. Al-ḥamdu lillāhi rabbil-ʿālamīn. Ar-raḥmānir-raḥīm. Māliki yawmid-dīn. Iyyāka naʿbudu wa iyyāka nastaʿīn. Ihdinaṣ-ṣirāṭal-mustaqīm. Ṣirāṭal-ladhīna anʿamta ʿalayhim, ghayril-maghḍūbi ʿalayhim wa laḍ-ḍāllīn.'
 };
 
 /* ============================================================
@@ -909,7 +622,6 @@ const SURAH_NAMES = [
   "Al-Qari'ah","At-Takathur","Al-'Asr","Al-Humazah","Al-Fil","Quraysh","Al-Ma'un","Al-Kawthar","Al-Kafirun","An-Nasr",
   "Al-Masad","Al-Ikhlas","Al-Falaq","An-Nas"
 ];
-
 const SURAH_AYAH_COUNTS = [
   7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,
   112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,
@@ -919,26 +631,6 @@ const SURAH_AYAH_COUNTS = [
   11,8,3,9,5,4,7,3,6,3,5,4,5,6
 ];
 
-const TOTAL_AYAS = 6236;
-
-function normalizeArabic(text){
-  if(!text) return '';
-  return String(text)
-    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]/g, '')
-    .replace(/\u0640/g, '')
-    .replace(/[\u06DD\u06DE\u08E3-\u08FF\uFE70-\uFE7F]/g, '')
-    .replace(/[\uFD3E\uFD3F]/g, '')
-    .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, '')
-    .replace(/[،؛؟!.:\-_()[\]{}'"»«]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/[أإآٱا]/g, 'ا')
-    .replace(/[يىیۍ]/g, 'ي')
-    .replace(/[ةه]/g, 'ه')
-    .replace(/[ؤو]/g, 'و')
-    .replace(/[كک]/g, 'ك');
-}
-function normalizeSearchTerm(text){ return normalizeArabic(text).toLowerCase(); }
 function escapeHtml(str){
   if(!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -969,10 +661,8 @@ function splitIntoChunks(text, maxLen){
    KLOCKA
    ============================================================ */
 const HIJRI_MONTHS_SV = ['Muharram','Safar','Rabi al-Awwal','Rabi al-Thani','Jumada al-Awwal','Jumada al-Thani','Rajab','Shaban','Ramadan','Shawwal','Dhu al-Qadah','Dhu al-Hijjah'];
-const SHAMSI_MONTHS_SV = ['Farvardin','Ordibehesht','Khordad','Tir','Mordad','Shahrivar','Mehr','Aban','Azar','Dey','Bahman','Esfand'];
 const GREG_MONTHS_SV = ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'];
 const WEEKDAYS_SV = ['söndag','måndag','tisdag','onsdag','torsdag','fredag','lördag'];
-
 let clockDateMode = 0;
 function toHijri(date){
   try{
@@ -980,13 +670,6 @@ function toHijri(date){
     const parts = fmt.formatToParts(date);
     return {day:parseInt(parts.find(p=>p.type==='day').value,10),month:parseInt(parts.find(p=>p.type==='month').value,10),year:parseInt(parts.find(p=>p.type==='year').value,10)};
   }catch(e){ return { day: 1, month: 1, year: 1446 }; }
-}
-function toShamsi(date){
-  try{
-    const fmt = new Intl.DateTimeFormat('sv-SE-u-ca-persian', {day:'numeric',month:'numeric',year:'numeric'});
-    const parts = fmt.formatToParts(date);
-    return {day:parseInt(parts.find(p=>p.type==='day').value,10),month:parseInt(parts.find(p=>p.type==='month').value,10),year:parseInt(parts.find(p=>p.type==='year').value,10)};
-  }catch(e){ return null; }
 }
 function updateClock(){
   const now = new Date();
@@ -998,7 +681,6 @@ function updateClock(){
   renderClockDate(now);
 }
 setInterval(updateClock, 1000); updateClock();
-
 function renderClockDate(now){
   now = now || new Date();
   const el = document.getElementById('clockDate');
@@ -1008,49 +690,19 @@ function renderClockDate(now){
   if(clockDateMode === 0){
     const h = toHijri(now);
     el.innerHTML = `<span class="date-label">هجري</span> ${h.day} ${HIJRI_MONTHS_SV[h.month-1]} ${h.year} هـ`;
-  } else if(clockDateMode === 1){
-    const s = toShamsi(now);
-    if(s){ el.innerHTML = `<span class="date-label">شمسی</span> ${s.day} ${SHAMSI_MONTHS_SV[s.month-1]} ${s.year}`; }
-    else { el.innerHTML = `<span class="date-label">شمسی</span> —`; }
   } else {
     el.innerHTML = `<span class="date-label">میلادی</span> ${capWeekday} ${now.getDate()} ${GREG_MONTHS_SV[now.getMonth()]} ${now.getFullYear()}`;
   }
 }
 function cycleClockDate(){
-  clockDateMode = (clockDateMode + 1) % 3;
-  const labels = ['🕌 Hijri (qamari)', '🇮🇷 Iransk (shamsi)', '🌍 Miladi (gregoriansk)'];
+  clockDateMode = (clockDateMode + 1) % 2;
   renderClockDate(new Date());
-  toast(labels[clockDateMode]);
 }
-
-/* ============================================================
-   VÄDER (förenklad)
-   ============================================================ */
-function fetchWeather(){
-  const weatherTemp = document.getElementById('weatherTemp');
-  const weatherDesc = document.getElementById('weatherDesc');
-  if(!weatherTemp) return;
-  weatherTemp.textContent = '--°C';
-  weatherDesc.textContent = 'Ej tillgängligt';
-}
-fetchWeather();
-
-/* ============================================================
-   BÖNETIDER (förenklad)
-   ============================================================ */
-function updateAzanTopBar(){
-  const timeEl = document.getElementById('azanNextTime');
-  const labelEl = document.getElementById('azanNextLabel');
-  if(timeEl) timeEl.textContent = '--:--';
-  if(labelEl) labelEl.textContent = 'Ej tillgängligt';
-}
-updateAzanTopBar();
 
 /* ============================================================
    VIRTUELLT TANGENTBORD
    ============================================================ */
 const VK_LAYOUT = {
-  name: 'العربية',
   rows: [
     ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
     ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
@@ -1077,10 +729,7 @@ function renderVkKeyboard(){
     }
     html += '</div>';
   });
-  html += '<div class="vk-row">';
-  html += '<button class="vk-key wide" onclick="vkInsert(\' \')">␣ Mellanslag</button>';
-  html += '<button class="vk-key wide" onclick="vkClear()">Rensa</button>';
-  html += '</div>';
+  html += '<div class="vk-row"><button class="vk-key wide" onclick="vkInsert(\' \')">␣ Mellanslag</button><button class="vk-key wide" onclick="vkClear()">Rensa</button></div>';
   container.innerHTML = html;
 }
 function vkInsert(char){
@@ -1118,10 +767,7 @@ function toggleSearchPanel(){
   if(btn) btn.classList.toggle('active', panel.classList.contains('open'));
   if(panel.classList.contains('open')){
     renderVkKeyboard();
-    setTimeout(()=> {
-      const inp = document.getElementById('quranSearchInput');
-      if(inp) inp.focus();
-    }, 100);
+    setTimeout(()=> { const inp = document.getElementById('quranSearchInput'); if(inp) inp.focus(); }, 100);
   }
 }
 function performQuranSearch(){ toast('🔍 Sökning ej tillgänglig i demo'); }
@@ -1134,10 +780,18 @@ function clearQuranSearch(){
 }
 
 /* ============================================================
-   DAGENS AYA (förenklad)
+   DAGENS AYA (fallback)
    ============================================================ */
 let currentAyaData = null;
 let currentLang = localStorage.getItem('quranLang') || 'sv';
+
+const FALLBACK_AYAS = [
+  { arabic: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا', sv: 'Sannerligen, med svårigheten kommer lättnad.', en: 'Indeed, with hardship comes ease.', fa: 'همانا با سختی آسانی است.', ku: 'بەڕاستی لەگەڵ ناڕەحەتیدا ئاسانی هەیە.', 'ku-KM': 'Bi rastî, bi zehmetiyê re hêsanî heye.', surahName: 'Ash-Sharh', surahNum: 94, ayahNum: 6, phonetic: 'Inna maʿal-ʿusri yusrā' },
+  { arabic: 'وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ', sv: 'Den som förlitar sig på Allah, Han är honom nog.', en: 'And whoever relies upon Allah – then He is sufficient for him.', fa: 'و هر کس بر خدا توکل کند، پس او برایش کافی است.', ku: 'و هەرکەسێک پشت بە خوا ببەستێت، ئەوا ئەو بەسیەتی.', 'ku-KM': 'Û her kesê ku xwe bispêre Xwedê, ew jê re bes e.', surahName: 'At-Talaq', surahNum: 65, ayahNum: 3, phonetic: 'Wa man yatawakkal ʿalallāhi fahuwa ḥasbuh' },
+  { arabic: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ', sv: 'Sannerligen, genom Allahs åminnelse finner hjärtanen ro.', en: 'Verily, in the remembrance of Allah do hearts find rest.', fa: 'آگاه باشید که با یاد خدا دل‌ها آرام می‌گیرد.', ku: 'ئاگاداربن کە بە یادی خوا دڵەکان ئارام دەگرن.', 'ku-KM': 'Agahdar bin, bi bîranîna Xwedê dil aram dibin.', surahName: 'Ar-Ra\'d', surahNum: 13, ayahNum: 28, phonetic: 'Alā bidhikrillāhi taṭmaʾinnul-qulūb' },
+  { arabic: 'وَقُل رَّبِّ زِدْنِي عِلْمًا', sv: 'Och säg: Min Herre, öka mig i kunskap.', en: 'And say: My Lord, increase me in knowledge.', fa: 'و بگو: پروردگارا، بر دانش من بیفزای.', ku: 'و بڵێ: پەروەردگارا، زانستم بۆ زیاد بکە.', 'ku-KM': 'Û bêje: Xwedayê min, zanîna min zêde bike.', surahName: 'Ta-Ha', surahNum: 20, ayahNum: 114, phonetic: 'Wa qul rabbi zidnī ʿilmā' },
+  { arabic: 'فَاذْكُرُونِي أَذْكُرْكُمْ', sv: 'Så åminns Mig, så ska Jag åminnas er.', en: 'So remember Me; I will remember you.', fa: 'پس مرا یاد کنید تا شما را یاد کنم.', ku: 'کەواتە یادی من بکەن، منیش یادی ئێوە دەکەم.', 'ku-KM': 'Ji ber vê yekê min bibîr bînin, ez jî we bibîr bînim.', surahName: 'Al-Baqarah', surahNum: 2, ayahNum: 152, phonetic: 'Fadhkurūnī adhkurkum' }
+];
 
 function renderDailyAya(data){
   currentAyaData = data;
@@ -1156,13 +810,6 @@ function renderDailyAya(data){
   `;
   updateSaveFavBtn();
 }
-const FALLBACK_AYAS = [
-  { arabic: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا', sv: 'Sannerligen, med svårigheten kommer lättnad.', en: 'Indeed, with hardship comes ease.', fa: 'همانا با سختی آسانی است.', ku: 'بەڕاستی لەگەڵ ناڕەحەتیدا ئاسانی هەیە.', 'ku-KM': 'Bi rastî, bi zehmetiyê re hêsanî heye.', surahName: 'Ash-Sharh', surahNum: 94, ayahNum: 6, phonetic: 'Inna maʿal-ʿusri yusrā' },
-  { arabic: 'وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ', sv: 'Den som förlitar sig på Allah, Han är honom nog.', en: 'And whoever relies upon Allah – then He is sufficient for him.', fa: 'و هر کس بر خدا توکل کند، پس او برایش کافی است.', ku: 'و هەرکەسێک پشت بە خوا ببەستێت، ئەوا ئەو بەسیەتی.', 'ku-KM': 'Û her kesê ku xwe bispêre Xwedê, ew jê re bes e.', surahName: 'At-Talaq', surahNum: 65, ayahNum: 3, phonetic: 'Wa man yatawakkal ʿalallāhi fahuwa ḥasbuh' },
-  { arabic: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ', sv: 'Sannerligen, genom Allahs åminnelse finner hjärtanen ro.', en: 'Verily, in the remembrance of Allah do hearts find rest.', fa: 'آگاه باشید که با یاد خدا دل‌ها آرام می‌گیرد.', ku: 'ئاگاداربن کە بە یادی خوا دڵەکان ئارام دەگرن.', 'ku-KM': 'Agahdar bin, bi bîranîna Xwedê dil aram dibin.', surahName: 'Ar-Ra\'d', surahNum: 13, ayahNum: 28, phonetic: 'Alā bidhikrillāhi taṭmaʾinnul-qulūb' },
-  { arabic: 'وَقُل رَّبِّ زِدْنِي عِلْمًا', sv: 'Och säg: Min Herre, öka mig i kunskap.', en: 'And say: My Lord, increase me in knowledge.', fa: 'و بگو: پروردگارا، بر دانش من بیفزای.', ku: 'و بڵێ: پەروەردگارا، زانستم بۆ زیاد بکە.', 'ku-KM': 'Û bêje: Xwedayê min, zanîna min zêde bike.', surahName: 'Ta-Ha', surahNum: 20, ayahNum: 114, phonetic: 'Wa qul rabbi zidnī ʿilmā' },
-  { arabic: 'فَاذْكُرُونِي أَذْكُرْكُمْ', sv: 'Så åminns Mig, så ska Jag åminnas er.', en: 'So remember Me; I will remember you.', fa: 'پس مرا یاد کنید تا شما را یاد کنم.', ku: 'کەواتە یادی من بەن، منیش یادی ئێوە دەکەم.', 'ku-KM': 'Ji ber vê yekê min bibîr bînin, ez jî we bibîr bînim.', surahName: 'Al-Baqarah', surahNum: 2, ayahNum: 152, phonetic: 'Fadhkurūnī adhkurkum' }
-];
 function fetchRandomAya(){
   const data = FALLBACK_AYAS[Math.floor(Math.random() * FALLBACK_AYAS.length)];
   renderDailyAya(data);
@@ -1176,7 +823,7 @@ function renderFallbackAya(){ fetchRandomAya(); }
 function nextDailyAya(){ fetchRandomAya(); }
 function goToNextAya(){ toast('➡️ Nästa aya'); }
 function goToPrevAya(){ toast('⬅️ Föregående aya'); }
-function playDailyAya(btn){ toast('🎧 Uppspelning ej tillgänglig i demo'); }
+function playDailyAya(){ toast('🎧 Uppspelning ej tillgänglig i demo'); }
 function toggleDailyLoop(){ toast('🔁 Upprepning'); }
 function updateSaveFavBtn(){
   const btn = document.getElementById('saveFavBtn');
@@ -1215,6 +862,7 @@ function stopSuraPlayback(){}
 function suraPlayerBack(){}
 function suraPlayerForward(){}
 function updateSuraProgress(){}
+function toggleSuraFavorite(){ toast('⭐'); }
 
 /* ============================================================
    QARI
@@ -1229,7 +877,6 @@ function populateQariSelect(){
   if(!sel) return;
   sel.innerHTML = QARIS.map(q => `<option value="${q.id}">${q.name}</option>`).join('');
 }
-function setQari(){}
 
 /* ============================================================
    AYA-VÄLJARE
@@ -1274,7 +921,6 @@ function playAyaOnlySelected(){ closeAyaPicker(); toast('▶️'); }
    ============================================================ */
 let favorites = [];
 try{ favorites = JSON.parse(localStorage.getItem('quranFavorites')) || []; }catch(e){ favorites = []; }
-let favLoopMode = 'off';
 function saveFavorites(){ try{ localStorage.setItem('quranFavorites', JSON.stringify(favorites)); }catch(e){} updateFavBadge(); }
 function updateFavBadge(){
   const b = document.getElementById('favBdg');
@@ -1303,23 +949,19 @@ function saveCurrentAyaAsFavorite(){
   });
   saveFavorites(); updateSaveFavBtn(); toast('⭐ Sparad!');
 }
-function removeFavorite(id){ favorites = favorites.filter(f => f.id !== id); saveFavorites(); renderFavorites(); updateSaveFavBtn(); toast('🗑️ Borttagen'); }
-function openFavorites(){ renderFavorites(); document.getElementById('favModal').classList.remove('h'); updateFavFullscreenIcon(); }
+function removeFavorite(id){ favorites = favorites.filter(f => f.id !== id); saveFavorites(); renderFavorites(); updateSaveFavBtn(); toast('🗑️'); }
+function openFavorites(){ renderFavorites(); document.getElementById('favModal').classList.remove('h'); }
 function closeFavorites(){ document.getElementById('favModal').classList.add('h'); }
-function toggleFavFullscreen(){ const el = document.getElementById('favModalCard'); if(!el) return; const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement); if(!isFs){ (el.requestFullscreen || el.webkitRequestFullscreen).call(el); } else { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } }
-function updateFavFullscreenIcon(){ const icon = document.getElementById('favFsIcon'); if(!icon) return; const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement); icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand'; }
+function toggleFavFullscreen(){ const el = document.getElementById('favModalCard'); if(!el) return; const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement); if(!isFs) (el.requestFullscreen || el.webkitRequestFullscreen).call(el); else (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
 function toggleSelectAllFavorites(checkbox){ document.querySelectorAll('.fav-checkbox').forEach(cb => { cb.checked = checkbox.checked; }); updateSelectedCount(); }
 function updateSelectedCount(){ const count = document.querySelectorAll('.fav-checkbox:checked').length; const el = document.getElementById('favSelectedCount'); if(el) el.textContent = count + ' valda'; }
-function getCheckedFavoriteIds(){ return Array.from(document.querySelectorAll('.fav-checkbox:checked')).map(cb => parseInt(cb.dataset.favId, 10)); }
 function playFavoritesSequence(){ toast('▶️'); }
 function stopFavoritesSequence(){}
-function cycleFavLoopMode(){ toast('🔁'); }
-function playFavorite(){ toast('▶️'); }
 function renderFavorites(){
   const c = document.getElementById('favList');
   const toolbar = document.getElementById('favToolbar');
   if(!favorites.length){
-    c.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.<br><span style="font-size:13px;font-weight:600">Tryck på stjärnan vid en aya.</span></div>';
+    c.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.</div>';
     if(toolbar) toolbar.style.display = 'none'; return;
   }
   if(toolbar) toolbar.style.display = 'flex';
@@ -1340,15 +982,12 @@ function renderFavorites(){
         <div class="fav-arabic">${f.arabic}</div>
         <div class="fav-text${extraClass}">${text}</div>
         <div class="fav-actions">
-          <button class="fav-view" onclick="playFavorite(${f.id}, this)" title="Spela upp"><i class="fas fa-play"></i></button>
           <button class="fav-view" onclick="viewFavorite(${f.id})" title="Visa"><i class="fas fa-eye"></i></button>
           <button class="fav-del" onclick="removeFavorite(${f.id})" title="Ta bort"><i class="fas fa-trash"></i></button>
         </div>
       </div>
     `;
   }).join('');
-  const selAll = document.getElementById('favSelectAll');
-  if(selAll) selAll.checked = false;
   updateSelectedCount();
 }
 function viewFavorite(id){
@@ -1395,7 +1034,6 @@ function setLang(lang){
   });
   if(currentAyaData) renderDailyAya(currentAyaData);
   renderFavorites();
-  toast('🌐 ' + ({sv:'Svenska',en:'English',fa:'فارسی',ku:'کوردی','ku-KM':'Kurmancî',phonetic:'Uttal'}[lang]));
 }
 function copyVerse(btn){
   const block = btn.closest('.verse-block');
@@ -1408,8 +1046,7 @@ function copyVerse(btn){
     else if(n.tagName === 'BR') text += '\n';
     else text += n.textContent;
   });
-  text = text.trim();
-  navigator.clipboard.writeText(text).then(()=>{
+  navigator.clipboard.writeText(text.trim()).then(()=>{
     btn.classList.add('copied');
     btn.innerHTML = '<i class="fas fa-check"></i>';
     toast('📋 Kopierat!');
@@ -1418,7 +1055,7 @@ function copyVerse(btn){
 }
 
 /* ============================================================
-   TAFSIR-MODAL (huvudfunktionalitet)
+   TAFSIR
    ============================================================ */
 const TAFSIR_SOURCES = {
   en: { quranComId: 169, label: 'Ibn Kathir (English)' },
@@ -1435,7 +1072,7 @@ let tafsirState = {
 };
 
 let tafsirFontSize = 19;
-let tafsirFontFamily = "'Times New Roman', Times, serif";
+let tafsirFontFamily = "Times New Roman, Times, serif";
 
 function applyTafsirFontStyles(bodyEl){
   if(!bodyEl) return;
@@ -1520,8 +1157,7 @@ function setTafsirFont(btn, fontFamily){
   if(body) body.style.setProperty('font-family', fontFamily, 'important');
   document.querySelectorAll('.tafsir-tools-bar .font-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  try{ localStorage.setItem('quranTafsirFont', fontFamily); }catch(e){}
-  toast('🔤 ' + (btn ? btn.textContent.trim() : fontFamily));
+  toast('🔤 ' + (btn ? btn.textContent.trim() : ''));
 }
 function changeTafsirFontSize(delta){
   tafsirFontSize = Math.max(12, Math.min(42, tafsirFontSize + delta));
@@ -1530,19 +1166,10 @@ function changeTafsirFontSize(delta){
   if(body) body.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
   const display = document.getElementById('tafsirSizeDisplay');
   if(display) display.textContent = tafsirFontSize + 'px';
-  try{ localStorage.setItem('quranTafsirFontSize', tafsirFontSize); }catch(e){}
-}
-function resetTafsirFontSize(){
-  tafsirFontSize = 19;
-  document.documentElement.style.setProperty('--tafsir-font-size', '19px');
-  const body = document.getElementById('tafsirBody');
-  if(body) body.style.setProperty('font-size', '19px', 'important');
-  const display = document.getElementById('tafsirSizeDisplay');
-  if(display) display.textContent = '19px';
 }
 
 /* ============================================================
-   GOOGLE TRANSLATE — FIXAD för persiska och sorani
+   GOOGLE TRANSLATE — FIXAD
    ============================================================ */
 function toggleGtPanel(){
   const panel = document.getElementById('gtPanel');
@@ -1554,24 +1181,33 @@ function closeGtPanel(){
   if(panel) panel.classList.remove('open');
 }
 
-/* Översätt en textbit via MyMemory. Returnerar översatt sträng eller null. */
+/* Översätt en textbit via MyMemory med korrekta språkkoder. */
 async function translateChunkMyMemory(chunk, sourceLang, targetLang){
   try{
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${sourceLang}|${targetLang}&de=quran@example.com`;
+    // MyMemory kräver specifika koder:
+    // - Persiska: 'fa-IR'
+    // - Sorani kurdiska: 'ckb-IQ'
+    const langPair = `${sourceLang}|${targetLang}`;
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${encodeURIComponent(langPair)}&de=quran@example.com`;
     const res = await fetch(url);
-    if(!res.ok) return null;
+    if(!res.ok){
+      console.warn('MyMemory HTTP error:', res.status);
+      return null;
+    }
     const data = await res.json();
     if(data && data.responseData){
       const txt = data.responseData.translatedText;
       if(txt && txt.trim() && !/^MYMEMORY WARNING/i.test(txt) && txt.toLowerCase() !== chunk.toLowerCase()){
         return txt;
+      } else {
+        console.warn('MyMemory svarade men texten är ogiltig:', txt);
       }
     }
-  }catch(e){}
+  }catch(e){ console.warn('MyMemory fetch error:', e); }
   return null;
 }
 
-/* Alternativ: använd LibreTranslate (gratis öppen instans) som fallback. */
+/* Fallback: LibreTranslate */
 async function translateChunkLibre(chunk, sourceLang, targetLang){
   try{
     const res = await fetch('https://libretranslate.de/translate', {
@@ -1580,32 +1216,32 @@ async function translateChunkLibre(chunk, sourceLang, targetLang){
       body: JSON.stringify({
         q: chunk,
         source: sourceLang,
-        target: targetLang,
+        target: targetLang === 'fa-IR' ? 'fa' : 'ckb',
         format: 'text'
       })
     });
-    if(!res.ok) return null;
+    if(!res.ok){
+      console.warn('LibreTranslate HTTP error:', res.status);
+      return null;
+    }
     const data = await res.json();
     if(data && data.translatedText && data.translatedText.trim()){
       return data.translatedText;
     }
-  }catch(e){}
+  }catch(e){ console.warn('LibreTranslate fetch error:', e); }
   return null;
 }
 
-/* Översätt en hel text med fallback-kedja. */
+/* Översätt hela texten med fallback-kedja. */
 async function translateFullText(text, sourceLang, targetLang){
   const chunks = splitIntoChunks(text, 450);
   const results = [];
   for(let i = 0; i < chunks.length; i++){
     const chunk = chunks[i];
-    // 1. Försök med MyMemory
     let translated = await translateChunkMyMemory(chunk, sourceLang, targetLang);
-    // 2. Fallback: LibreTranslate
     if(!translated){
       translated = await translateChunkLibre(chunk, sourceLang, targetLang);
     }
-    // 3. Sista utväg: behåll original
     if(!translated){
       translated = chunk;
     }
@@ -1620,7 +1256,6 @@ async function runGoogleTranslate(){
   const source = document.getElementById('tafsirSource');
   if(!body) return;
 
-  // Hämta engelsk originaltext (eller befintlig text) att översätta
   const plainText = stripHtmlForTranslation(tafsirState.originalBody || body.innerHTML);
   if(!plainText || plainText.length < 5){
     toast('❌ Ingen text att översätta');
@@ -1629,16 +1264,15 @@ async function runGoogleTranslate(){
 
   const targetLabel = targetLang === 'fa' ? 'persiska' : 'sorani-kurdiska';
   body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter till ' + targetLabel + '…<br><span style="font-size:12px">Detta kan ta en stund.</span></div>';
-  source.textContent = 'Översätter med ' + (targetLang === 'fa' ? 'Persiska' : 'Sorani') + '…';
+  source.textContent = 'Översätter…';
   body.classList.add('rtl');
   body.classList.remove('original');
 
   // MyMemory språkkoder:
-  // - Persiska: 'fa' (eller 'fa-IR')
-  // - Sorani kurdiska: 'ckb' (Central Kurdish) — stöds av MyMemory
-  // Källspråk: engelska 'en' (eftersom tafsiren är på engelska)
+  // - Persiska: 'fa-IR'
+  // - Sorani kurdiska: 'ckb-IQ'
   const sourceLangCode = 'en';
-  const targetLangCode = targetLang === 'fa' ? 'fa' : 'ckb';
+  const targetLangCode = targetLang === 'fa' ? 'fa-IR' : 'ckb-IQ';
 
   let translated = '';
   try{
@@ -1649,14 +1283,14 @@ async function runGoogleTranslate(){
   }
 
   if(!translated || translated === plainText){
-    body.innerHTML = '<p style="color:var(--rose);font-weight:800">⚠️ Översättningen misslyckades. Kontrollera internetanslutningen och försök igen.<br><br>Tips: API:et kan vara tillfälligt överbelastat. Vänta några sekunder och försök igen.</p>';
+    body.innerHTML = '<p style="color:var(--rose);font-weight:800">⚠️ Översättningen misslyckades. Kontrollera internetanslutningen och försök igen.<br><br>Tips: API:et kan vara tillfälligt överbelastat. Vänta några sekunder och försök igen. Öppna konsolen (F12) för att se detaljer.</p>';
     source.textContent = 'Översättning misslyckades';
     return;
   }
 
   const paragraphs = translated.split(/\n{2,}/).filter(p => p.trim()).map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
   body.innerHTML = paragraphs || '<p>Ingen översättning tillgänglig.</p>';
-  source.textContent = 'Maskinöversatt till ' + (targetLang === 'fa' ? 'persiska' : 'sorani-kurdiska') + ' (MyMemory/LibreTranslate) · ' + (tafsirState.originalSource || '');
+  source.textContent = 'Maskinöversatt till ' + (targetLang === 'fa' ? 'persiska' : 'sorani-kurdiska') + ' · ' + (tafsirState.originalSource || '');
   applyTafsirContentStyles(body, targetLang === 'fa' ? 'fa' : 'ku');
   body.classList.add('rtl');
   toast('✅ Översättning klar!');
@@ -1691,7 +1325,6 @@ async function fetchTafsirForAyah(surah, ayah, lang){
   }
   return null;
 }
-
 async function fetchTafsirForChapter(surah, lang){
   lang = lang || 'en';
   if(lang === 'fa') return await fetchPersianTafsirChapter(surah);
@@ -1707,7 +1340,6 @@ async function fetchTafsirForChapter(surah, lang){
   }catch(e){}
   return null;
 }
-
 function formatQuranEncBody(translation, footnotes){
   let body = '<p>' + escapeHtml(translation || '').replace(/\n+/g, '</p><p>') + '</p>';
   if(footnotes){
@@ -1745,7 +1377,6 @@ async function fetchPersianTafsirChapter(surah){
   }catch(e){}
   return null;
 }
-
 function cleanTafsirHtml(html){
   if(!html) return '';
   return String(html)
@@ -1791,7 +1422,6 @@ async function openTafsirAyah(surah, ayah, label){
   body.innerHTML = result.body;
   applyTafsirContentStyles(body, 'en');
 }
-
 async function openTafsirChapter(surah, chapterName){
   tafsirState.surah = surah;
   tafsirState.ayah = null;
@@ -1834,7 +1464,6 @@ async function openTafsirChapter(surah, chapterName){
   body.innerHTML = html;
   applyTafsirContentStyles(body, 'en');
 }
-
 async function openTafsirDaily(){
   if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
   await openTafsirAyah(currentAyaData.surahNum, currentAyaData.ayahNum, currentAyaData.surahName + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum);
@@ -1932,12 +1561,11 @@ async function translateTafsirTo(lang){
 }
 
 /* ============================================================
-   VISA/GÖM, NATT, FULLSKÄRM
+   VISA/GÖM
    ============================================================ */
 let sectionsHidden = localStorage.getItem('quranSectionsHidden') === 'true';
 let chromeHidden = localStorage.getItem('quranChromeHidden') === 'true';
 let eyeClickTimer = null;
-const EYE_DOUBLE_CLICK_DELAY = 280;
 function applySectionsVisibility(){
   const el = document.getElementById('collapsibleSections');
   if(!el) return;
@@ -1962,7 +1590,7 @@ function toggleChrome(){
   chromeHidden = !chromeHidden;
   localStorage.setItem('quranChromeHidden', chromeHidden);
   applyChromeVisibility();
-  toast(chromeHidden ? '🙈 Toppbar & språkfält gömda' : '👁️ Synliga');
+  toast(chromeHidden ? '🙈 Dold' : '👁️ Synlig');
 }
 function eyeBtnClick(event){
   if(event) event.stopPropagation();
@@ -1975,8 +1603,7 @@ function eyeBtnClick(event){
       sectionsHidden = !sectionsHidden;
       localStorage.setItem('quranSectionsHidden', sectionsHidden);
       applySectionsVisibility();
-      toast(sectionsHidden ? '🙈 Innehåll gömt' : '👁️ Innehåll synligt');
-    }, EYE_DOUBLE_CLICK_DELAY);
+    }, 280);
   }
 }
 let night = localStorage.getItem('quranNightMode') === 'true';
@@ -2045,24 +1672,6 @@ updateFavBadge();
 updateTafsirFsIcon();
 fetchRandomAya();
 renderVkKeyboard();
-
-try{
-  const savedFont = localStorage.getItem('quranTafsirFont');
-  if(savedFont){
-    tafsirFontFamily = savedFont;
-    document.documentElement.style.setProperty('--tafsir-font-family', savedFont);
-    document.querySelectorAll('.tafsir-tools-bar .font-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.font === savedFont);
-    });
-  }
-  const savedSize = localStorage.getItem('quranTafsirFontSize');
-  if(savedSize){
-    tafsirFontSize = parseInt(savedSize, 10) || 19;
-    document.documentElement.style.setProperty('--tafsir-font-size', tafsirFontSize + 'px');
-    const display = document.getElementById('tafsirSizeDisplay');
-    if(display) display.textContent = tafsirFontSize + 'px';
-  }
-}catch(e){}
 </script>
 
 </body>
