@@ -380,6 +380,15 @@
       background:var(--primary-soft);display:inline-block;
       padding:4px 12px;border-radius:50px;margin-bottom:10px;
     }
+    /* Fix för att ta bort den stora gröna arabiska rutan i tafsir */
+    .tafsir-body .arabic, .tafsir-body .arabic-small, .tafsir-body [style*="background"] {
+      background: none !important;
+      color: inherit !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+    }
 
     /* ===== AYA-VÄLJAR-MODAL ===== */
     .aya-picker-header{
