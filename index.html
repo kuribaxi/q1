@@ -406,6 +406,49 @@
       padding:5px 8px;border-radius:8px;
       background:var(--primary-soft);
     }
+    .tafsir-tools-bar .gt-btn{
+      padding:5px 12px;border-radius:8px;
+      border:1.5px solid var(--emerald);
+      background:var(--emerald-soft);color:#1a7a58;
+      font-size:12px;font-weight:800;cursor:pointer;
+      transition:all .2s;
+      display:flex;align-items:center;gap:4px;
+      margin-left:auto;
+    }
+    .tafsir-tools-bar .gt-btn:hover{background:var(--emerald);color:#fff}
+    .tafsir-tools-bar .gt-btn:active{transform:scale(.95)}
+
+    /* Google Translate-panel */
+    .gt-panel{
+      display:none;
+      padding:12px 24px;
+      background:linear-gradient(135deg, rgba(34,192,138,.12), rgba(34,192,138,.05));
+      border-bottom:1.5px solid var(--border);
+      flex-shrink:0;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .gt-panel.open{display:flex}
+    .gt-panel .gt-label{
+      font-size:12px;font-weight:800;color:var(--text2);
+      display:flex;align-items:center;gap:5px;
+    }
+    .gt-panel select{
+      padding:6px 10px;border-radius:8px;
+      border:1.5px solid var(--border);
+      background:var(--surface);color:var(--text);
+      font-family:var(--font);font-size:13px;font-weight:800;
+      cursor:pointer;
+    }
+    .gt-panel button{
+      padding:6px 14px;border-radius:8px;border:none;
+      background:var(--emerald);color:#fff;
+      font-family:var(--font);font-size:12px;font-weight:800;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;gap:5px;
+    }
+    .gt-panel button:active{transform:scale(.95)}
 
     .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
     .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
@@ -414,8 +457,9 @@
       line-height:1.9;
       color:var(--text);
       transition:font-size .2s;
+      font-family:var(--tafsir-font-family);
     }
-    .tafsir-body.rtl{direction:rtl;text-align:right;font-family:var(--kurdish-font)}
+    .tafsir-body.rtl{direction:rtl;text-align:right}
     .tafsir-body p{margin-bottom:14px}
     .tafsir-body h2{
       font-size:16px;font-weight:900;color:var(--primary);
@@ -429,11 +473,17 @@
       background:var(--primary-soft);display:inline-block;
       padding:4px 12px;border-radius:50px;margin-bottom:10px;
     }
-    /* Grön färg för aya (arabisk text) i tafsir */
+    /* ===== GRÖN FÄRG FÖR ARABISK AYA I TAFSIR (alla språk) ===== */
     .tafsir-body .arabic,
     .tafsir-body .arabic-small,
     .tafsir-body .tafsir-aya-arabic,
     .tafsir-body .aya-text,
+    .tafsir-body .quran,
+    .tafsir-body .quran-text,
+    .tafsir-body .arabic-text,
+    .tafsir-body span[lang="ar"],
+    .tafsir-body div[lang="ar"],
+    .tafsir-body [dir="rtl"] .arabic,
     .tafsir-body [style*="background"] {
       background: none !important;
       color: var(--emerald) !important;
@@ -448,11 +498,13 @@
       text-align: right;
       font-weight: 700;
     }
-    /* Extra: grön färg för arabiska inslag i tafsir-text */
-    .tafsir-body .arabic-text,
-    .tafsir-body .quran-text {
+    /* Grön färg även för fristående arabiska citat i tafsir */
+    .tafsir-body em,
+    .tafsir-body i.arabic,
+    .tafsir-body b.arabic {
       color: var(--emerald) !important;
       font-family: var(--quran-font) !important;
+      font-style: normal;
     }
 
     /* ===== AYA-VÄLJAR-MODAL ===== */
@@ -1291,6 +1343,10 @@
       .tafsir-tools-bar .font-btn{font-size:10px;padding:3px 7px}
       .tafsir-tools-bar .size-btn{width:28px;height:28px;font-size:12px}
       .tafsir-tools-bar .size-display{font-size:11px;min-width:34px;padding:4px 6px}
+      .tafsir-tools-bar .gt-btn{font-size:10px;padding:4px 8px}
+      .gt-panel{padding:8px 14px;gap:5px}
+      .gt-panel select{font-size:12px;padding:5px 8px}
+      .gt-panel button{font-size:11px;padding:5px 10px}
       .tafsir-scroll{padding:12px 14px 18px}
       .tafsir-body{font-size:16px;line-height:1.75}
       .modal-card .modal-arabic{font-size:28px;line-height:2.3}
@@ -1397,7 +1453,6 @@
         <button class="day-action-btn" id="loopDailyBtn" onclick="toggleDailyLoop()" title="Upprepa tills vidare">
           <i class="fas fa-repeat"></i>
         </button>
-        <!-- TAFSIR-KNAPP TILLBAKA -->
         <button class="day-action-btn" onclick="openTafsirDaily()" title="Tafsir">
           <i class="fas fa-book-open"></i>
         </button>
@@ -1832,24 +1887,35 @@
       <button data-tl="fa" onclick="translateTafsirTo('fa')">🇮🇷 فارسی</button>
       <button data-tl="ku" onclick="translateTafsirTo('ku')">🏳️ کوردی سۆرانی</button>
     </div>
-    <!-- Ny verktygsrad för font & storlek -->
+    <!-- Verktygsrad för font & storlek -->
     <div class="tafsir-tools-bar">
       <span class="tool-label"><i class="fas fa-font"></i> Font:</span>
       <button class="font-btn" data-font="Inter, system-ui, -apple-system, sans-serif" onclick="setTafsirFont(this, 'Inter, system-ui, -apple-system, sans-serif')">Inter</button>
       <button class="font-btn" data-font="Georgia, serif" onclick="setTafsirFont(this, 'Georgia, serif')">Georgia</button>
-      <button class="font-btn active" data-font="'Times New Roman', Times, serif" onclick="setTafsirFont(this, \"'Times New Roman', Times, serif\")">Times</button>
+      <button class="font-btn active" data-font="Times New Roman, Times, serif" onclick="setTafsirFont(this, 'Times New Roman, Times, serif')">Times</button>
       <button class="font-btn" data-font="Arial, Helvetica, sans-serif" onclick="setTafsirFont(this, 'Arial, Helvetica, sans-serif')">Arial</button>
       <button class="font-btn" data-font="Roboto, sans-serif" onclick="setTafsirFont(this, 'Roboto, sans-serif')">Roboto</button>
-      <button class="font-btn" data-font="'Open Sans', sans-serif" onclick="setTafsirFont(this, \"'Open Sans', sans-serif\")">Open Sans</button>
+      <button class="font-btn" data-font="Open Sans, sans-serif" onclick="setTafsirFont(this, 'Open Sans, sans-serif')">Open Sans</button>
       <button class="font-btn" data-font="Verdana, sans-serif" onclick="setTafsirFont(this, 'Verdana, sans-serif')">Verdana</button>
-      <button class="font-btn" data-font="'Courier New', Courier, monospace" onclick="setTafsirFont(this, \"'Courier New', Courier, monospace\")">Courier</button>
+      <button class="font-btn" data-font="Courier New, Courier, monospace" onclick="setTafsirFont(this, 'Courier New, Courier, monospace')">Courier</button>
       <button class="font-btn" data-font="Amiri, serif" onclick="setTafsirFont(this, 'Amiri, serif')">Amiri</button>
-      <button class="font-btn" data-font="'K24 Kurdish', sans-serif" onclick="setTafsirFont(this, \"'K24 Kurdish', sans-serif\")">K24 Kurdish</button>
+      <button class="font-btn" data-font="K24 Kurdish, sans-serif" onclick="setTafsirFont(this, 'K24 Kurdish, sans-serif')">K24 Kurdish</button>
       <span class="tool-label" style="margin-left:8px"><i class="fas fa-text-height"></i> Storlek:</span>
       <button class="size-btn" onclick="changeTafsirFontSize(-1)">A-</button>
       <span class="size-display" id="tafsirSizeDisplay">19px</span>
       <button class="size-btn" onclick="changeTafsirFontSize(1)">A+</button>
       <button class="size-btn" onclick="resetTafsirFontSize()" title="Återställ"><i class="fas fa-rotate-left" style="font-size:12px"></i></button>
+      <button class="gt-btn" onclick="toggleGtPanel()" title="Översätt med Google Translate"><i class="fas fa-globe"></i> Översätt</button>
+    </div>
+    <!-- Google Translate-panel -->
+    <div class="gt-panel" id="gtPanel">
+      <span class="gt-label"><i class="fas fa-language"></i> Översätt tafsir till:</span>
+      <select id="gtTargetLang">
+        <option value="fa">🇮🇷 Persiska (فارسی)</option>
+        <option value="ku">🏳️ Sorani kurdiska (کوردی)</option>
+      </select>
+      <button onclick="runGoogleTranslate()"><i class="fas fa-arrow-right"></i> Översätt</button>
+      <button onclick="closeGtPanel()" style="background:var(--surface2);color:var(--text2);border:1.5px solid var(--border)"><i class="fas fa-times"></i> Stäng</button>
     </div>
     <div class="tafsir-scroll">
       <div class="tafsir-source" id="tafsirSource"></div>
@@ -3313,27 +3379,28 @@ let tafsirState = {
 let tafsirFontSize = 19;
 let tafsirFontFamily = "'Times New Roman', Times, serif";
 
+function applyTafsirFontStyles(bodyEl){
+  if(!bodyEl) return;
+  bodyEl.style.setProperty('font-family', tafsirFontFamily, 'important');
+  bodyEl.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
+}
+
 function setTafsirFont(btn, fontFamily){
   tafsirFontFamily = fontFamily;
-  // Applicera direkt på tafsir-body (inte bara via CSS-variabel)
-  const body = document.getElementById('tafsirBody');
-  if(body){
-    body.style.fontFamily = fontFamily;
-  }
-  // Spara även som CSS-variabel för nya innehåll
   document.documentElement.style.setProperty('--tafsir-font-family', fontFamily);
+  const body = document.getElementById('tafsirBody');
+  if(body) body.style.setProperty('font-family', fontFamily, 'important');
   document.querySelectorAll('.tafsir-tools-bar .font-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  // Spara val
   try{ localStorage.setItem('quranTafsirFont', fontFamily); }catch(e){}
-  const label = btn ? btn.textContent : fontFamily.split(',')[0].replace(/'/g, '');
+  const label = btn ? btn.textContent.trim() : fontFamily.split(',')[0].replace(/['"]/g, '');
   toast('🔤 Font: ' + label);
 }
 function changeTafsirFontSize(delta){
   tafsirFontSize = Math.max(12, Math.min(42, tafsirFontSize + delta));
   document.documentElement.style.setProperty('--tafsir-font-size', tafsirFontSize + 'px');
   const body = document.getElementById('tafsirBody');
-  if(body) body.style.fontSize = tafsirFontSize + 'px';
+  if(body) body.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
   const display = document.getElementById('tafsirSizeDisplay');
   if(display) display.textContent = tafsirFontSize + 'px';
   try{ localStorage.setItem('quranTafsirFontSize', tafsirFontSize); }catch(e){}
@@ -3342,10 +3409,71 @@ function resetTafsirFontSize(){
   tafsirFontSize = 19;
   document.documentElement.style.setProperty('--tafsir-font-size', '19px');
   const body = document.getElementById('tafsirBody');
-  if(body) body.style.fontSize = '19px';
+  if(body) body.style.setProperty('font-size', '19px', 'important');
   const display = document.getElementById('tafsirSizeDisplay');
   if(display) display.textContent = '19px';
   try{ localStorage.setItem('quranTafsirFontSize', 19); }catch(e){}
+}
+
+/* ===== GOOGLE TRANSLATE-PANEL ===== */
+function toggleGtPanel(){
+  const panel = document.getElementById('gtPanel');
+  if(!panel) return;
+  panel.classList.toggle('open');
+}
+function closeGtPanel(){
+  const panel = document.getElementById('gtPanel');
+  if(panel) panel.classList.remove('open');
+}
+async function runGoogleTranslate(){
+  const targetLang = document.getElementById('gtTargetLang').value;
+  const body = document.getElementById('tafsirBody');
+  const source = document.getElementById('tafsirSource');
+  if(!body) return;
+
+  // Hämta originaltext (engelska) och konvertera till ren text
+  const plainText = stripHtmlForTranslation(tafsirState.originalBody || body.innerHTML);
+  if(!plainText){
+    toast('❌ Ingen text att översätta');
+    return;
+  }
+  const chunks = splitIntoChunks(plainText, 450);
+  body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter med Google Translate till ' + (targetLang === 'fa' ? 'persiska' : 'sorani') + '…<br><span style="font-size:12px">Detta kan ta en stund.</span></div>';
+  source.textContent = 'Översätts med Google Translate…';
+  body.classList.add('rtl');
+  body.classList.remove('original');
+
+  const sourceLangCode = 'en';
+  const targetLangCode = targetLang === 'fa' ? 'fa' : 'ku';
+  let translated = '';
+  for(let i = 0; i < chunks.length; i++){
+    const chunk = chunks[i];
+    try{
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${sourceLangCode}|${targetLangCode}`;
+      const res = await fetch(url);
+      if(res.ok){
+        const data = await res.json();
+        if(data && data.responseData && data.responseData.translatedText){
+          translated += data.responseData.translatedText + '\n\n';
+        } else {
+          translated += chunk + '\n\n';
+        }
+      } else {
+        translated += chunk + '\n\n';
+      }
+    }catch(e){
+      translated += chunk + '\n\n';
+    }
+    if(i % 3 === 0){
+      body.innerHTML = `<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter… (${i+1}/${chunks.length})</div>`;
+    }
+  }
+  const paragraphs = translated.split(/\n{2,}/).filter(p => p.trim()).map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
+  body.innerHTML = paragraphs || '<p>Ingen översättning tillgänglig.</p>';
+  source.textContent = 'Google Translate (MyMemory) · ' + (targetLang === 'fa' ? 'Persiska' : 'Sorani');
+  applyTafsirFontStyles(body);
+  body.classList.add('rtl');
+  toast('✅ Översättning klar');
 }
 
 async function fetchTafsirForAyah(surah, ayah, lang){
@@ -3471,9 +3599,9 @@ async function openTafsirAyah(surah, ayah, label){
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
   body.classList.remove('rtl');
-  // Applicera sparad font och storlek
-  body.style.fontFamily = tafsirFontFamily;
-  body.style.fontSize = tafsirFontSize + 'px';
+  body.classList.add('original');
+  applyTafsirFontStyles(body);
+  closeGtPanel();
 
   modal.classList.remove('h');
   updateTafsirTranslateBar();
@@ -3490,8 +3618,7 @@ async function openTafsirAyah(surah, ayah, label){
   tafsirState.originalBody = result.body;
   source.textContent = result.source;
   body.innerHTML = result.body;
-  body.style.fontFamily = tafsirFontFamily;
-  body.style.fontSize = tafsirFontSize + 'px';
+  applyTafsirFontStyles(body);
 }
 
 async function openTafsirChapter(surah, chapterName){
@@ -3510,8 +3637,9 @@ async function openTafsirChapter(surah, chapterName){
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir för hela suran…</div>';
   body.classList.remove('rtl');
-  body.style.fontFamily = tafsirFontFamily;
-  body.style.fontSize = tafsirFontSize + 'px';
+  body.classList.add('original');
+  applyTafsirFontStyles(body);
+  closeGtPanel();
 
   modal.classList.remove('h');
   updateTafsirTranslateBar();
@@ -3545,8 +3673,7 @@ async function openTafsirChapter(surah, chapterName){
   tafsirState.originalBody = html;
   source.textContent = tafsirState.originalSource;
   body.innerHTML = html;
-  body.style.fontFamily = tafsirFontFamily;
-  body.style.fontSize = tafsirFontSize + 'px';
+  applyTafsirFontStyles(body);
 }
 
 async function openTafsirDaily(){
@@ -3597,26 +3724,25 @@ async function translateTafsirTo(lang){
 
   const body = document.getElementById('tafsirBody');
   const source = document.getElementById('tafsirSource');
-  body.style.fontFamily = tafsirFontFamily;
-  body.style.fontSize = tafsirFontSize + 'px';
+  closeGtPanel();
 
   if(lang === 'original' || !tafsirState.originalBody){
     body.innerHTML = tafsirState.originalBody;
     source.textContent = tafsirState.originalSource;
     body.classList.remove('rtl');
-    body.style.fontFamily = tafsirFontFamily;
-    body.style.fontSize = tafsirFontSize + 'px';
+    body.classList.add('original');
+    applyTafsirFontStyles(body);
     return;
   }
 
   /* Riktig tafsir på originalspråket (inte maskinöversatt) för ar / fa / ku */
   if(NATIVE_TAFSIR_LANGS.includes(lang)){
+    body.classList.remove('original');
     if(tafsirState.nativeCache[lang]){
       body.innerHTML = tafsirState.nativeCache[lang].body;
       source.textContent = tafsirState.nativeCache[lang].source;
       body.classList.add('rtl');
-      body.style.fontFamily = tafsirFontFamily;
-      body.style.fontSize = tafsirFontSize + 'px';
+      applyTafsirFontStyles(body);
       return;
     }
 
@@ -3656,12 +3782,12 @@ async function translateTafsirTo(lang){
       body.innerHTML = resultBody;
       source.textContent = resultSource;
       body.classList.add('rtl');
-      body.style.fontFamily = tafsirFontFamily;
-      body.style.fontSize = tafsirFontSize + 'px';
+      applyTafsirFontStyles(body);
     } else {
       body.innerHTML = '<p>Tafsir är inte tillgänglig på detta språk just nu. Kontrollera internetanslutningen eller försök igen senare.</p>';
       source.textContent = 'Ej tillgänglig';
       body.classList.remove('rtl');
+      applyTafsirFontStyles(body);
     }
     return;
   }
