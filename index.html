@@ -1204,7 +1204,6 @@ setInterval(() => { if(weatherPos) fetchWeather(weatherPos); }, 15 * 60 * 1000);
 
 function openWeatherModal(){
   const p = weatherPos || {latitude:59.3293, longitude:18.0686};
-  /* Hämta 7-dagarsprognos och visa i en enkel modal */
   const ov = document.getElementById('weatherModal');
   if(!ov) return;
   document.getElementById('weatherModalBody').innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Laddar veckans väder…</div>';
@@ -1238,8 +1237,8 @@ function closeWeatherModal(){ document.getElementById('weatherModal').classList.
    BÖNETIDER (aladhan API)
    ============================================================ */
 const PRAYER_NAMES_SV = { Fajr:'Fajr', Sunrise:'Soluppgång', Dhuhr:'Dhuhr', Asr:'Asr', Maghrib:'Maghrib', Isha:'Isha' };
-let prayerTimes = null;   // { Fajr:'04:12', ... }
-let prayerDateStr = null; // 'YYYY-MM-DD' för giltighetskontroll
+let prayerTimes = null;
+let prayerDateStr = null;
 
 function tryGeolocateAzan(){
   if (!navigator.geolocation) { loadPrayerTimes({latitude:59.3293, longitude:18.0686}); return; }
@@ -1299,7 +1298,6 @@ function updateAzanTopBar(){
     if(mins !== null && mins > nowMin){ nextName = name; nextTime = t; break; }
   }
   if(!nextName){
-    /* Alla dagens bönetider har passerat: nästa är Fajr imorgon */
     nextName = 'Fajr';
     nextTime = prayerTimes.Fajr || '--:--';
   }
@@ -1401,12 +1399,171 @@ function toggleSearchPanel(){
     }, 100);
   }
 }
-function performQuranSearch(){ toast('🔍 Sökning ej tillgänglig i demo'); }
+
+/* ============================================================
+   QURAN-SÖKNING – lokal sökning utan erab (harakat) + paginering
+   ============================================================ */
+let quranCache = {};
+let allSearchResults = [];
+let currentSearchPage = 1;
+const RESULTS_PER_PAGE = 10;
+let searchInProgress = false;
+let lastSearchQuery = '';
+
+async function fetchSurahForSearch(surahNum){
+  if(quranCache[surahNum]) return quranCache[surahNum];
+  try{
+    const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/quran-uthmani`);
+    if(!res.ok) return null;
+    const data = await res.json();
+    if(data && data.data && Array.isArray(data.data.ayahs)){
+      quranCache[surahNum] = data.data.ayahs.map(a => ({
+        numberInSurah: a.numberInSurah,
+        text: a.text
+      }));
+      return quranCache[surahNum];
+    }
+  }catch(e){ /* tyst */ }
+  return null;
+}
+
+async function localQuranSearch(query, maxResults){
+  const normalizedQuery = normalizeSearchTerm(query);
+  if(normalizedQuery.length < 2) return [];
+
+  const results = [];
+  const BATCH_SIZE = 10;
+
+  for(let batchStart = 1; batchStart <= 114; batchStart += BATCH_SIZE){
+    const batchEnd = Math.min(batchStart + BATCH_SIZE - 1, 114);
+    const batchPromises = [];
+    for(let s = batchStart; s <= batchEnd; s++){
+      batchPromises.push(fetchSurahForSearch(s).then(ayahs => ({ surah: s, ayahs })));
+    }
+    const batchResults = await Promise.all(batchPromises);
+
+    for(const { surah, ayahs } of batchResults){
+      if(!ayahs) continue;
+      for(const ayah of ayahs){
+        const normalizedText = normalizeSearchTerm(ayah.text);
+        if(normalizedText.includes(normalizedQuery)){
+          results.push({
+            surah: surah,
+            surahName: SURAH_NAMES[surah - 1],
+            ayah: ayah.numberInSurah,
+            arabic: ayah.text
+          });
+          if(results.length >= maxResults) return results;
+        }
+      }
+    }
+  }
+  return results;
+}
+
+async function performQuranSearch(){
+  if(searchInProgress) return;
+  const inp = document.getElementById('quranSearchInput');
+  const results = document.getElementById('searchResults');
+  if(!inp || !results) return;
+
+  const query = inp.value.trim();
+  if(query.length < 2){
+    results.innerHTML = '<div class="search-empty"><i class="fas fa-keyboard"></i>Skriv minst 2 tecken att söka efter.</div>';
+    return;
+  }
+
+  searchInProgress = true;
+  lastSearchQuery = query;
+  allSearchResults = [];
+  currentSearchPage = 1;
+
+  results.innerHTML = `
+    <div class="search-loading">
+      <i class="fas fa-spinner fa-spin"></i> Söker i hela Quran (utan erab)…
+      <div class="search-loading-bar"></div>
+      <span style="font-size:12px;font-weight:600">Detta kan ta några sekunder första gången.</span>
+    </div>`;
+
+  try{
+    const matches = await localQuranSearch(query, 200);
+    allSearchResults = matches;
+
+    if(!allSearchResults.length){
+      results.innerHTML = '<div class="search-empty"><i class="fas fa-search-minus"></i>Inga träffar hittades för "' + escapeHtml(query) + '".<br><span style="font-size:13px">Prova ett annat ord (erab ignoreras).</span></div>';
+      searchInProgress = false;
+      return;
+    }
+
+    renderSearchPage(1);
+  }catch(err){
+    console.error('Sökfel:', err);
+    results.innerHTML = '<div class="search-empty"><i class="fas fa-triangle-exclamation"></i>Kunde inte söka just nu.<br><span style="font-size:13px">Kontrollera internetanslutningen och försök igen.</span></div>';
+  }finally{
+    searchInProgress = false;
+  }
+}
+
+function renderSearchPage(page){
+  const results = document.getElementById('searchResults');
+  if(!results) return;
+
+  currentSearchPage = page;
+  const totalResults = allSearchResults.length;
+  const totalPages = Math.ceil(totalResults / RESULTS_PER_PAGE);
+  const startIdx = (page - 1) * RESULTS_PER_PAGE;
+  const endIdx = Math.min(startIdx + RESULTS_PER_PAGE, totalResults);
+  const pageResults = allSearchResults.slice(startIdx, endIdx);
+
+  let html = `<div style="font-size:12px;font-weight:800;color:var(--text3);padding:4px 8px 10px;text-transform:uppercase;letter-spacing:.06em">
+    <i class="fas fa-list"></i> ${totalResults} träffar för "${escapeHtml(lastSearchQuery)}" – sida ${page} av ${totalPages}
+  </div>`;
+
+  pageResults.forEach(m => {
+    html += `
+      <div class="search-result-item" onclick="goToSearchResult(${m.surah}, ${m.ayah})">
+        <div class="sr-ref"><i class="fas fa-bookmark"></i> ${escapeHtml(m.surahName)} ${m.surah}:${m.ayah}</div>
+        <div class="sr-arabic">${escapeHtml(m.arabic)}</div>
+      </div>
+    `;
+  });
+
+  if(totalPages > 1){
+    html += `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1.5px solid var(--border)">
+        <button onclick="renderSearchPage(${page - 1})" ${page === 1 ? 'disabled' : ''} style="flex:1;height:40px;border-radius:10px;border:1.5px solid var(--primary);background:var(--surface);color:var(--primary);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;${page === 1 ? 'opacity:.4;cursor:not-allowed;' : ''}">
+          <i class="fas fa-chevron-left"></i> Föregående
+        </button>
+        <span style="font-size:13px;font-weight:800;color:var(--text2);white-space:nowrap">${page} / ${totalPages}</span>
+        <button onclick="renderSearchPage(${page + 1})" ${page === totalPages ? 'disabled' : ''} style="flex:1;height:40px;border-radius:10px;border:1.5px solid var(--primary);background:var(--surface);color:var(--primary);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;${page === totalPages ? 'opacity:.4;cursor:not-allowed;' : ''}">
+          Nästa <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>`;
+  }
+
+  results.innerHTML = html;
+  results.scrollTop = 0;
+}
+
+function goToSearchResult(surah, ayah){
+  const panel = document.getElementById('searchPanel');
+  const btn = document.getElementById('searchToggleBtn');
+  if(panel) panel.classList.remove('open');
+  if(btn) btn.classList.remove('active');
+
+  fetchAya(surah, ayah);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  toast('📖 ' + SURAH_NAMES[surah - 1] + ' ' + surah + ':' + ayah);
+}
+
 function clearQuranSearch(){
   const inp = document.getElementById('quranSearchInput');
   const results = document.getElementById('searchResults');
   if(inp) inp.value = '';
   if(results) results.innerHTML = '';
+  lastSearchQuery = '';
+  allSearchResults = [];
+  currentSearchPage = 1;
   if(inp) inp.focus();
 }
 
@@ -1440,8 +1597,6 @@ const FALLBACK_AYAS = [
   { arabic: 'وَقُل رَّبِّ زِدْنِي عِلْمًا', sv: 'Och säg: Min Herre, öka mig i kunskap.', en: 'And say: My Lord, increase me in knowledge.', fa: 'و بگو: پروردگارا، بر دانش من بیفزای.', ku: 'و بڵێ: پەروەردگارا، زانستم بۆ زیاد بکە.', 'ku-KM': 'Û bêje: Xwedayê min, zanîna min zêde bike.', surahName: 'Ta-Ha', surahNum: 20, ayahNum: 114, phonetic: 'Wa qul rabbi zidnī ʿilmā' },
   { arabic: 'فَاذْكُرُونِي أَذْكُرْكُمْ', sv: 'Så åminns Mig, så ska Jag åminnas er.', en: 'So remember Me; I will remember you.', fa: 'پس مرا یاد کنید تا شما را یاد کنم.', ku: 'کەواتە یادی من بەن، منیش یادی ئێوە دەکەم.', 'ku-KM': 'Ji ber vê yekê min bibîr bînin, ez jî we bibîr bînim.', surahName: 'Al-Baqarah', surahNum: 2, ayahNum: 152, phonetic: 'Fadhkurūnī adhkurkum' }
 ];
-/* Verkliga Quran-editioner via api.alquran.cloud. Detta gör att "Dagens aya"
-   och "Hoppa till sura" kan visa VILKEN som helst av Quranens 6236 verser. */
 const QURAN_EDITIONS = {
   arabic: 'quran-uthmani',
   en: 'en.sahih',
@@ -1470,7 +1625,7 @@ async function fetchAyaFromApi(surah, ayah){
   entries.forEach(([key], idx) => {
     out[key] = (results[idx].status === 'fulfilled') ? results[idx].value : '';
   });
-  out['ku-KM'] = ''; // Kurmanji-kurdiska finns inte i denna källa
+  out['ku-KM'] = '';
   return out;
 }
 
@@ -1537,6 +1692,10 @@ function populatePlaySuraSelect(){
   sel.innerHTML = SURAH_NAMES.map((name, i) =>
     `<option value="${i+1}">${i+1}. ${name} (${SURAH_AYAH_COUNTS[i]} verser)</option>`
   ).join('');
+  /* Återställ aktuell vers när man byter sura */
+  sel.addEventListener('change', () => {
+    currentSuraPlaybackAyah = 1;
+  });
 }
 function goToSuraAyah(){
   const surahNum = parseInt(document.getElementById('suraSelect').value, 10) || 1;
@@ -1562,12 +1721,12 @@ function updateAyahInputMax(){
 function playSelectedSura(btn){ openAyaPicker(parseInt(document.getElementById('playSuraSelect').value, 10)); }
 
 /* ============================================================
-   QARI
+   QARI – uppdaterad: Assudais borttagen, Al-Minshawi tillagd
    ============================================================ */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy' },
   { id:'ar.husary', name:'Mahmoud Khalil Al-Husary' },
-  { id:'ar.abdulsudais', name:'Abdurrahman As-Sudais' }
+  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi (Murattal)' }
 ];
 let currentQari = localStorage.getItem('quranQari') || QARIS[0].id;
 function populateQariSelect(){
@@ -1588,23 +1747,20 @@ function setQari(){}
    ============================================================ */
 const BISMILLAH_TEXT = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
 
-/* Global versräkning (1–6236) behövs för ljud-URL:er */
 const AYAH_OFFSETS = [];
 (() => { let acc = 0; for (const c of SURAH_AYAH_COUNTS) { AYAH_OFFSETS.push(acc); acc += c; } })();
 function globalAyah(surah, ayah){ return AYAH_OFFSETS[surah - 1] + ayah; }
 function ayahAudioUrl(surah, ayah){
   return `https://cdn.islamic.network/quran/audio/128/${currentQari}/${globalAyah(surah, ayah)}.mp3`;
 }
-/* Bismillah-ljudet = Al-Fatiha 1:1 hos samma recitatör */
 const bismillahAudioUrl = () => ayahAudioUrl(1, 1);
 
 function shouldPlayBismillah(surah, ayah){
-  if (surah === 9) return false;               // At-Tawbah: ingen bismillah
-  if (surah === 1 && ayah === 1) return false; // Fatiha vers 1 ÄR bismillah
+  if (surah === 9) return false;
+  if (surah === 1 && ayah === 1) return false;
   return true;
 }
 
-/* ---- Arabtext per vers, cachad, för synkad visning ---- */
 const ayahTextCache = new Map();
 const ayahTextWaiters = new Map();
 async function getAyahArabic(surah, ayah){
@@ -1626,11 +1782,13 @@ async function getAyahArabic(surah, ayah){
   return p;
 }
 
-/* ---- Ljudkö ---- */
 let audioQueue = [], currentAudio = null, audioLoop = false, audioDoneCb = null, activePlayBtn = null;
 let audioLoopTracks = null;
 let audioCurrentSurah = null, audioCurrentAyah = null;
 let audioTotalVerses = null;
+
+/* Håller koll på aktuell vers för backward/forward inom vald sura */
+let currentSuraPlaybackAyah = 1;
 
 function stopSuraPlayback(){
   if (currentAudio){ currentAudio.pause(); currentAudio = null; }
@@ -1676,7 +1834,6 @@ function playNextInQueue(){
 }
 function setLoopTracks(tracks){ audioLoopTracks = tracks; }
 
-/* Visa بسم الله som grön rad medan bismillah-ljudet spelas */
 let bismillahBannerStyleAdded = false;
 function showBismillahBanner(show){
   let el = document.getElementById('bismillahBanner');
@@ -1697,7 +1854,6 @@ function showBismillahBanner(show){
   if (content) content.prepend(el);
 }
 
-/* Rendera versen som spelas just nu + progression */
 async function showPlayingAyah(surah, ayah, total){
   const content = document.getElementById('dailyAyaContent');
   const progress = document.getElementById('suraProgress');
@@ -1710,7 +1866,6 @@ async function showPlayingAyah(surah, ayah, total){
   }
   const text = await getAyahArabic(surah, ayah);
   if (!text || !content) return;
-  /* Visa bara om denna vers fortfarande är den aktuella */
   if (audioCurrentSurah !== surah || audioCurrentAyah !== ayah) return;
   showBismillahBanner(false);
   content.innerHTML = `
@@ -1719,13 +1874,13 @@ async function showPlayingAyah(surah, ayah, total){
   `;
 }
 
-/* ---- Bygg spår ---- */
 function track(surah, ayah, total){
   return {
     url: ayahAudioUrl(surah, ayah),
     surah, ayah, bismillah: false,
     onPlay(){
       audioCurrentSurah = surah; audioCurrentAyah = ayah; audioTotalVerses = total || null;
+      currentSuraPlaybackAyah = ayah;   /* <-- NY: håller koll för backward/forward */
       showPlayingAyah(surah, ayah, total || null);
     }
   };
@@ -1733,13 +1888,11 @@ function track(surah, ayah, total){
 function bismillahTrack(){
   return { url: bismillahAudioUrl(), bismillah: true, onPlay(){ showBismillahBanner(true); } };
 }
-/* Lägg bismillah först i kön – utom At-Tawbah (9) och Fatiha vers 1 */
 function withBismillah(surah, ayah, tracks){
   if (shouldPlayBismillah(surah, ayah)) tracks.unshift(bismillahTrack());
   return tracks;
 }
 
-/* ---- Publika uppspelningsfunktioner ---- */
 function playAyah(surah, ayah, btn){
   const tracks = withBismillah(surah, ayah, [track(surah, ayah)]);
   setLoopTracks(null);
@@ -1775,15 +1928,13 @@ function updateDailyLoopButton(){
   if (btn) btn.classList.toggle('active', dailyLoop);
 }
 function toggleVerseLoop(btn){
-  /* Loopar Ayat al-Kursi (2:255) med bismillah */
   const tracks = withBismillah(2, 255, [track(2, 255)]);
   setLoopTracks(tracks);
   playAudioSequence(tracks, true, btn);
   toast('🔁 Versen upprepas');
 }
 
-/* Sura-loop: Av → Sura → Vers → Av */
-let suraLoopMode = 'off'; // 'off' | 'sura-once' | 'sura' | 'verse'
+let suraLoopMode = 'off';
 function cycleSuraLoopMode(){
   suraLoopMode = suraLoopMode === 'off' ? 'sura-once'
                : suraLoopMode === 'sura-once' ? 'sura'
@@ -1796,7 +1947,6 @@ function cycleSuraLoopMode(){
 function applySuraLoopMode(){
   if (suraLoopMode === 'sura'){
     audioLoop = true;
-    /* Om inga loopspår finns (t.ex. enskild vers) bygg av aktuell vers */
     if (!audioLoopTracks && audioCurrentSurah){
       audioLoopTracks = [track(audioCurrentSurah, audioCurrentAyah, audioTotalVerses)];
     }
@@ -1821,7 +1971,6 @@ function updateSuraLoopButton(){
   }
 }
 
-/* Aya-väljaren */
 function playAyaFromSelected(){
   const s = ayaPickerState.surahNum, start = ayaPickerState.selectedAyah;
   closeAyaPicker();
@@ -1843,13 +1992,37 @@ function playAyaOnlySelected(){
   playAudioSequence(tracks, false, null);
   updateSuraLoopButton();
 }
-function suraPlayerBack(){
-  if (!currentAyaData) return;
-  goToPrevAya();
+
+/* ============================================================
+   BACKWARD / FORWARD – navigerar INOM vald sura (fix)
+   ============================================================ */
+function getSelectedPlaySurah(){
+  const sel = document.getElementById('playSuraSelect');
+  return sel ? (parseInt(sel.value, 10) || 1) : 1;
 }
+
+function suraPlayerBack(){
+  const surahNum = getSelectedPlaySurah();
+  const maxAyah = SURAH_AYAH_COUNTS[surahNum - 1];
+  let ayah = currentSuraPlaybackAyah - 1;
+  if(ayah < 1) ayah = maxAyah;
+  currentSuraPlaybackAyah = ayah;
+  fetchAya(surahNum, ayah);
+  const p = document.getElementById('suraProgress');
+  if(p) p.textContent = '⏸ ' + SURAH_NAMES[surahNum - 1] + ' · vers ' + ayah + ' av ' + maxAyah;
+  toast('⏪ ' + SURAH_NAMES[surahNum - 1] + ' ' + surahNum + ':' + ayah);
+}
+
 function suraPlayerForward(){
-  if (!currentAyaData) return;
-  goToNextAya();
+  const surahNum = getSelectedPlaySurah();
+  const maxAyah = SURAH_AYAH_COUNTS[surahNum - 1];
+  let ayah = currentSuraPlaybackAyah + 1;
+  if(ayah > maxAyah) ayah = 1;
+  currentSuraPlaybackAyah = ayah;
+  fetchAya(surahNum, ayah);
+  const p = document.getElementById('suraProgress');
+  if(p) p.textContent = '⏸ ' + SURAH_NAMES[surahNum - 1] + ' · vers ' + ayah + ' av ' + maxAyah;
+  toast('⏩ ' + SURAH_NAMES[surahNum - 1] + ' ' + surahNum + ':' + ayah);
 }
 
 /* ============================================================
@@ -2075,7 +2248,7 @@ function copyVerse(btn){
 }
 
 /* ============================================================
-   TAFSIR-MODAL (huvudfunktionalitet)
+   TAFSIR-MODAL
    ============================================================ */
 const TAFSIR_SOURCES = {
   en: { quranComId: 169, label: 'Ibn Kathir (English)' },
@@ -2198,9 +2371,6 @@ function resetTafsirFontSize(){
   if(display) display.textContent = '19px';
 }
 
-/* ============================================================
-   GOOGLE TRANSLATE — för persiska och sorani
-   ============================================================ */
 function toggleGtPanel(){
   const panel = document.getElementById('gtPanel');
   if(!panel) return;
@@ -2301,9 +2471,6 @@ async function runGoogleTranslate(){
   toast('✅ Översättning klar!');
 }
 
-/* ============================================================
-   TAFSIR-HÄMTNING
-   ============================================================ */
 async function fetchTafsirForAyah(surah, ayah, lang){
   lang = lang || 'en';
   if(lang === 'fa') return await fetchPersianTafsirAyah(surah, ayah);
@@ -2394,9 +2561,6 @@ function cleanTafsirHtml(html){
     .replace(/javascript:/gi, '');
 }
 
-/* ============================================================
-   ÖPPNA / STÄNG TAFSIR
-   ============================================================ */
 async function openTafsirAyah(surah, ayah, label){
   tafsirState.surah = surah;
   tafsirState.ayah = ayah;
