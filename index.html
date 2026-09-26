@@ -409,7 +409,12 @@
 
     .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
     .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
-    .tafsir-body{font-size:var(--tafsir-font-size);line-height:1.9;color:var(--text);font-family:var(--tafsir-font-family);transition:font-size .2s, font-family .2s}
+    .tafsir-body{
+      font-size:var(--tafsir-font-size);
+      line-height:1.9;
+      color:var(--text);
+      transition:font-size .2s;
+    }
     .tafsir-body.rtl{direction:rtl;text-align:right;font-family:var(--kurdish-font)}
     .tafsir-body p{margin-bottom:14px}
     .tafsir-body h2{
@@ -1830,10 +1835,16 @@
     <!-- Ny verktygsrad för font & storlek -->
     <div class="tafsir-tools-bar">
       <span class="tool-label"><i class="fas fa-font"></i> Font:</span>
+      <button class="font-btn" data-font="Inter, system-ui, -apple-system, sans-serif" onclick="setTafsirFont(this, 'Inter, system-ui, -apple-system, sans-serif')">Inter</button>
+      <button class="font-btn" data-font="Georgia, serif" onclick="setTafsirFont(this, 'Georgia, serif')">Georgia</button>
       <button class="font-btn active" data-font="'Times New Roman', Times, serif" onclick="setTafsirFont(this, \"'Times New Roman', Times, serif\")">Times</button>
-      <button class="font-btn" data-font="'Amiri', serif" onclick="setTafsirFont(this, \"'Amiri', serif\")">Amiri</button>
-      <button class="font-btn" data-font="'Scheherazade New', serif" onclick="setTafsirFont(this, \"'Scheherazade New', serif\")">Scheherazade</button>
-      <button class="font-btn" data-font="'Noto Naskh Arabic', serif" onclick="setTafsirFont(this, \"'Noto Naskh Arabic', serif\")">Noto Naskh</button>
+      <button class="font-btn" data-font="Arial, Helvetica, sans-serif" onclick="setTafsirFont(this, 'Arial, Helvetica, sans-serif')">Arial</button>
+      <button class="font-btn" data-font="Roboto, sans-serif" onclick="setTafsirFont(this, 'Roboto, sans-serif')">Roboto</button>
+      <button class="font-btn" data-font="'Open Sans', sans-serif" onclick="setTafsirFont(this, \"'Open Sans', sans-serif\")">Open Sans</button>
+      <button class="font-btn" data-font="Verdana, sans-serif" onclick="setTafsirFont(this, 'Verdana, sans-serif')">Verdana</button>
+      <button class="font-btn" data-font="'Courier New', Courier, monospace" onclick="setTafsirFont(this, \"'Courier New', Courier, monospace\")">Courier</button>
+      <button class="font-btn" data-font="Amiri, serif" onclick="setTafsirFont(this, 'Amiri, serif')">Amiri</button>
+      <button class="font-btn" data-font="'K24 Kurdish', sans-serif" onclick="setTafsirFont(this, \"'K24 Kurdish', sans-serif\")">K24 Kurdish</button>
       <span class="tool-label" style="margin-left:8px"><i class="fas fa-text-height"></i> Storlek:</span>
       <button class="size-btn" onclick="changeTafsirFontSize(-1)">A-</button>
       <span class="size-display" id="tafsirSizeDisplay">19px</span>
@@ -3304,22 +3315,37 @@ let tafsirFontFamily = "'Times New Roman', Times, serif";
 
 function setTafsirFont(btn, fontFamily){
   tafsirFontFamily = fontFamily;
+  // Applicera direkt på tafsir-body (inte bara via CSS-variabel)
+  const body = document.getElementById('tafsirBody');
+  if(body){
+    body.style.fontFamily = fontFamily;
+  }
+  // Spara även som CSS-variabel för nya innehåll
   document.documentElement.style.setProperty('--tafsir-font-family', fontFamily);
   document.querySelectorAll('.tafsir-tools-bar .font-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  toast('🔤 Font: ' + (btn ? btn.textContent : fontFamily));
+  // Spara val
+  try{ localStorage.setItem('quranTafsirFont', fontFamily); }catch(e){}
+  const label = btn ? btn.textContent : fontFamily.split(',')[0].replace(/'/g, '');
+  toast('🔤 Font: ' + label);
 }
 function changeTafsirFontSize(delta){
   tafsirFontSize = Math.max(12, Math.min(42, tafsirFontSize + delta));
   document.documentElement.style.setProperty('--tafsir-font-size', tafsirFontSize + 'px');
+  const body = document.getElementById('tafsirBody');
+  if(body) body.style.fontSize = tafsirFontSize + 'px';
   const display = document.getElementById('tafsirSizeDisplay');
   if(display) display.textContent = tafsirFontSize + 'px';
+  try{ localStorage.setItem('quranTafsirFontSize', tafsirFontSize); }catch(e){}
 }
 function resetTafsirFontSize(){
   tafsirFontSize = 19;
   document.documentElement.style.setProperty('--tafsir-font-size', '19px');
+  const body = document.getElementById('tafsirBody');
+  if(body) body.style.fontSize = '19px';
   const display = document.getElementById('tafsirSizeDisplay');
   if(display) display.textContent = '19px';
+  try{ localStorage.setItem('quranTafsirFontSize', 19); }catch(e){}
 }
 
 async function fetchTafsirForAyah(surah, ayah, lang){
@@ -3445,6 +3471,9 @@ async function openTafsirAyah(surah, ayah, label){
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
   body.classList.remove('rtl');
+  // Applicera sparad font och storlek
+  body.style.fontFamily = tafsirFontFamily;
+  body.style.fontSize = tafsirFontSize + 'px';
 
   modal.classList.remove('h');
   updateTafsirTranslateBar();
@@ -3461,6 +3490,8 @@ async function openTafsirAyah(surah, ayah, label){
   tafsirState.originalBody = result.body;
   source.textContent = result.source;
   body.innerHTML = result.body;
+  body.style.fontFamily = tafsirFontFamily;
+  body.style.fontSize = tafsirFontSize + 'px';
 }
 
 async function openTafsirChapter(surah, chapterName){
@@ -3479,6 +3510,8 @@ async function openTafsirChapter(surah, chapterName){
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir för hela suran…</div>';
   body.classList.remove('rtl');
+  body.style.fontFamily = tafsirFontFamily;
+  body.style.fontSize = tafsirFontSize + 'px';
 
   modal.classList.remove('h');
   updateTafsirTranslateBar();
@@ -3512,6 +3545,8 @@ async function openTafsirChapter(surah, chapterName){
   tafsirState.originalBody = html;
   source.textContent = tafsirState.originalSource;
   body.innerHTML = html;
+  body.style.fontFamily = tafsirFontFamily;
+  body.style.fontSize = tafsirFontSize + 'px';
 }
 
 async function openTafsirDaily(){
@@ -3562,11 +3597,15 @@ async function translateTafsirTo(lang){
 
   const body = document.getElementById('tafsirBody');
   const source = document.getElementById('tafsirSource');
+  body.style.fontFamily = tafsirFontFamily;
+  body.style.fontSize = tafsirFontSize + 'px';
 
   if(lang === 'original' || !tafsirState.originalBody){
     body.innerHTML = tafsirState.originalBody;
     source.textContent = tafsirState.originalSource;
     body.classList.remove('rtl');
+    body.style.fontFamily = tafsirFontFamily;
+    body.style.fontSize = tafsirFontSize + 'px';
     return;
   }
 
@@ -3576,6 +3615,8 @@ async function translateTafsirTo(lang){
       body.innerHTML = tafsirState.nativeCache[lang].body;
       source.textContent = tafsirState.nativeCache[lang].source;
       body.classList.add('rtl');
+      body.style.fontFamily = tafsirFontFamily;
+      body.style.fontSize = tafsirFontSize + 'px';
       return;
     }
 
@@ -3615,6 +3656,8 @@ async function translateTafsirTo(lang){
       body.innerHTML = resultBody;
       source.textContent = resultSource;
       body.classList.add('rtl');
+      body.style.fontFamily = tafsirFontFamily;
+      body.style.fontSize = tafsirFontSize + 'px';
     } else {
       body.innerHTML = '<p>Tafsir är inte tillgänglig på detta språk just nu. Kontrollera internetanslutningen eller försök igen senare.</p>';
       source.textContent = 'Ej tillgänglig';
@@ -4101,6 +4144,25 @@ updateFavBadge();
 updateTafsirFsIcon();
 fetchRandomAya();
 renderVkKeyboard();
+
+// Ladda sparad tafsir-font och storlek
+try{
+  const savedFont = localStorage.getItem('quranTafsirFont');
+  if(savedFont){
+    tafsirFontFamily = savedFont;
+    document.documentElement.style.setProperty('--tafsir-font-family', savedFont);
+    document.querySelectorAll('.tafsir-tools-bar .font-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.font === savedFont);
+    });
+  }
+  const savedSize = localStorage.getItem('quranTafsirFontSize');
+  if(savedSize){
+    tafsirFontSize = parseInt(savedSize, 10) || 19;
+    document.documentElement.style.setProperty('--tafsir-font-size', tafsirFontSize + 'px');
+    const display = document.getElementById('tafsirSizeDisplay');
+    if(display) display.textContent = tafsirFontSize + 'px';
+  }
+}catch(e){}
 </script>
 
 </body>
