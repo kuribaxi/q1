@@ -147,8 +147,8 @@
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
     .tafsir-card{max-width:800px;width:100%;padding:0;display:flex;flex-direction:column;max-height:90vh;overflow:hidden}
-    .tafsir-card:fullscreen,.tafsir-card:-webkit-full-screen{max-width:100vw;max-height:100vh;width:100vw;height:100vh;border-radius:0;background:var(--surface)}
-    .tafsir-card:fullscreen .tafsir-scroll,.tafsir-card:-webkit-full-screen .tafsir-scroll{flex:1}
+    .tafsir-card:fullscreen,.tafsir-card:-webkit-fullscreen{max-width:100vw;max-height:100vh;width:100vw;height:100vh;border-radius:0;background:var(--surface)}
+    .tafsir-card:fullscreen .tafsir-scroll,.tafsir-card:-webkit-fullscreen .tafsir-scroll{flex:1}
     .tafsir-topbar{display:flex;justify-content:space-between;align-items:center;padding:22px 24px 14px;flex-shrink:0}
     .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3}
     .tafsir-close{width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;flex-shrink:0;transition:all .2s}
@@ -598,12 +598,12 @@
 
     <div class="daily-aya-qari-row">
       <i class="fas fa-microphone-lines"></i>
-      <select id="qariSelect"></select>
+      <select id="qariSelect" onchange="setQari()"></select>
     </div>
 
     <div class="daily-aya-qari-row">
       <i class="fas fa-book"></i>
-      <select id="playSuraSelect"></select>
+      <select id="playSuraSelect" onchange="onPlaySuraSelectChange()"></select>
       <button class="day-action-btn" id="favSuraBtn" onclick="toggleSuraFavorite()" title="Spara sura som favorit"><i class="far fa-star"></i></button>
     </div>
 
@@ -624,7 +624,7 @@
   <div class="section">
     <div class="section-title"><i class="fas fa-search"></i> Hoppa till sura</div>
     <div class="sura-picker">
-      <select id="suraSelect"></select>
+      <select id="suraSelect" onchange="onSuraSelectChange()"></select>
       <input type="number" id="ayahInput" min="1" value="1" placeholder="Vers">
       <button onclick="goToSuraAyah()"><i class="fas fa-arrow-right"></i> Visa</button>
     </div>
@@ -871,7 +871,7 @@ const TRANSLATIONS = {
     kafirun: '«بڵێ: ئەی بێباوەڕان! ئەوەی ئێوە دەیپەرستن، من نایپەرستم. و ئێوە پەرستنی ئەوەی من دەیپەرستم ناکەن. من پەرستنی ئەوەی ئێوە پەرستوتانە ناکەم، و ئێوە پەرستنی ئەوەی من دەیپەرستم ناکەن. دینی ئێوە بۆ ئێوە و دینی من بۆ من.»',
     ikhlas: '«بڵێ: ئەو خوایە یەکتایە. خوای بێنیاز. نە زاوە و نە زێدی لێوە نەبووە. و هیچ کەس هاوتای ئەو نییە.»',
     falaq: '«بڵێ: پەنا دەبەم بە پەروەردگاری بەیان، لە شەڕی ئەوەی دروستی کردووە، و لە شەڕی تاریکی کاتێک دادێت، و لە شەڕی ئەوانەی بە گره‌کاندا فوو دەکەن، و لە شەڕی حەسوود کاتێک حەسوودی دەبات.»',
-    nas: '«بڵێ: پەنا دەبەم بە پەروەردگاری خەڵکی، پاشای خەڵکی، خوای خەڵکی، لە شەڕی وەسوەسەکەری خۆشاراوە، ئەوەی لە سنگى خەڵکی وەسوەسە دەکات، لە جنۆکە و خەڵکی.»'
+    nas: '«بڵێ: پەنا دەبەم بە پەروەردگاری خەڵکی، پاشای خەڵقی، خوای خەڵقی، لە شەڕی وەسوەسەکەری خۆشاراوە، ئەوەی لە سنگى خەڵقی وەسوەسە دەکات، لە جنۆکە و خەڵکی.»'
   },
   'ku-KM': {
     kursi: '«Allah – ji bilî wî xwedayek tune, ew yê jîndar û domdar e. Ne xew û ne jî xewnê wî nagire. Her tiştê li ezmanan û li ser zemînê ji wî re ye. Kî ye ku bê destûra wî li bal wî şefaetê bike? Ew dizane çi li ber wan û çi li pişt wan e, û ew bi tiştek ji zanîna wî ne agahdar in, ji bilî tiştê ku ew bixwaze. Kursiya wî ezmanan û zemînê digire, û parastina wan li ser wî ne giran e. Û ew bilind û mezin e.»',
@@ -1134,7 +1134,7 @@ function clearQuranSearch(){
 }
 
 /* ============================================================
-   DAGENS AYA (förenklad)
+   DAGENS AYA
    ============================================================ */
 let currentAyaData = null;
 let currentLang = localStorage.getItem('quranLang') || 'sv';
@@ -1237,8 +1237,6 @@ function goToPrevAya(){
   else { surahNum = surahNum > 1 ? surahNum - 1 : 114; ayahNum = SURAH_AYAH_COUNTS[surahNum - 1]; }
   fetchAya(surahNum, ayahNum);
 }
-function playDailyAya(btn){ toast('🎧 Uppspelning ej tillgänglig i demo'); }
-function toggleDailyLoop(){ toast('🔁 Upprepning'); }
 function updateSaveFavBtn(){
   const btn = document.getElementById('saveFavBtn');
   if(!btn || !currentAyaData) return;
@@ -1256,7 +1254,6 @@ function populateSuraSelect(){
   sel.innerHTML = SURAH_NAMES.map((name, i) =>
     `<option value="${i+1}">${i+1}. ${name} (${SURAH_AYAH_COUNTS[i]} verser)</option>`
   ).join('');
-  sel.addEventListener('change', updateAyahInputMax);
   updateAyahInputMax();
 }
 function populatePlaySuraSelect(){
@@ -1265,6 +1262,23 @@ function populatePlaySuraSelect(){
   sel.innerHTML = SURAH_NAMES.map((name, i) =>
     `<option value="${i+1}">${i+1}. ${name} (${SURAH_AYAH_COUNTS[i]} verser)</option>`
   ).join('');
+}
+/* NYTT: när användaren väljer sura i "Hoppa till sura" hämtas vers 1 direkt
+   (tidigare hände ingenting förrän man tryckte "Visa"). */
+function onSuraSelectChange(){
+  updateAyahInputMax();
+  const sel = document.getElementById('suraSelect');
+  const input = document.getElementById('ayahInput');
+  if(input) input.value = 1;
+  if(sel && sel.value){
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    fetchAya(parseInt(sel.value, 10), 1);
+  }
+}
+/* NYTT: när användaren byter sura i uppspelnings-listan visas vers 1 direkt. */
+function onPlaySuraSelectChange(){
+  const sel = document.getElementById('playSuraSelect');
+  if(sel && sel.value) fetchAya(parseInt(sel.value, 10), 1);
 }
 function goToSuraAyah(){
   const surahNum = parseInt(document.getElementById('suraSelect').value, 10) || 1;
@@ -1287,30 +1301,234 @@ function updateAyahInputMax(){
   input.placeholder = 'Vers (1–' + maxAyah + ')';
   if(parseInt(input.value, 10) > maxAyah) input.value = maxAyah;
 }
-function playSelectedSura(){ openAyaPicker(parseInt(document.getElementById('playSuraSelect').value, 10)); }
-function cycleSuraLoopMode(){ toast('🔁'); }
-function stopSuraPlayback(){}
-function suraPlayerBack(){}
-function suraPlayerForward(){}
-function updateSuraProgress(){}
 
 /* ============================================================
-   QARI
+   QARI + RIKTIG LJUDMOTOR  (FIX: ljudet fungerar nu)
    ============================================================ */
 const QARIS = [
-  { id:'ar.alafasy', name:'Mishary Rashid Alafasy' },
-  { id:'ar.husary', name:'Mahmoud Khalil Al-Husary' },
-  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi' }
+  { id:'ar.alafasy', name:'Mishary Rashid Alafasy', folder:'Alafasy_128kbps' },
+  { id:'ar.husary', name:'Mahmoud Khalil Al-Husary', folder:'Husary_128kbps' },
+  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi', folder:'Minshawawi_Murattal_128kbps' }
 ];
 function populateQariSelect(){
   const sel = document.getElementById('qariSelect');
   if(!sel) return;
   sel.innerHTML = QARIS.map(q => `<option value="${q.id}">${q.name}</option>`).join('');
+  const saved = localStorage.getItem('quranQari');
+  if(saved && QARIS.some(q => q.id === saved)) sel.value = saved;
 }
-function setQari(){}
+function currentQariFolder(){
+  const sel = document.getElementById('qariSelect');
+  const q = QARIS.find(x => x.id === (sel && sel.value));
+  return q ? q.folder : 'Alafasy_128kbps';
+}
+/* Ljud-URL per vers hos everyayah.com: {sura 3 siffror}{vers 3 siffror}.mp3 */
+function ayahAudioUrl(surah, ayah){
+  return 'https://everyayah.com/data/' + currentQariFolder() + '/' +
+    String(surah).padStart(3, '0') + String(ayah).padStart(3, '0') + '.mp3';
+}
+/* Byt qari: spara valet och, om något spelas just nu, ladda om ljudet med ny qari. */
+function setQari(){
+  const sel = document.getElementById('qariSelect');
+  if(sel && sel.value){ try{ localStorage.setItem('quranQari', sel.value); }catch(e){} }
+  if(ap.active && ap.list.length){ playCurrentAyah(); toast('🎙️ Qari bytt – spelar om versen'); }
+}
+
+/* --- Uppspelnings-state --- */
+const audioEl = new Audio();
+audioEl.preload = 'auto';
+const ap = { list: [], idx: 0, loop: 'off', active: false, ctx: '', btn: null };
+let suraLoopMode = 'off';
+let favLoopMode = 'off';
+let dailyLoopOn = false;
+
+function clearPlayingUI(){
+  document.querySelectorAll('.verse-tool.playing').forEach(b => {
+    b.classList.remove('playing');
+    if(b.dataset.role === 'play'){ const i = b.querySelector('i'); if(i) i.className = 'fas fa-play'; }
+  });
+  document.querySelectorAll('.day-action-btn.playing').forEach(b => {
+    b.classList.remove('playing');
+    if(b.id === 'playDailyBtn' || b.id === 'playSuraBtn'){ const i = b.querySelector('i'); if(i) i.className = 'fas fa-play'; }
+  });
+  document.querySelectorAll('.fav-item.playing-now').forEach(el => el.classList.remove('playing-now'));
+  const favPlayText = document.getElementById('favPlayText');
+  if(favPlayText) favPlayText.textContent = 'Spela';
+}
+function markPlayingUI(){
+  clearPlayingUI();
+  if(ap.btn){
+    ap.btn.classList.add('playing');
+    const i = ap.btn.querySelector('i');
+    if(i) i.className = 'fas fa-pause';
+  }
+  const item = ap.list[ap.idx];
+  if(item && item.favId){
+    const el = document.querySelector('.fav-item[data-fav-id="' + item.favId + '"]');
+    if(el) el.classList.add('playing-now');
+    const favPlayText = document.getElementById('favPlayText');
+    if(favPlayText) favPlayText.textContent = 'Paus';
+  }
+}
+function updateSuraProgress(){
+  const el = document.getElementById('suraProgress');
+  if(!el) return;
+  if(!ap.active || !ap.list.length){ el.textContent = ''; return; }
+  const item = ap.list[ap.idx];
+  if(!item) return;
+  if(ap.ctx.indexOf('sura:') === 0){
+    el.textContent = '🎧 ' + SURAH_NAMES[item.s - 1] + ' · vers ' + item.a + ' av ' + SURAH_AYAH_COUNTS[item.s - 1] +
+      ' (' + (ap.idx + 1) + '/' + ap.list.length + ')' + (ap.loop === 'one' ? ' · 🔁 vers' : ap.loop === 'all' ? ' · 🔁 sura' : '');
+  } else if(ap.ctx === 'favs'){
+    el.textContent = '🎧 Favoriter · ' + (ap.idx + 1) + '/' + ap.list.length + ' · ' + SURAH_NAMES[item.s - 1] + ' ' + item.s + ':' + item.a;
+  } else {
+    el.textContent = '🎧 ' + SURAH_NAMES[item.s - 1] + ' ' + item.s + ':' + item.a + (ap.loop === 'one' ? ' · 🔁' : '');
+  }
+}
+function stopPlayback(showToast){
+  audioEl.pause();
+  audioEl.removeAttribute('src');
+  audioEl.load();
+  ap.active = false; ap.list = []; ap.idx = 0; ap.ctx = ''; ap.btn = null;
+  clearPlayingUI();
+  updateSuraProgress();
+  if(showToast) toast('⏹️ Stoppad');
+}
+function playCurrentAyah(){
+  const item = ap.list[ap.idx];
+  if(!item){ stopPlayback(); return; }
+  ap.active = true;
+  markPlayingUI();
+  updateSuraProgress();
+  audioEl.src = ayahAudioUrl(item.s, item.a);
+  audioEl.play().catch(() => {
+    toast('⚠️ Kunde inte spela ljudet — kontrollera internetanslutningen');
+    stopPlayback();
+  });
+}
+/* Spela en lista av verser {s, a, favId?} från startIdx. */
+function startPlayback(list, startIdx, opts){
+  opts = opts || {};
+  if(!list || !list.length){ toast('⚠️ Inget att spela'); return; }
+  ap.list = list;
+  ap.idx = Math.max(0, Math.min(startIdx || 0, list.length - 1));
+  ap.loop = opts.loop || 'off';
+  ap.ctx = opts.ctx || '';
+  ap.btn = opts.btn || null;
+  playCurrentAyah();
+}
+/* Pausa/fortsätt pågående uppspelning. */
+function togglePauseUI(){
+  if(audioEl.paused){
+    audioEl.play().catch(()=>{});
+    if(ap.btn){ ap.btn.classList.add('playing'); const i = ap.btn.querySelector('i'); if(i) i.className = 'fas fa-pause'; }
+  } else {
+    audioEl.pause();
+    if(ap.btn){ ap.btn.classList.remove('playing'); const i = ap.btn.querySelector('i'); if(i) i.className = 'fas fa-play'; }
+  }
+}
+audioEl.addEventListener('ended', () => {
+  if(ap.loop === 'one'){
+    playCurrentAyah();
+    return;
+  }
+  ap.idx++;
+  if(ap.idx >= ap.list.length){
+    if(ap.loop === 'all'){ ap.idx = 0; playCurrentAyah(); }
+    else { stopPlayback(); toast('✅ Uppspelning klar'); }
+    return;
+  }
+  playCurrentAyah();
+});
+
+/* --- Play-knappar i sektionerna (Al-Fatiha, Qul osv.) --- */
+function playSurah(surah, btn){
+  const ctx = 'sura:' + surah;
+  if(ap.active && ap.ctx === ctx){ togglePauseUI(); return; }
+  const list = [];
+  for(let a = 1; a <= SURAH_AYAH_COUNTS[surah - 1]; a++) list.push({ s: surah, a: a });
+  startPlayback(list, 0, { ctx: ctx, btn: btn, loop: suraLoopMode });
+}
+function playAyah(surah, ayah, btn){
+  const ctx = 'ayah:' + surah + ':' + ayah;
+  if(ap.active && ap.ctx === ctx){ togglePauseUI(); return; }
+  startPlayback([{ s: surah, a: ayah }], 0, { ctx: ctx, btn: btn, loop: 'off' });
+}
+/* Upprepa en enskild vers (t.ex. Ayat al-Kursi) i oändligt loop. */
+function toggleVerseLoop(btn){
+  if(!btn) return;
+  if(btn.classList.contains('active')){
+    // Stäng av loop för denna vers
+    btn.classList.remove('active');
+    if(ap.active && ap.loop === 'one'){ ap.loop = 'off'; toast('🔁 Upprepning av'); }
+    return;
+  }
+  document.querySelectorAll('.verse-tool.active').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const block = btn.closest('.verse-block');
+  const arabicEl = block ? block.querySelector('.arabic') : null;
+  let surah = 2, ayah = 255;
+  if(block && block.parentElement){
+    // Bestäm sura/vers från play-knappen i samma vers-block
+    const playBtn = block.querySelector('.verse-tool[data-role="play"]');
+    if(playBtn){
+      const m = playBtn.getAttribute('onclick') || '';
+      const nums = m.match(/(\d+)\s*,\s*(\d+)/);
+      if(nums){ surah = parseInt(nums[1],10); ayah = parseInt(nums[2],10); }
+      else { const sm = m.match(/playSurah\((\d+)/); if(sm){ surah = parseInt(sm[1],10); ayah = 1; } }
+    }
+  }
+  const playBtn = block ? block.querySelector('.verse-tool[data-role="play"]') : null;
+  startPlayback([{ s: surah, a: ayah }], 0, { ctx: 'verseLoop:' + surah + ':' + ayah, btn: playBtn || btn, loop: 'one' });
+  toast('🔁 Versen upprepas tills du stänger av');
+}
+
+/* --- Dagens aya: spela + loop --- */
+function playDailyAya(btn){
+  if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
+  const ctx = 'daily:' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum;
+  if(ap.active && ap.ctx === ctx){ togglePauseUI(); return; }
+  startPlayback([{ s: currentAyaData.surahNum, a: currentAyaData.ayahNum }], 0,
+    { ctx: ctx, btn: btn, loop: dailyLoopOn ? 'one' : 'off' });
+}
+function toggleDailyLoop(){
+  dailyLoopOn = !dailyLoopOn;
+  const btn = document.getElementById('loopDailyBtn');
+  if(btn) btn.classList.toggle('active', dailyLoopOn);
+  if(ap.active && ap.ctx.indexOf('daily:') === 0) ap.loop = dailyLoopOn ? 'one' : 'off';
+  toast(dailyLoopOn ? '🔁 Dagens aya upprepas' : '🔁 Upprepning av');
+}
+
+/* --- Sura-spelaren (nedre raden) --- */
+function playSelectedSura(btn){
+  const surah = parseInt(document.getElementById('playSuraSelect').value, 10) || 1;
+  const ctx = 'sura:' + surah;
+  if(ap.active && ap.ctx === ctx){ togglePauseUI(); return; }
+  const list = [];
+  for(let a = 1; a <= SURAH_AYAH_COUNTS[surah - 1]; a++) list.push({ s: surah, a: a });
+  startPlayback(list, 0, { ctx: ctx, btn: btn, loop: suraLoopMode });
+  toast('▶️ ' + SURAH_NAMES[surah - 1]);
+}
+function cycleSuraLoopMode(){
+  suraLoopMode = suraLoopMode === 'off' ? 'one' : (suraLoopMode === 'one' ? 'all' : 'off');
+  if(ap.active && ap.ctx.indexOf('sura:') === 0) ap.loop = suraLoopMode;
+  const btn = document.getElementById('loopSuraBtn');
+  if(btn) btn.classList.toggle('active', suraLoopMode !== 'off');
+  toast('🔁 Sura-upprepning: ' + (suraLoopMode === 'off' ? 'Av' : suraLoopMode === 'one' ? 'aktuell vers' : 'hela suran'));
+  updateSuraProgress();
+}
+function stopSuraPlayback(){ stopPlayback(true); }
+function suraPlayerBack(){
+  if(ap.active && ap.ctx.indexOf('sura:') === 0 && ap.idx > 0){ ap.idx--; playCurrentAyah(); return; }
+  toast('⏮️ Spela en sura först');
+}
+function suraPlayerForward(){
+  if(ap.active && ap.ctx.indexOf('sura:') === 0 && ap.idx < ap.list.length - 1){ ap.idx++; playCurrentAyah(); return; }
+  toast('⏭️ Spela en sura först');
+}
 
 /* ============================================================
-   AYA-VÄLJARE
+   AYA-VÄLJARE (FIX: spelar nu verkligt ljud)
    ============================================================ */
 let ayaPickerState = { surahNum: 1, selectedAyah: 1, ayahCount: 7 };
 function openAyaPicker(surahNum){
@@ -1344,15 +1562,30 @@ function selectAyaNum(n){
     });
   }
 }
-function playAyaFromSelected(){ closeAyaPicker(); toast('▶️'); }
-function playAyaOnlySelected(){ closeAyaPicker(); toast('▶️'); }
+/* Spela från vald vers till slutet av suran. */
+function playAyaFromSelected(){
+  const surah = ayaPickerState.surahNum;
+  const from = ayaPickerState.selectedAyah;
+  const list = [];
+  for(let a = from; a <= SURAH_AYAH_COUNTS[surah - 1]; a++) list.push({ s: surah, a: a });
+  closeAyaPicker();
+  startPlayback(list, 0, { ctx: 'sura:' + surah, btn: document.getElementById('playSuraBtn'), loop: suraLoopMode });
+  toast('▶️ Spelar ' + SURAH_NAMES[surah - 1] + ' från vers ' + from);
+}
+/* Spela endast den valda versen. */
+function playAyaOnlySelected(){
+  const surah = ayaPickerState.surahNum;
+  const ayah = ayaPickerState.selectedAyah;
+  closeAyaPicker();
+  startPlayback([{ s: surah, a: ayah }], 0, { ctx: 'ayah:' + surah + ':' + ayah, btn: null, loop: 'off' });
+  toast('▶️ ' + SURAH_NAMES[surah - 1] + ' ' + surah + ':' + ayah);
+}
 
 /* ============================================================
    FAVORITER
    ============================================================ */
 let favorites = [];
 try{ favorites = JSON.parse(localStorage.getItem('quranFavorites')) || []; }catch(e){ favorites = []; }
-let favLoopMode = 'off';
 function saveFavorites(){ try{ localStorage.setItem('quranFavorites', JSON.stringify(favorites)); }catch(e){} updateFavBadge(); }
 function updateFavBadge(){
   const b = document.getElementById('favBdg');
@@ -1389,10 +1622,35 @@ function updateFavFullscreenIcon(){ const icon = document.getElementById('favFsI
 function toggleSelectAllFavorites(checkbox){ document.querySelectorAll('.fav-checkbox').forEach(cb => { cb.checked = checkbox.checked; }); updateSelectedCount(); }
 function updateSelectedCount(){ const count = document.querySelectorAll('.fav-checkbox:checked').length; const el = document.getElementById('favSelectedCount'); if(el) el.textContent = count + ' valda'; }
 function getCheckedFavoriteIds(){ return Array.from(document.querySelectorAll('.fav-checkbox:checked')).map(cb => parseInt(cb.dataset.favId, 10)); }
-function playFavoritesSequence(){ toast('▶️'); }
-function stopFavoritesSequence(){}
-function cycleFavLoopMode(){ toast('🔁'); }
-function playFavorite(){ toast('▶️'); }
+/* FIX: favorit-sekvensen spelar nu verkligt ljud, markerar raden och stödjer loop. */
+function playFavoritesSequence(){
+  if(!favorites.length){ toast('❌ Inga favoriter att spela'); return; }
+  const ctx = 'favs';
+  if(ap.active && ap.ctx === ctx){ togglePauseUI(); return; }
+  const checkedIds = getCheckedFavoriteIds();
+  const chosen = checkedIds.length ? favorites.filter(f => checkedIds.includes(f.id)) : favorites.slice();
+  const list = chosen.map(f => ({ s: f.surahNum, a: f.ayahNum, favId: f.id }));
+  startPlayback(list, 0, { ctx: ctx, btn: document.getElementById('favPlayBtn'), loop: favLoopMode });
+  toast('▶️ Spelar ' + list.length + ' favorit' + (list.length > 1 ? 'er' : ''));
+}
+function stopFavoritesSequence(){ stopPlayback(true); }
+function cycleFavLoopMode(){
+  favLoopMode = favLoopMode === 'off' ? 'one' : (favLoopMode === 'one' ? 'all' : 'off');
+  if(ap.active && ap.ctx === 'favs') ap.loop = favLoopMode;
+  const btn = document.getElementById('favLoopBtn');
+  const text = document.getElementById('favLoopText');
+  if(btn) btn.classList.toggle('active', favLoopMode !== 'off');
+  if(text) text.textContent = favLoopMode === 'off' ? 'Av' : (favLoopMode === 'one' ? 'Vers' : 'Alla');
+  toast('🔁 Favorit-upprepning: ' + (favLoopMode === 'off' ? 'Av' : favLoopMode === 'one' ? 'aktuell vers' : 'hela listan'));
+}
+/* FIX: spela en enskild favorit med vald qari. */
+function playFavorite(id, btn){
+  const f = favorites.find(x => x.id === id);
+  if(!f) return;
+  const ctx = 'fav:' + id;
+  if(ap.active && ap.ctx === ctx){ togglePauseUI(); return; }
+  startPlayback([{ s: f.surahNum, a: f.ayahNum, favId: f.id }], 0, { ctx: ctx, btn: btn || null, loop: 'off' });
+}
 function renderFavorites(){
   const c = document.getElementById('favList');
   const toolbar = document.getElementById('favToolbar');
@@ -1448,6 +1706,14 @@ function viewFavorite(id){
   document.getElementById('viewFavModal').classList.remove('h');
 }
 function closeViewFav(){ document.getElementById('viewFavModal').classList.add('h'); }
+function toggleSuraFavorite(){
+  const surah = parseInt(document.getElementById('playSuraSelect').value, 10) || 1;
+  const ctx = 'sura:' + surah;
+  const already = favorites.some(f => f.surahNum === surah && f.ayahNum === 1) && favorites.some(f => f.surahNum === surah && f.ayahNum === SURAH_AYAH_COUNTS[surah - 1]);
+  if(already){ toast('⭐ Suran finns redan bland favoriter'); return; }
+  favorites.push({ id: Date.now(), surahNum: surah, ayahNum: 1, surahName: SURAH_NAMES[surah - 1], arabic: '—', sv: 'Hela suran: ' + SURAH_NAMES[surah - 1], en: 'Whole surah: ' + SURAH_NAMES[surah - 1], fa: '', ku: '', 'ku-KM': '', phonetic: '', savedAt: new Date().toISOString() });
+  saveFavorites(); toast('⭐ ' + SURAH_NAMES[surah - 1] + ' sparad (rad visar suran — spela via favoritlistan)');
+}
 
 /* ============================================================
    SPRÅK
@@ -1620,7 +1886,7 @@ function resetTafsirFontSize(){
 }
 
 /* ============================================================
-   GOOGLE TRANSLATE — FIXAD för persiska och sorani
+   GOOGLE TRANSLATE — för persiska och sorani
    ============================================================ */
 function toggleGtPanel(){
   const panel = document.getElementById('gtPanel');
@@ -1633,9 +1899,7 @@ function closeGtPanel(){
 }
 
 /* Översätt en textbit via Googles publika translate-endpoint (translate.googleapis.com).
-   Denna stöder både persiska ('fa') och sorani-kurdiska ('ckb') korrekt, till skillnad
-   från MyMemory/LibreTranslate som ofta saknar stöd för 'ckb' och tyst returnerar
-   engelsk text oöversatt (vilket var buggen: allt hamnade på engelska). */
+   Denna stöder både persiska ('fa') och sorani-kurdiska ('ckb') korrekt. */
 async function translateChunkGoogle(chunk, sourceLang, targetLang){
   try{
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sourceLang)}&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(chunk)}`;
@@ -1644,21 +1908,13 @@ async function translateChunkGoogle(chunk, sourceLang, targetLang){
     const data = await res.json();
     if(Array.isArray(data) && Array.isArray(data[0])){
       const translated = data[0].map(seg => (Array.isArray(seg) ? seg[0] : '')).join('');
-      if(translated && translated.trim() && translated.trim().toLowerCase() !== chunk.trim().toLowerCase()){
-        return translated;
-      }
-      // Om Google faktiskt returnerar identisk text kan det ändå vara korrekt
-      // (t.ex. siffror/namn) — men om HELA chunken är oförändrad och innehåller
-      // bokstäver behandlar vi det som ett misslyckande så att fallbacken kan testas.
       if(translated && translated.trim()) return translated;
     }
   }catch(e){}
   return null;
 }
 
-/* Fallback för persiska: MyMemory stödjer 'fa' relativt väl. Används INTE för 'ckb'
-   eftersom MyMemory saknar tillförlitligt stöd för sorani-kurdiska och tenderar att
-   skicka tillbaka den engelska texten oöversatt. */
+/* Fallback för persiska: MyMemory stödjer 'fa' relativt väl. Används INTE för 'ckb'. */
 async function translateChunkMyMemory(chunk, sourceLang, targetLang){
   try{
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${sourceLang}|${targetLang}&de=quran@example.com`;
@@ -1682,13 +1938,10 @@ async function translateFullText(text, sourceLang, targetLang){
   const results = [];
   for(let i = 0; i < chunks.length; i++){
     const chunk = chunks[i];
-    // 1. Försök med Google Translate (stödjer både fa och ckb)
     let translated = await translateChunkGoogle(chunk, sourceLang, targetLang);
-    // 2. Fallback: MyMemory (bara pålitligt för persiska, 'fa')
     if(!translated && targetLang === 'fa'){
       translated = await translateChunkMyMemory(chunk, sourceLang, targetLang);
     }
-    // 3. Sista utväg: behåll original (bättre än att visa fel)
     if(!translated){
       translated = chunk;
     }
@@ -1703,7 +1956,6 @@ async function runGoogleTranslate(){
   const source = document.getElementById('tafsirSource');
   if(!body) return;
 
-  // Hämta engelsk originaltext (eller befintlig text) att översätta
   const plainText = stripHtmlForTranslation(tafsirState.originalBody || body.innerHTML);
   if(!plainText || plainText.length < 5){
     toast('❌ Ingen text att översätta');
@@ -1716,10 +1968,6 @@ async function runGoogleTranslate(){
   body.classList.add('rtl');
   body.classList.remove('original');
 
-  // Google Translate-språkkoder:
-  // - Persiska: 'fa'
-  // - Sorani kurdiska: 'ckb' (Central Kurdish — det kodnamn Google Translate använder)
-  // Källspråk: engelska 'en' (eftersom tafsiren är på engelska)
   const sourceLangCode = 'en';
   const targetLangCode = targetLang === 'fa' ? 'fa' : 'ckb';
 
