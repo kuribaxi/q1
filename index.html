@@ -936,6 +936,28 @@
   <div class="modal-card" id="viewFavContent"></div>
 </div>
 
+<!-- VÄDER-MODAL -->
+<div class="modal-ov h" id="weatherModal" onclick="if(event.target===this)closeWeatherModal()">
+  <div class="modal-card">
+    <div class="fav-modal-header">
+      <div class="fav-modal-title"><i class="fas fa-cloud-sun" style="color:var(--amber)"></i><span>Veckans väder</span></div>
+      <button class="fav-modal-icon-btn" onclick="closeWeatherModal()" title="Stäng"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="weatherModalBody"><div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Laddar…</div></div>
+  </div>
+</div>
+
+<!-- BÖNETIDER-MODAL -->
+<div class="modal-ov h" id="azanModal" onclick="if(event.target===this)closeAzanModal()">
+  <div class="modal-card">
+    <div class="fav-modal-header">
+      <div class="fav-modal-title"><i class="fas fa-mosque" style="color:var(--emerald)"></i><span>Dagens bönetider</span></div>
+      <button class="fav-modal-icon-btn" onclick="closeAzanModal()" title="Stäng"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="azanModalBody"></div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    TRANSLATIONS
@@ -1124,27 +1146,182 @@ function cycleClockDate(){
 }
 
 /* ============================================================
-   VÄDER (förenklad)
+   VÄDER (open-meteo, ingen API-nyckel krävs)
    ============================================================ */
-function fetchWeather(){
+const WEATHER_CODES = {
+  0:['Klar himmel','fa-sun'],1:['Mestadels klart','fa-cloud-sun'],2:['Delvis molnigt','fa-cloud-sun'],3:['Molnigt','fa-cloud'],
+  45:['Dimma','fa-smog'],48:['Bistrande dimma','fa-smog'],
+  51:['Duggregn','fa-cloud-rain'],53:['Duggregn','fa-cloud-rain'],55:['Kraftigt duggregn','fa-cloud-rain'],
+  56:['Underkylt duggregn','fa-cloud-rain'],57:['Underkylt duggregn','fa-cloud-rain'],
+  61:['Lätt regn','fa-cloud-rain'],63:['Regn','fa-cloud-rain'],65:['Kraftigt regn','fa-cloud-showers-heavy'],
+  66:['Underkylt regn','fa-cloud-rain'],67:['Underkylt regn','fa-cloud-rain'],
+  71:['Lätt snöfall','fa-snowflake'],73:['Snöfall','fa-snowflake'],75:['Kraftigt snöfall','fa-snowflake'],
+  77:['Snökorn','fa-snowflake'],
+  80:['Regnskurar','fa-cloud-showers-heavy'],81:['Regnskurar','fa-cloud-showers-heavy'],82:['Violenta regnskurar','fa-cloud-showers-heavy'],
+  85:['Snöbyar','fa-snowflake'],86:['Snöbyar','fa-snowflake'],
+  95:['Åska','fa-bolt'],96:['Åska med hagel','fa-bolt'],99:['Åska med hagel','fa-bolt']
+};
+let weatherPos = null;
+function weatherDescFor(code){ return WEATHER_CODES[code] || ['Väder','fa-cloud']; }
+function tryGeolocateWeather(){
+  if (!navigator.geolocation) { fetchWeather({latitude:59.3293, longitude:18.0686}); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => fetchWeather({latitude: pos.coords.latitude, longitude: pos.coords.longitude}),
+    () => fetchWeather({latitude:59.3293, longitude:18.0686}),
+    { timeout: 8000, maximumAge: 600000 }
+  );
+}
+async function fetchWeather(pos){
   const weatherTemp = document.getElementById('weatherTemp');
   const weatherDesc = document.getElementById('weatherDesc');
+  const weatherIcon = document.getElementById('weatherIcon');
   if(!weatherTemp) return;
   weatherTemp.textContent = '--°C';
-  weatherDesc.textContent = 'Ej tillgängligt';
+  weatherDesc.textContent = 'Laddar…';
+  const p = pos || weatherPos || {latitude:59.3293, longitude:18.0686};
+  weatherPos = p;
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${p.latitude}&longitude=${p.longitude}&current=temperature_2m,weather_code&timezone=auto`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('weather http ' + res.status);
+    const data = await res.json();
+    const cur = data && data.current;
+    if(cur && typeof cur.temperature_2m === 'number'){
+      const [desc, icon] = weatherDescFor(cur.weather_code);
+      weatherTemp.textContent = Math.round(cur.temperature_2m) + '°C';
+      weatherDesc.textContent = desc;
+      if(weatherIcon) weatherIcon.className = 'fas ' + icon;
+      return;
+    }
+    throw new Error('weather data saknas');
+  }catch(e){
+    weatherTemp.textContent = '--°C';
+    weatherDesc.textContent = 'Ej tillgängligt';
+  }
 }
-fetchWeather();
+tryGeolocateWeather();
+setInterval(() => { if(weatherPos) fetchWeather(weatherPos); }, 15 * 60 * 1000);
+
+function openWeatherModal(){
+  const p = weatherPos || {latitude:59.3293, longitude:18.0686};
+  /* Hämta 7-dagarsprognos och visa i en enkel modal */
+  const ov = document.getElementById('weatherModal');
+  if(!ov) return;
+  document.getElementById('weatherModalBody').innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Laddar veckans väder…</div>';
+  ov.classList.remove('h');
+  (async () => {
+    try{
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${p.latitude}&longitude=${p.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('http');
+      const data = await res.json();
+      const d = data.daily;
+      let html = '';
+      for(let i = 0; i < d.time.length; i++){
+        const [desc, icon] = weatherDescFor(d.weather_code[i]);
+        const dayName = i === 0 ? 'Idag' : WEEKDAYS_SV[new Date(d.time[i]).getDay()];
+        html += `
+          <div class="fav-item">
+            <div class="fav-ref"><i class="fas ${icon}" style="color:var(--amber)"></i> <span>${dayName} · ${desc}</span></div>
+            <div class="fav-text">${Math.round(d.temperature_2m_max[i])}° / ${Math.round(d.temperature_2m_min[i])}°C</div>
+          </div>`;
+      }
+      document.getElementById('weatherModalBody').innerHTML = html || '<p>Kunde inte hämta väderprognos.</p>';
+    }catch(e){
+      document.getElementById('weatherModalBody').innerHTML = '<p>Kunde inte hämta väderprognos. Kontrollera internetanslutningen.</p>';
+    }
+  })();
+}
+function closeWeatherModal(){ document.getElementById('weatherModal').classList.add('h'); }
 
 /* ============================================================
-   BÖNETIDER (förenklad)
+   BÖNETIDER (aladhan API)
    ============================================================ */
+const PRAYER_NAMES_SV = { Fajr:'Fajr', Sunrise:'Soluppgång', Dhuhr:'Dhuhr', Asr:'Asr', Maghrib:'Maghrib', Isha:'Isha' };
+let prayerTimes = null;   // { Fajr:'04:12', ... }
+let prayerDateStr = null; // 'YYYY-MM-DD' för giltighetskontroll
+
+function tryGeolocateAzan(){
+  if (!navigator.geolocation) { loadPrayerTimes({latitude:59.3293, longitude:18.0686}); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => loadPrayerTimes({latitude: pos.coords.latitude, longitude: pos.coords.longitude}),
+    () => loadPrayerTimes({latitude:59.3293, longitude:18.0686}),
+    { timeout: 8000, maximumAge: 600000 }
+  );
+}
+async function loadPrayerTimes(pos){
+  const p = pos || {latitude:59.3293, longitude:18.0686};
+  try{
+    const url = `https://api.aladhan.com/v1/timings?latitude=${p.latitude}&longitude=${p.longitude}&method=3`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('azan http ' + res.status);
+    const data = await res.json();
+    const t = data && data.data && data.data.timings;
+    if(t){
+      prayerTimes = t;
+      prayerDateStr = data.data.date.gregorian ? data.data.date.gregorian.date : null;
+      updateAzanTopBar();
+      return;
+    }
+    throw new Error('azan data saknas');
+  }catch(e){
+    prayerTimes = null;
+    updateAzanTopBar();
+  }
+}
+tryGeolocateAzan();
+setInterval(() => {
+  const today = new Date().toISOString().slice(0,10);
+  if(prayerDateStr !== today){ tryGeolocateAzan(); } else { updateAzanTopBar(); }
+}, 60 * 1000);
+
+function minutesOf(hhmm){
+  const m = /^(\d{1,2}):(\d{2})/.exec(hhmm || '');
+  return m ? (parseInt(m[1],10) * 60 + parseInt(m[2],10)) : null;
+}
 function updateAzanTopBar(){
   const timeEl = document.getElementById('azanNextTime');
   const labelEl = document.getElementById('azanNextLabel');
-  if(timeEl) timeEl.textContent = '--:--';
-  if(labelEl) labelEl.textContent = 'Ej tillgängligt';
+  if(!timeEl || !labelEl) return;
+  if(!prayerTimes){
+    timeEl.textContent = '--:--';
+    labelEl.textContent = 'Ej tillgängligt';
+    return;
+  }
+  const order = ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  let nextName = null, nextTime = null;
+  for(const name of order){
+    const t = prayerTimes[name];
+    if(!t) continue;
+    const mins = minutesOf(t);
+    if(mins !== null && mins > nowMin){ nextName = name; nextTime = t; break; }
+  }
+  if(!nextName){
+    /* Alla dagens bönetider har passerat: nästa är Fajr imorgon */
+    nextName = 'Fajr';
+    nextTime = prayerTimes.Fajr || '--:--';
+  }
+  timeEl.textContent = (nextTime || '--:--').slice(0,5);
+  labelEl.textContent = PRAYER_NAMES_SV[nextName] + (nextName === 'Fajr' ? ' (imorgon)' : '');
 }
-updateAzanTopBar();
+function openAzanModal(){
+  const ov = document.getElementById('azanModal');
+  if(!ov) return;
+  const listEl = document.getElementById('azanModalBody');
+  if(!prayerTimes){
+    listEl.innerHTML = '<p>Bönetider ej tillgängliga. Kontrollera internetanslutningen.</p>';
+  } else {
+    const order = ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+    listEl.innerHTML = order.map(name => {
+      const t = (prayerTimes[name] || '--:--').slice(0,5);
+      return `<div class="fav-item"><div class="fav-ref"><i class="fas fa-mosque" style="color:var(--emerald)"></i> <span>${PRAYER_NAMES_SV[name]}</span></div><div class="fav-text" style="font-size:24px">${t}</div></div>`;
+    }).join('');
+  }
+  ov.classList.remove('h');
+}
+function closeAzanModal(){ document.getElementById('azanModal').classList.add('h'); }
 
 /* ============================================================
    VIRTUELLT TANGENTBORD
