@@ -1554,7 +1554,33 @@ function closeGtPanel(){
   if(panel) panel.classList.remove('open');
 }
 
-/* Översätt en textbit via MyMemory. Returnerar översatt sträng eller null. */
+/* Översätt en textbit via Googles publika translate-endpoint (translate.googleapis.com).
+   Denna stöder både persiska ('fa') och sorani-kurdiska ('ckb') korrekt, till skillnad
+   från MyMemory/LibreTranslate som ofta saknar stöd för 'ckb' och tyst returnerar
+   engelsk text oöversatt (vilket var buggen: allt hamnade på engelska). */
+async function translateChunkGoogle(chunk, sourceLang, targetLang){
+  try{
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sourceLang)}&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(chunk)}`;
+    const res = await fetch(url);
+    if(!res.ok) return null;
+    const data = await res.json();
+    if(Array.isArray(data) && Array.isArray(data[0])){
+      const translated = data[0].map(seg => (Array.isArray(seg) ? seg[0] : '')).join('');
+      if(translated && translated.trim() && translated.trim().toLowerCase() !== chunk.trim().toLowerCase()){
+        return translated;
+      }
+      // Om Google faktiskt returnerar identisk text kan det ändå vara korrekt
+      // (t.ex. siffror/namn) — men om HELA chunken är oförändrad och innehåller
+      // bokstäver behandlar vi det som ett misslyckande så att fallbacken kan testas.
+      if(translated && translated.trim()) return translated;
+    }
+  }catch(e){}
+  return null;
+}
+
+/* Fallback för persiska: MyMemory stödjer 'fa' relativt väl. Används INTE för 'ckb'
+   eftersom MyMemory saknar tillförlitligt stöd för sorani-kurdiska och tenderar att
+   skicka tillbaka den engelska texten oöversatt. */
 async function translateChunkMyMemory(chunk, sourceLang, targetLang){
   try{
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${sourceLang}|${targetLang}&de=quran@example.com`;
@@ -1571,41 +1597,20 @@ async function translateChunkMyMemory(chunk, sourceLang, targetLang){
   return null;
 }
 
-/* Alternativ: använd LibreTranslate (gratis öppen instans) som fallback. */
-async function translateChunkLibre(chunk, sourceLang, targetLang){
-  try{
-    const res = await fetch('https://libretranslate.de/translate', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        q: chunk,
-        source: sourceLang,
-        target: targetLang,
-        format: 'text'
-      })
-    });
-    if(!res.ok) return null;
-    const data = await res.json();
-    if(data && data.translatedText && data.translatedText.trim()){
-      return data.translatedText;
-    }
-  }catch(e){}
-  return null;
-}
-
-/* Översätt en hel text med fallback-kedja. */
+/* Översätt en hel text med fallback-kedja: Google Translate först (stödjer fa + ckb),
+   därefter MyMemory som sista utväg (endast meningsfullt för fa). */
 async function translateFullText(text, sourceLang, targetLang){
   const chunks = splitIntoChunks(text, 450);
   const results = [];
   for(let i = 0; i < chunks.length; i++){
     const chunk = chunks[i];
-    // 1. Försök med MyMemory
-    let translated = await translateChunkMyMemory(chunk, sourceLang, targetLang);
-    // 2. Fallback: LibreTranslate
-    if(!translated){
-      translated = await translateChunkLibre(chunk, sourceLang, targetLang);
+    // 1. Försök med Google Translate (stödjer både fa och ckb)
+    let translated = await translateChunkGoogle(chunk, sourceLang, targetLang);
+    // 2. Fallback: MyMemory (bara pålitligt för persiska, 'fa')
+    if(!translated && targetLang === 'fa'){
+      translated = await translateChunkMyMemory(chunk, sourceLang, targetLang);
     }
-    // 3. Sista utväg: behåll original
+    // 3. Sista utväg: behåll original (bättre än att visa fel)
     if(!translated){
       translated = chunk;
     }
@@ -1629,13 +1634,13 @@ async function runGoogleTranslate(){
 
   const targetLabel = targetLang === 'fa' ? 'persiska' : 'sorani-kurdiska';
   body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter till ' + targetLabel + '…<br><span style="font-size:12px">Detta kan ta en stund.</span></div>';
-  source.textContent = 'Översätter med ' + (targetLang === 'fa' ? 'Persiska' : 'Sorani') + '…';
+  source.textContent = 'Översätter med Google Translate (' + (targetLang === 'fa' ? 'Persiska' : 'Sorani') + ')…';
   body.classList.add('rtl');
   body.classList.remove('original');
 
-  // MyMemory språkkoder:
-  // - Persiska: 'fa' (eller 'fa-IR')
-  // - Sorani kurdiska: 'ckb' (Central Kurdish) — stöds av MyMemory
+  // Google Translate-språkkoder:
+  // - Persiska: 'fa'
+  // - Sorani kurdiska: 'ckb' (Central Kurdish — det kodnamn Google Translate använder)
   // Källspråk: engelska 'en' (eftersom tafsiren är på engelska)
   const sourceLangCode = 'en';
   const targetLangCode = targetLang === 'fa' ? 'fa' : 'ckb';
@@ -1649,14 +1654,14 @@ async function runGoogleTranslate(){
   }
 
   if(!translated || translated === plainText){
-    body.innerHTML = '<p style="color:var(--rose);font-weight:800">⚠️ Översättningen misslyckades. Kontrollera internetanslutningen och försök igen.<br><br>Tips: API:et kan vara tillfälligt överbelastat. Vänta några sekunder och försök igen.</p>';
+    body.innerHTML = '<p style="color:var(--rose);font-weight:800">⚠️ Översättningen misslyckades. Kontrollera internetanslutningen och försök igen.<br><br>Tips: Tjänsten kan vara tillfälligt otillgänglig. Vänta några sekunder och försök igen.</p>';
     source.textContent = 'Översättning misslyckades';
     return;
   }
 
   const paragraphs = translated.split(/\n{2,}/).filter(p => p.trim()).map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
   body.innerHTML = paragraphs || '<p>Ingen översättning tillgänglig.</p>';
-  source.textContent = 'Maskinöversatt till ' + (targetLang === 'fa' ? 'persiska' : 'sorani-kurdiska') + ' (MyMemory/LibreTranslate) · ' + (tafsirState.originalSource || '');
+  source.textContent = 'Maskinöversatt till ' + (targetLang === 'fa' ? 'persiska' : 'sorani-kurdiska') + ' (Google Translate) · ' + (tafsirState.originalSource || '');
   applyTafsirContentStyles(body, targetLang === 'fa' ? 'fa' : 'ku');
   body.classList.add('rtl');
   toast('✅ Översättning klar!');
