@@ -1163,19 +1163,80 @@ const FALLBACK_AYAS = [
   { arabic: 'وَقُل رَّبِّ زِدْنِي عِلْمًا', sv: 'Och säg: Min Herre, öka mig i kunskap.', en: 'And say: My Lord, increase me in knowledge.', fa: 'و بگو: پروردگارا، بر دانش من بیفزای.', ku: 'و بڵێ: پەروەردگارا، زانستم بۆ زیاد بکە.', 'ku-KM': 'Û bêje: Xwedayê min, zanîna min zêde bike.', surahName: 'Ta-Ha', surahNum: 20, ayahNum: 114, phonetic: 'Wa qul rabbi zidnī ʿilmā' },
   { arabic: 'فَاذْكُرُونِي أَذْكُرْكُمْ', sv: 'Så åminns Mig, så ska Jag åminnas er.', en: 'So remember Me; I will remember you.', fa: 'پس مرا یاد کنید تا شما را یاد کنم.', ku: 'کەواتە یادی من بەن، منیش یادی ئێوە دەکەم.', 'ku-KM': 'Ji ber vê yekê min bibîr bînin, ez jî we bibîr bînim.', surahName: 'Al-Baqarah', surahNum: 2, ayahNum: 152, phonetic: 'Fadhkurūnī adhkurkum' }
 ];
-function fetchRandomAya(){
-  const data = FALLBACK_AYAS[Math.floor(Math.random() * FALLBACK_AYAS.length)];
+/* Verkliga Quran-editioner via api.alquran.cloud (samma tjänst som redan används
+   för den engelska tafsiren nedan). Detta gör att "Dagens aya" och "Hoppa till sura"
+   kan visa VILKEN som helst av Quranens 6236 verser, inte bara de 5 exempel som
+   fanns hårdkodade tidigare. */
+const QURAN_EDITIONS = {
+  arabic: 'quran-uthmani',
+  en: 'en.sahih',
+  sv: 'sv.bernstrom',
+  fa: 'fa.makarem',
+  ku: 'ku.asan',
+  phonetic: 'en.transliteration'
+};
+
+async function fetchAyahEdition(surah, ayah, edition){
+  try{
+    const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/${edition}`);
+    if(!res.ok) return '';
+    const data = await res.json();
+    if(data && data.data && typeof data.data.text === 'string' && data.data.text.trim()){
+      return data.data.text;
+    }
+  }catch(e){}
+  return '';
+}
+
+async function fetchAyaFromApi(surah, ayah){
+  const entries = Object.entries(QURAN_EDITIONS);
+  const results = await Promise.allSettled(entries.map(([, ed]) => fetchAyahEdition(surah, ayah, ed)));
+  const out = { surahNum: surah, ayahNum: ayah, surahName: SURAH_NAMES[surah - 1] };
+  entries.forEach(([key], idx) => {
+    out[key] = (results[idx].status === 'fulfilled') ? results[idx].value : '';
+  });
+  out['ku-KM'] = ''; // Kurmanji-kurdiska finns inte i denna källa; visar snyggt "ej tillgänglig"-läge istället
+  return out;
+}
+
+async function fetchAya(surah, ayah){
+  surah = Math.min(Math.max(parseInt(surah, 10) || 1, 1), 114);
+  const maxAyah = SURAH_AYAH_COUNTS[surah - 1];
+  ayah = Math.min(Math.max(parseInt(ayah, 10) || 1, 1), maxAyah);
+  const content = document.getElementById('dailyAyaContent');
+  if(content) content.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Laddar vers…</div>';
+  const data = await fetchAyaFromApi(surah, ayah);
+  if(!data.arabic){
+    // Ingen internetanslutning / API otillgängligt: visa en lokalt sparad exempelvers istället för att lämna sidan tom
+    const fb = FALLBACK_AYAS.find(a => a.surahNum === surah && a.ayahNum === ayah) || FALLBACK_AYAS[Math.floor(Math.random() * FALLBACK_AYAS.length)];
+    toast('⚠️ Kunde inte hämta versen från internet — visar en lokal exempelvers istället');
+    renderDailyAya(fb);
+    return;
+  }
   renderDailyAya(data);
 }
-function fetchAya(surah, ayah){
-  const found = FALLBACK_AYAS.find(a => a.surahNum === surah && a.ayahNum === ayah);
-  if(found) renderDailyAya(found);
-  else toast('📖 ' + (SURAH_NAMES[surah-1] || '') + ' ' + surah + ':' + ayah);
-}
 function renderFallbackAya(){ fetchRandomAya(); }
+async function fetchRandomAya(){
+  const surah = Math.floor(Math.random() * 114) + 1;
+  const ayah = Math.floor(Math.random() * SURAH_AYAH_COUNTS[surah - 1]) + 1;
+  await fetchAya(surah, ayah);
+}
 function nextDailyAya(){ fetchRandomAya(); }
-function goToNextAya(){ toast('➡️ Nästa aya'); }
-function goToPrevAya(){ toast('⬅️ Föregående aya'); }
+function goToNextAya(){
+  if(!currentAyaData) return fetchRandomAya();
+  let { surahNum, ayahNum } = currentAyaData;
+  const maxAyah = SURAH_AYAH_COUNTS[surahNum - 1];
+  if(ayahNum < maxAyah){ ayahNum++; }
+  else { surahNum = surahNum < 114 ? surahNum + 1 : 1; ayahNum = 1; }
+  fetchAya(surahNum, ayahNum);
+}
+function goToPrevAya(){
+  if(!currentAyaData) return fetchRandomAya();
+  let { surahNum, ayahNum } = currentAyaData;
+  if(ayahNum > 1){ ayahNum--; }
+  else { surahNum = surahNum > 1 ? surahNum - 1 : 114; ayahNum = SURAH_AYAH_COUNTS[surahNum - 1]; }
+  fetchAya(surahNum, ayahNum);
+}
 function playDailyAya(btn){ toast('🎧 Uppspelning ej tillgänglig i demo'); }
 function toggleDailyLoop(){ toast('🔁 Upprepning'); }
 function updateSaveFavBtn(){
@@ -1195,6 +1256,8 @@ function populateSuraSelect(){
   sel.innerHTML = SURAH_NAMES.map((name, i) =>
     `<option value="${i+1}">${i+1}. ${name} (${SURAH_AYAH_COUNTS[i]} verser)</option>`
   ).join('');
+  sel.addEventListener('change', updateAyahInputMax);
+  updateAyahInputMax();
 }
 function populatePlaySuraSelect(){
   const sel = document.getElementById('playSuraSelect');
@@ -1204,10 +1267,25 @@ function populatePlaySuraSelect(){
   ).join('');
 }
 function goToSuraAyah(){
-  const surahNum = parseInt(document.getElementById('suraSelect').value);
-  const ayahNum = parseInt(document.getElementById('ayahInput').value);
-  fetchAya(surahNum, ayahNum);
+  const surahNum = parseInt(document.getElementById('suraSelect').value, 10) || 1;
+  const ayahInput = document.getElementById('ayahInput');
+  const maxAyah = SURAH_AYAH_COUNTS[surahNum - 1];
+  let ayahNum = parseInt(ayahInput.value, 10) || 1;
+  if(ayahNum < 1) ayahNum = 1;
+  if(ayahNum > maxAyah){ ayahNum = maxAyah; toast('⚠️ ' + SURAH_NAMES[surahNum - 1] + ' har bara ' + maxAyah + ' verser'); }
+  ayahInput.value = ayahNum;
   window.scrollTo({top: 0, behavior: 'smooth'});
+  fetchAya(surahNum, ayahNum);
+}
+function updateAyahInputMax(){
+  const sel = document.getElementById('suraSelect');
+  const input = document.getElementById('ayahInput');
+  if(!sel || !input) return;
+  const surahNum = parseInt(sel.value, 10) || 1;
+  const maxAyah = SURAH_AYAH_COUNTS[surahNum - 1];
+  input.max = maxAyah;
+  input.placeholder = 'Vers (1–' + maxAyah + ')';
+  if(parseInt(input.value, 10) > maxAyah) input.value = maxAyah;
 }
 function playSelectedSura(){ openAyaPicker(parseInt(document.getElementById('playSuraSelect').value, 10)); }
 function cycleSuraLoopMode(){ toast('🔁'); }
