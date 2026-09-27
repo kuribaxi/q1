@@ -114,8 +114,10 @@ select{background:var(--panel3);border:1px solid var(--line);border-radius:10px;
 .playerWrap{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
 #video{width:100%;height:100%}
 #loadingOverlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.7);font-size:13px;color:#cbd5e1}
+  background:rgba(0,0,0,.7);font-size:13px;color:#cbd5e1;text-align:center;padding:20px}
 #loadingOverlay.show{display:flex}
+#netWarning{display:none;margin:0 14px;padding:10px 14px;border-radius:12px;font-size:12px;
+  background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);color:#fcd34d;line-height:1.6}
 .nowHead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-top:12px}
 #nowName{font-size:18px;font-weight:800}
 #nowGroup{font-size:12px;color:var(--muted);margin-top:4px}
@@ -224,6 +226,7 @@ select{background:var(--panel3);border:1px solid var(--line);border-radius:10px;
   </aside>
 
   <main id="rightPanel">
+    <div id="netWarning">⚠️ <b>Nätverksåtkomst blockerad i den här förhandsvisningen.</b><br/>Kanaler syns i listan men kan inte spelas här. Använd nedladdningsknappen och öppna filen i webbläsaren (Chrome/Firefox) – då fungerar både uppspelning, spellistor och EPG.</div>
     <div class="rightInner">
       <div class="playerCard">
         <div class="playerWrap">
@@ -306,6 +309,21 @@ let epgLoading = false;
 
 let searchQ='', groupF='', showFavOnly=false;
 let countryFilter='Alla', langFilter='Alla', gridFilter='Alla';
+
+/* Built-in starter channels – always visible & selectable, no download needed */
+const BUILTIN_ID = 'builtin';
+channelsByPlaylist[BUILTIN_ID] = [
+  {name:'Red Bull TV', group:'Sport', lang:'eng', country:'AT', plCountry:'Internationell', flag:'🌍', tvgId:'', logo:'', playlistId:'builtin', url:'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8'},
+  {name:'NASA TV', group:'Dokumentär', lang:'eng', country:'US', plCountry:'USA', flag:'🇺🇸', tvgId:'', logo:'', playlistId:'builtin', url:'https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8'},
+  {name:'Al Jazeera English', group:'Nyheter', lang:'eng', country:'QA', plCountry:'Internationell', flag:'🌍', tvgId:'', logo:'', playlistId:'builtin', url:'https://live-hls-web-aje.getaj.net/AJE/index.m3u8'},
+  {name:'DW English', group:'Nyheter', lang:'eng', country:'DE', plCountry:'Internationell', flag:'🌍', tvgId:'', logo:'', playlistId:'builtin', url:'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8'},
+  {name:'France 24 English', group:'Nyheter', lang:'eng', country:'FR', plCountry:'Internationell', flag:'🌍', tvgId:'', logo:'', playlistId:'builtin', url:'https://static.france24.com/live/F24_EN_LO_HLS/live_web.m3u8'},
+  {name:'TRT World', group:'Nyheter', lang:'eng', country:'TR', plCountry:'Turkiet', flag:'🇹🇷', tvgId:'', logo:'', playlistId:'builtin', url:'https://tv-trtworld.live.trt.com.tr/master.m3u8'},
+  {name:'CGTN Documentary', group:'Dokumentär', lang:'eng', country:'CN', plCountry:'Internationell', flag:'🌍', tvgId:'', logo:'', playlistId:'builtin', url:'https://livedoc.cgtn.com/500d/prog_index.m3u8'},
+];
+loaded.add(BUILTIN_ID);
+if(active.size===0){ active.add(BUILTIN_ID); }
+
 
 const $ = id => document.getElementById(id);
 const els = {
@@ -402,6 +420,20 @@ function setRowStatus(id,text,state){
 /* ================= Playlist manager UI ================= */
 function renderManager(){
   els.playlistManager.innerHTML='';
+  // Built-in starter row (not removable)
+  const bCount = channelsByPlaylist[BUILTIN_ID]?.length||0;
+  const bRow = document.createElement('div');
+  bRow.className='plRow';
+  bRow.innerHTML = `
+    <div class="plInfo">
+      <span>📌</span>
+      <div style="flex:1;min-width:0">
+        <div class="plName">Inbyggda startkanaler</div>
+        <div class="plMeta">Alltid tillgängliga</div>
+      </div>
+      <span class="status loaded">${bCount} kan</span>
+    </div>`;
+  els.playlistManager.appendChild(bRow);
   const list = PLAYLISTS.filter(p=>!removed.has(p.id));
   if(!list.length){ els.playlistManager.innerHTML='<div class="note" style="padding:8px">Alla listor borttagna.</div>'; }
   for(const p of list){
@@ -452,8 +484,8 @@ function updateSummary(){
 
 /* ================= Filtering & rendering ================= */
 function rebuildAll(){
-  allChannels = [];
-  for(const id of active){ if(channelsByPlaylist[id]) allChannels = allChannels.concat(channelsByPlaylist[id]); }
+  allChannels = (channelsByPlaylist[BUILTIN_ID]||[]).slice();
+  for(const id of active){ if(id!==BUILTIN_ID && channelsByPlaylist[id]) allChannels = allChannels.concat(channelsByPlaylist[id]); }
   // group select options
   const groups = [...new Set(allChannels.map(c=>c.group).filter(Boolean))].sort();
   const cur = els.groupSelect.value;
@@ -555,23 +587,35 @@ function playChannel(c){
   els.nowUrl.textContent = c.url;
   updateFavBtn();
   stopPlayer();
-  els.overlay.classList.add('show');
+  showOverlay('Laddar kanal...');
   const url = c.url||'';
-  const isHls = url.includes('.m3u8');
-  if(isHls && window.Hls && Hls.isSupported()){
+  const fail = () => showOverlay('Kanalen kunde inte spelas.<br>Kontrollera att du öppnat filen i en vanlig webbläsare<br>(förhandsvisningen blockerar nätverk).', true);
+  if(url.includes('.m3u8') && window.Hls && Hls.isSupported()){
     hls = new Hls();
     hls.loadSource(url); hls.attachMedia(els.video);
-    hls.on(Hls.Events.MANIFEST_PARSED, ()=>{ els.video.play().catch(()=>{}); els.overlay.classList.remove('show'); });
-    hls.on(Hls.Events.ERROR, (_,d)=>{ if(d.fatal){ els.overlay.classList.remove('show'); showToast('Streamfel – kanalen kanske är offline'); } });
+    hls.on(Hls.Events.MANIFEST_PARSED, ()=>{ els.video.play().catch(()=>{}); hideOverlay(); });
+    hls.on(Hls.Events.ERROR, (_,d)=>{ if(d.fatal){ fail(); stopPlayer(); } });
   } else if(url.includes('.mpd')){
-    els.overlay.classList.remove('show'); showToast('DASH (.mpd) stöds inte i den här versionen');
-  } else {
-    els.video.src = url; els.video.play().catch(()=>{});
-    els.video.onplaying = ()=>els.overlay.classList.remove('show');
-    setTimeout(()=>els.overlay.classList.remove('show'), 6000);
-  }
+    els.video.src = url;
+    els.video.play().catch(()=>{});
+    els.video.onerror = fail;
+    setTimeout(hideOverlay, 4000);
+  } else if(url){
+    els.video.src = url;
+    els.video.play().catch(()=>{});
+    els.video.onplaying = hideOverlay;
+    els.video.onerror = ()=>{ fail(); };
+    setTimeout(hideOverlay, 6000);
+  } else fail();
   renderChannelList(); renderEPG(); renderGrid();
 }
+function showOverlay(msg, sticky){
+  els.overlay.innerHTML = msg;
+  els.overlay.classList.add('show');
+  clearTimeout(showOverlay._t);
+  if(!sticky) showOverlay._t = setTimeout(hideOverlay, 6000);
+}
+function hideOverlay(){ els.overlay.classList.remove('show'); }
 function updateFavBtn(){
   if(!currentChannel){ els.favBtn.textContent='☆'; return; }
   els.favBtn.textContent = favs.has(currentChannel.url)?'⭐':'☆';
@@ -758,6 +802,15 @@ els.autoLoadCheck.checked = localStorage.getItem(LS.autoload)==='1';
 /* ================= Init ================= */
 renderManager(); rebuildAll(); setEPGStatus('EPG ej laddad','warn');
 if(localStorage.getItem(LS.autoload)==='1' && active.size>0) els.loadBtn.click();
+
+/* Detect blocked network (canvas preview CSP) and show a warning */
+(async ()=>{
+  try{
+    await fetch('https://iptv-org.github.io/iptv/categories/movies.m3u', {method:'GET', cache:'no-store'});
+  }catch(e){
+    document.getElementById('netWarning').style.display='block';
+  }
+})();
 </script>
 </body>
 </html>
