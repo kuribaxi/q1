@@ -189,7 +189,6 @@
     .tafsir-verse-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
     .tafsir-verse-num{font-size:12px;font-weight:800;color:var(--primary);background:var(--primary-soft);display:inline-block;padding:4px 12px;border-radius:50px;margin-bottom:10px}
 
-    /* TAFSIR-FIX: Vanlig tafsir-text i svart (eller ljus i nattläge) */
     .tafsir-body { color: var(--text) !important; }
     .tafsir-body p,
     .tafsir-body div:not(.tafsir-verse-num),
@@ -204,7 +203,6 @@
     }
     .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: var(--text); }
 
-    /* TAFSIR-FIX: Endast arabiska Quran-citat i grön */
     .tafsir-body .tafsir-aya-green {
       background: none !important;
       color: var(--emerald) !important;
@@ -1555,7 +1553,6 @@ async function performQuranSearch(){
   }
 }
 
-/* Markerar sökordet med röd färg i arabisk text. */
 function highlightSearchMatch(originalText, query){
   if(!originalText || !query) return escapeHtml(originalText || '');
 
@@ -1729,7 +1726,6 @@ async function fetchAyahEdition(surah, ayah, edition){
   return '';
 }
 
-/* Hämtar Kurmanji-översättning från fawazahmed0/quran-api (kmr-unknown) */
 async function fetchKurmanjiTranslation(surah, ayah){
   try{
     const res = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/kmr-unknown/${surah}/${ayah}.json`);
@@ -1743,20 +1739,14 @@ async function fetchKurmanjiTranslation(surah, ayah){
 }
 
 async function fetchAyaFromApi(surah, ayah){
-  /* Hämta de sex vanliga editionerna parallellt */
   const entries = Object.entries(QURAN_EDITIONS);
   const results = await Promise.allSettled(entries.map(([, ed]) => fetchAyahEdition(surah, ayah, ed)));
   const out = { surahNum: surah, ayahNum: ayah, surahName: SURAH_NAMES[surah - 1] };
   entries.forEach(([key], idx) => {
     out[key] = (results[idx].status === 'fulfilled') ? results[idx].value : '';
   });
-
-  /* Hämta Kurmanji från separat API (finns inte på alquran.cloud) */
   out['ku-KM'] = await fetchKurmanjiTranslation(surah, ayah);
-
-  /* Fallback: om svenska saknas, använd engelska */
   if(!out.sv && out.en) out.sv = out.en;
-
   return out;
 }
 
@@ -1912,6 +1902,40 @@ async function getAyahArabic(surah, ayah){
   return p;
 }
 
+/* Hämta översättning för en enskild vers (för synkad visning under uppspelning) */
+const ayahTranslationCache = new Map();
+async function getAyahTranslation(surah, ayah, lang){
+  const key = surah + ':' + ayah + ':' + lang;
+  if (ayahTranslationCache.has(key)) return ayahTranslationCache.get(key);
+
+  let result = '';
+  try{
+    if (lang === 'ku-KM'){
+      result = await fetchKurmanjiTranslation(surah, ayah);
+    } else {
+      const editions = {
+        sv: 'sv.bernstrom',
+        en: 'en.sahih',
+        fa: 'fa.makarem',
+        ku: 'ku.asan',
+        phonetic: 'en.transliteration'
+      };
+      const edition = editions[lang];
+      if (edition){
+        result = await fetchAyahEdition(surah, ayah, edition);
+      }
+    }
+  }catch(e){ /* tyst */ }
+
+  /* Fallback: svenska saknas → använd engelska */
+  if (!result && lang === 'sv'){
+    try { result = await fetchAyahEdition(surah, ayah, 'en.sahih'); }catch(e){}
+  }
+
+  ayahTranslationCache.set(key, result);
+  return result;
+}
+
 let audioQueue = [], currentAudio = null, audioLoop = false, audioDoneCb = null, activePlayBtn = null;
 let audioLoopTracks = null;
 let audioCurrentSurah = null, audioCurrentAyah = null;
@@ -1982,6 +2006,7 @@ function showBismillahBanner(show){
   if (content) content.prepend(el);
 }
 
+/* Uppdaterad showPlayingAyah – visar både arabiska och översättning synkat */
 async function showPlayingAyah(surah, ayah, total){
   const content = document.getElementById('dailyAyaContent');
   const progress = document.getElementById('suraProgress');
@@ -1996,10 +2021,40 @@ async function showPlayingAyah(surah, ayah, total){
   if (!text || !content) return;
   if (audioCurrentSurah !== surah || audioCurrentAyah !== ayah) return;
   showBismillahBanner(false);
+
+  /* Visa arabisk text omedelbart + platshållare för översättning */
   content.innerHTML = `
     <div class="daily-aya-ref">${SURAH_NAMES[surah - 1]} ${surah}:${ayah}</div>
     <div class="daily-aya-arabic">${text}</div>
+    <div class="daily-aya-text" id="playingAyahTranslation" style="opacity:.6">Laddar översättning…</div>
   `;
+
+  /* Hämta och visa översättningen */
+  try{
+    const translation = await getAyahTranslation(surah, ayah, currentLang);
+    if (audioCurrentSurah !== surah || audioCurrentAyah !== ayah) return;
+    const transEl = document.getElementById('playingAyahTranslation');
+    if (!transEl) return;
+    if (translation && translation.trim()){
+      let extraClass = '';
+      if (currentLang === 'ku') extraClass = ' ku';
+      else if (currentLang === 'ku-KM') extraClass = ' ku-KM';
+      else if (currentLang === 'fa') extraClass = ' fa';
+      else if (currentLang === 'phonetic') extraClass = ' phonetic';
+      transEl.className = 'daily-aya-text' + extraClass;
+      transEl.style.opacity = '1';
+      transEl.textContent = translation;
+    } else {
+      transEl.className = 'daily-aya-text';
+      transEl.style.opacity = '1';
+      transEl.textContent = '⚠️ Översättning ej tillgänglig för denna vers.';
+    }
+  }catch(e){
+    const transEl = document.getElementById('playingAyahTranslation');
+    if (transEl){
+      transEl.textContent = '⚠️ Kunde inte hämta översättning.';
+    }
+  }
 }
 
 function track(surah, ayah, total){
