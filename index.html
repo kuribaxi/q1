@@ -1,610 +1,720 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="theme-color" content="#0b0b16"/>
-<title>IPTV Player Pro – Kurdistan + World</title>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest" onerror="window.__noHls=true"></script>
-<style>
-:root{
-  --bg:#0b0b16; --bg2:#121222; --card:#16162a; --card2:#1c1c34;
-  --border:#262644; --text:#eef0ff; --muted:#9aa0c3;
-  --violet:#8b5cf6; --violet2:#6d28d9; --pink:#ec4899; --cyan:#22d3ee;
-  --green:#34d399; --amber:#fbbf24; --red:#f87171;
-  --grad:linear-gradient(135deg,#8b5cf6,#ec4899);
-  --radius:14px;
-}
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--text);
-  font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px}
-body{background:
-  radial-gradient(1000px 500px at 85% -10%,rgba(139,92,246,.18),transparent 60%),
-  radial-gradient(800px 400px at -10% 110%,rgba(34,211,238,.12),transparent 60%)}
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-thumb{background:#31315a;border-radius:8px}
-::-webkit-scrollbar-track{background:transparent}
-button{font-family:inherit;color:inherit;border:none;background:none;cursor:pointer}
-input,select{font-family:inherit;color:var(--text)}
-img{-webkit-user-drag:none}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IPTV Grid TV App</title>
+  <style>
+    :root{
+      --bg:#06101c;
+      --panel:#101827;
+      --panel2:#0f172a;
+      --line:#243244;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --accent:#38bdf8;
+      --accent2:#22c55e;
+      --fav:#facc15;
+      --focus:#7dd3fc;
+      --sidebar:#0b1220;
+      --gridHead:#0b1220;
+    }
+    *{box-sizing:border-box}
+    html, body{
+      margin:0;
+      width:100%;
+      height:100%;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#020617,#06101c);
+      color:var(--text);
+      overflow:hidden;
+    }
+    body{display:flex}
+    .sidebar{
+      width:300px;
+      flex:0 0 auto;
+      background:rgba(11,18,32,.96);
+      border-right:1px solid var(--line);
+      padding:18px 14px;
+      overflow:auto;
+    }
+    .brand{
+      font-size:24px;
+      font-weight:900;
+      margin:0 0 16px;
+      color:#dbeafe;
+    }
+    .nav{
+      display:grid;
+      gap:10px;
+      margin-bottom:18px;
+    }
+    .nav-btn{
+      min-height:54px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#0f172a;
+      color:var(--text);
+      text-align:left;
+      padding:12px 14px;
+      font-size:17px;
+      cursor:pointer;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .nav-btn.active{
+      background:rgba(56,189,248,.16);
+      border-color:rgba(56,189,248,.6);
+    }
+    .nav-btn:focus, .channel:focus, .fav-chip:focus, input:focus, select:focus, button:focus{
+      outline:none;
+      box-shadow:0 0 0 4px rgba(125,211,252,.35);
+      border-color:var(--focus);
+    }
+    .side-section{margin-top:18px}
+    .side-title{
+      font-size:16px;
+      color:#cbd5e1;
+      font-weight:800;
+      margin:0 0 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    .side-title small{color:var(--muted);font-weight:500}
+    .chip-list{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{
+      min-height:42px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#0b1220;
+      color:var(--text);
+      cursor:pointer;
+      font-size:15px;
+    }
+    .chip.active{
+      background:rgba(34,197,94,.16);
+      border-color:rgba(34,197,94,.55);
+    }
 
-/* ---------- Layout ---------- */
-#app{display:flex;flex-direction:column;height:100dvh}
-header.top{height:58px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
-  gap:10px;padding:0 14px;background:rgba(18,18,34,.85);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);position:relative;z-index:60}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.brand .logo{width:34px;height:34px;border-radius:10px;background:var(--grad);
-  display:grid;place-items:center;font-size:18px;box-shadow:0 4px 18px rgba(139,92,246,.45)}
-.brand b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#stats{font-size:11px;color:var(--muted);white-space:nowrap}
-.topActions{display:flex;gap:8px;flex-shrink:0}
-.topActions button{font-size:12px;padding:8px 12px;border-radius:10px;background:var(--card);
-  border:1px solid var(--border);transition:.15s}
-.topActions button:active{transform:scale(.95)}
-.topActions button:hover{background:var(--card2)}
+    .main{
+      flex:1 1 auto;
+      display:grid;
+      grid-template-columns: 470px 1fr;
+      min-width:0;
+      min-height:0;
+    }
+    .listpane{
+      border-right:1px solid var(--line);
+      background:rgba(17,24,39,.7);
+      overflow:auto;
+      min-width:0;
+    }
+    .content{
+      padding:20px;
+      overflow:auto;
+      min-width:0;
+      display:grid;
+      gap:16px;
+      align-content:start;
+    }
+    .headerbar{
+      padding:18px 20px 12px;
+      border-bottom:1px solid rgba(36,50,68,.7);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .headerbar h1{margin:0;font-size:22px}
+    .headerbar .count{color:var(--muted);font-size:15px}
+    .searchbar{
+      padding:14px 20px;
+      display:grid;
+      grid-template-columns:1fr 1fr auto;
+      gap:10px;
+      border-bottom:1px solid rgba(36,50,68,.7);
+    }
+    input, select, button{
+      width:100%;
+      min-height:54px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#0b1220;
+      color:var(--text);
+      font-size:17px;
+      outline:none;
+    }
+    button.primary{
+      border:none;
+      background:var(--accent);
+      color:#00111a;
+      font-weight:800;
+      cursor:pointer;
+    }
+    button.secondary{
+      background:#1e293b;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
 
-#main{flex:1;display:flex;min-height:0;flex-direction:column}
-#leftPanel{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--bg2);
-  border-top:1px solid var(--border);overflow:hidden;order:2}
-#rightPanel{order:1;flex-shrink:0;background:#000;position:relative}
+    .favoritesBar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      padding:14px 20px 0;
+    }
+    .fav-chip{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-height:48px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#0b1220;
+      color:var(--text);
+      cursor:pointer;
+      font-size:15px;
+    }
+    .fav-chip span{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:180px;
+    }
 
-/* ---------- Player ---------- */
-.playerWrap{position:relative;background:#000}
-#video{width:100%;display:block;aspect-ratio:16/9;max-height:56vh;background:#000}
-#loadingOverlay{position:absolute;inset:0;display:none;place-items:center;background:rgba(0,0,0,.72);
-  backdrop-filter:blur(3px);z-index:5}
-#loadingOverlay.show{display:grid}
-.spinner{width:38px;height:38px;border-radius:50%;border:3px solid rgba(255,255,255,.2);
-  border-top-color:var(--violet);animation:spin 1s linear infinite;margin:0 auto 10px}
-@keyframes spin{to{transform:rotate(360deg)}}
-#nowBar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);
-  border-bottom:1px solid var(--border)}
-#nowName{font-weight:700;font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#nowName:empty:before{content:'Ingen kanal vald';color:var(--muted)}
-#nowMeta{font-size:11px;color:var(--muted);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#nowMeta:empty:before{content:'Välj en kanal i listan nedan'}
-#favBtn{font-size:22px;line-height:1;padding:6px;transition:.15s}
-#favBtn:active{transform:scale(1.3)}
-#favBtn.isFav{filter:drop-shadow(0 0 8px rgba(251,191,36,.7))}
-.pillBtn{font-size:12px;padding:8px 12px;border-radius:10px;background:var(--card);
-  border:1px solid var(--border);white-space:nowrap}
+    .channel{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      padding:14px 20px;
+      border-top:1px solid rgba(36,50,68,.75);
+      cursor:pointer;
+      user-select:none;
+      min-height:104px;
+    }
+    .channel:hover, .channel.active{background:rgba(56,189,248,.12)}
+    .logo{
+      width:64px;
+      height:64px;
+      border-radius:16px;
+      object-fit:cover;
+      background:#1f2937;
+      flex:0 0 auto;
+    }
+    .meta{min-width:0;flex:1}
+    .name{
+      font-size:18px;
+      font-weight:800;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .group{
+      font-size:14px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      margin-top:4px;
+    }
+    .nowline{
+      font-size:13px;
+      color:#cbd5e1;
+      margin-top:6px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .fav-btn{
+      width:48px;
+      height:48px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#0b1220;
+      color:var(--fav);
+      font-size:22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+    .fav-btn.on{
+      background:rgba(250,204,21,.15);
+      border-color:rgba(250,204,21,.5);
+    }
 
-/* ---------- Filters ---------- */
-.filters{flex-shrink:0;padding:12px;display:none;flex-direction:column;gap:10px;
-  background:var(--bg2);border-bottom:1px solid var(--border)}
-#searchWrap{position:relative}
-#search{width:100%;background:var(--card);border:1px solid var(--border);border-radius:12px;
-  padding:13px 16px 13px 42px;font-size:16px;outline:none;transition:.15s}
-#search:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(139,92,246,.25)}
-#searchWrap .icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);opacity:.6;font-size:15px}
-#countryChips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-#countryChips::-webkit-scrollbar{display:none}
-.chip{flex-shrink:0;font-size:13px;padding:8px 14px;border-radius:999px;background:var(--card);
-  border:1px solid var(--border);white-space:nowrap;transition:.15s;font-weight:600;color:var(--muted)}
-.chip.on{background:var(--grad);color:#fff;box-shadow:0 4px 14px rgba(139,92,246,.4);border-color:transparent}
-.chip:active{transform:scale(.95)}
-.filterRow{display:flex;gap:8px}
-.filterRow select{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:10px;font-size:13px;outline:none}
+    .card{
+      background:rgba(17,24,39,.74);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:18px;
+    }
+    .now{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+    .now h2{margin:0;font-size:24px}
+    .now p{margin:6px 0 0;color:var(--muted);font-size:16px}
+    .badge{
+      font-size:14px;
+      color:#00111a;
+      background:var(--accent2);
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .badge.warn{background:#f59e0b}
+    video{
+      width:100%;
+      max-height:62vh;
+      background:#000;
+      border-radius:18px;
+    }
+    .headrow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .programs{
+      display:grid;
+      gap:10px;
+    }
+    .program{
+      display:grid;
+      grid-template-columns:160px 1fr;
+      gap:14px;
+      padding:14px 16px;
+      border:1px solid rgba(36,50,68,.8);
+      border-radius:16px;
+      background:rgba(15,23,42,.65);
+    }
+    .program.nowplaying{
+      border-color:rgba(34,197,94,.85);
+      box-shadow:0 0 0 1px rgba(34,197,94,.16) inset;
+    }
+    .time{color:#cbd5e1;font-size:16px;font-weight:800}
+    .title{font-weight:800;margin-bottom:6px;font-size:18px}
+    .desc{color:var(--muted);font-size:15px;line-height:1.4}
+    .note{color:var(--muted);font-size:15px;line-height:1.5}
+    .loading,.empty{padding:16px 20px;color:var(--muted);font-size:16px}
 
-/* ---------- Playlist manager ---------- */
-#manageWrap{flex-shrink:0;padding:12px;display:none;background:var(--bg2);border-bottom:1px solid var(--border)}
-.manageCard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-.manageCard summary{cursor:pointer;font-weight:700;font-size:14px;display:flex;justify-content:space-between;
-  align-items:center;list-style:none}
-.manageCard summary::-webkit-details-marker{display:none}
-#manageSummary{font-size:11px;color:var(--muted);font-weight:500}
-#playlistManager{margin-top:12px;display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;padding-right:4px}
-.pRow{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:var(--card2);
-  border:1px solid transparent;transition:.15s}
-.pRow.off{opacity:.45}
-.pRow .flag{font-size:20px;width:26px;text-align:center;flex-shrink:0}
-.pRow .info{flex:1;min-width:0}
-.pRow .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pRow .sub{font-size:11px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:6px}
-.status{font-size:10px;padding:2px 8px;border-radius:999px;background:#31315a;color:var(--muted);font-weight:600}
-.status.loaded{background:rgba(52,211,153,.15);color:var(--green)}
-.status.loading{background:rgba(251,191,36,.15);color:var(--amber);animation:pulse 1s infinite}
-.status.error{background:rgba(248,113,113,.15);color:var(--red)}
-@keyframes pulse{50%{opacity:.5}}
-.toggle{width:48px;height:26px;background:#31315a;border-radius:999px;position:relative;cursor:pointer;
-  transition:.2s;flex-shrink:0}
-.toggle:after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;
-  border-radius:50%;transition:.2s}
-.toggle.on{background:var(--grad);box-shadow:0 2px 10px rgba(139,92,246,.5)}
-.toggle.on:after{left:25px}
-.delBtn{font-size:13px;opacity:.5;padding:6px;flex-shrink:0}
-.delBtn:hover{opacity:1;color:var(--red)}
-#loadBtn{width:100%;margin-top:12px;background:var(--grad);color:#fff;font-weight:800;font-size:15px;
-  padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(139,92,246,.35);transition:.15s}
-#loadBtn:disabled{opacity:.6}
-#loadBtn:active{transform:scale(.97)}
-.presetRow{display:flex;gap:8px;margin-top:10px}
-.presetRow button{flex:1;font-size:12px;padding:9px;border-radius:10px;background:var(--card2);
-  border:1px solid var(--border);font-weight:600}
-.presetRow button:active{transform:scale(.95)}
-#autoLoadLabel{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:12px;cursor:pointer}
-#autoLoadLabel input{width:17px;height:17px;accent-color:var(--violet)}
+    .gridWrap{
+      overflow:auto;
+      border:1px solid rgba(36,50,68,.8);
+      border-radius:16px;
+      background:rgba(15,23,42,.6);
+      max-height:520px;
+      position:relative;
+    }
+    .grid{
+      min-width:1100px;
+    }
+    .gridHead{
+      position:sticky;
+      top:0;
+      z-index:3;
+      display:grid;
+      grid-template-columns:220px repeat(6, minmax(150px, 1fr));
+      background:var(--gridHead);
+      border-bottom:1px solid rgba(36,50,68,.9);
+    }
+    .gridHeadCell, .gridCell{
+      padding:12px 10px;
+      border-right:1px solid rgba(36,50,68,.65);
+      border-bottom:1px solid rgba(36,50,68,.65);
+      min-height:64px;
+    }
+    .gridHeadCell{
+      font-size:14px;
+      font-weight:800;
+      color:#cbd5e1;
+      display:flex;
+      align-items:center;
+    }
+    .gridHeadCell.left{
+      position:sticky;
+      left:0;
+      z-index:4;
+      background:var(--gridHead);
+    }
+    .gridRow{
+      display:grid;
+      grid-template-columns:220px repeat(6, minmax(150px, 1fr));
+    }
+    .gridCell.left{
+      position:sticky;
+      left:0;
+      z-index:2;
+      background:#0b1220;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .channelName{
+      font-weight:800;
+      font-size:15px;
+      line-height:1.2;
+    }
+    .channelSub{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:3px;
+    }
+    .progCard{
+      height:100%;
+      border-radius:12px;
+      background:rgba(56,189,248,.10);
+      border:1px solid rgba(56,189,248,.26);
+      padding:8px 10px;
+      overflow:hidden;
+      cursor:pointer;
+    }
+    .progCard.now{
+      background:rgba(34,197,94,.14);
+      border-color:rgba(34,197,94,.35);
+    }
+    .progCard .t{
+      font-size:13px;
+      color:#cbd5e1;
+      margin-bottom:4px;
+      font-weight:700;
+    }
+    .progCard .n{
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .gridNote{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:10px;
+    }
 
-/* ---------- Channel list ---------- */
-#channelList{flex:1;overflow-y-auto;padding:10px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
-.channelRow{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;
-  background:var(--card);border:1px solid var(--border);cursor:pointer;transition:.15s}
-.channelRow:hover{background:var(--card2);border-color:#31315a;transform:translateY(-1px)}
-.channelRow:active{transform:scale(.985)}
-.channelRow.playing{border-color:var(--violet);background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(236,72,153,.12))}
-.channelRow .logo{width:44px;height:44px;border-radius:10px;background:#0e0e1c;object-fit:contain;flex-shrink:0}
-.channelRow .placeholder{width:44px;height:44px;border-radius:10px;background:var(--grad);
-  display:grid;place-items:center;font-weight:800;font-size:17px;color:#fff;flex-shrink:0}
-.channelRow .meta{flex:1;min-width:0}
-.channelRow .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.channelRow .sub{font-size:11px;color:var(--muted);margin-top:3px;display:flex;gap:6px;align-items:center}
-.badge{font-size:10px;padding:2px 8px;border-radius:999px;background:#26264a;color:#b9bedd;
-  white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
-.badge.fav{background:rgba(251,191,36,.15);color:var(--amber)}
-.favStar{font-size:20px;padding:6px;flex-shrink:0;opacity:.5;transition:.15s}
-.favStar.on{opacity:1;filter:drop-shadow(0 0 6px rgba(251,191,36,.6))}
-.favStar:active{transform:scale(1.3)}
-.playIcon{font-size:13px;color:var(--violet);flex-shrink:0}
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  padding:60px 24px;text-align:center;color:var(--muted)}
-.empty .big{font-size:52px;filter:drop-shadow(0 0 20px rgba(139,92,246,.5))}
-.empty b{color:var(--text);font-size:16px}
-
-/* ---------- Bottom nav (mobile) ---------- */
-#bottomNav{display:flex;flex-shrink:0;border-top:1px solid var(--border);background:rgba(18,18,34,.95);
-  backdrop-filter:blur(14px);z-index:50;order:3}
-#bottomNav button{flex:1;padding:10px 4px 12px;font-size:11px;font-weight:600;color:var(--muted);
-  display:flex;flex-direction:column;align-items:center;gap:3px;transition:.15s}
-#bottomNav button .ic{font-size:20px}
-#bottomNav button.on{color:#fff}
-#bottomNav button.on .ic{filter:drop-shadow(0 0 8px rgba(139,92,246,.8))}
-
-/* ---------- Extra tools ---------- */
-#tools{padding:12px;display:none;flex-direction:column;gap:10px;background:var(--bg2);
-  border-bottom:1px solid var(--border)}
-#tools input[type=text]{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:10px 12px;font-size:13px;outline:none}
-.addRow{display:flex;gap:8px}
-.addRow button{background:var(--grad);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:700;color:#fff}
-.fileLabel{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);
-  padding:10px 14px;border-radius:10px;font-size:13px;cursor:pointer;font-weight:600}
-.tiny{font-size:11px;color:var(--muted)}
-
-/* ---------- Toast ---------- */
-#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);
-  background:var(--grad);color:#fff;font-size:13px;font-weight:700;padding:11px 20px;border-radius:999px;
-  opacity:0;pointer-events:none;transition:.25s;z-index:200;box-shadow:0 8px 30px rgba(139,92,246,.5);
-  max-width:90vw;text-align:center}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ---------- Desktop ---------- */
-@media (min-width:1025px){
-  #app{flex-direction:column}
-  #main{flex-direction:row}
-  #leftPanel{order:1;width:430px;flex:0 0 430px;border-top:none;border-right:1px solid var(--border);
-    display:flex !important}
-  #rightPanel{order:2;flex:1;min-width:0;display:flex;flex-direction:column;background:var(--bg);overflow-y:auto}
-  #video{max-height:calc(100dvh - 130px)}
-  #bottomNav{display:none}
-  .filters,.manageWrapAuto{display:flex !important}
-  #manageWrap{display:block !important}
-  #channelList{order:2}
-  #leftPanel .panelHeader{display:flex}
-  .panelTabs{display:flex !important}
-  .panelTabs{flex-shrink:0;display:none;gap:0;border-bottom:1px solid var(--border);background:var(--bg2)}
-  .panelTabs button{flex:1;padding:12px;font-size:12px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent}
-  .panelTabs button.on{color:#fff;border-bottom-color:var(--violet);background:rgba(139,92,246,.08)}
-  .nowUrlD{font-size:10px;color:#6d6f8f;margin-top:2px;word-break:break-all;padding:0 14px 10px;
-    background:var(--card);border-bottom:1px solid var(--border)}
-}
-
-/* ---------- Mobile: single-panel + bottom nav ---------- */
-@media (max-width:1024px){
-  .filters,#manageWrap,#tools{display:none}
-  .filters.show,#manageWrap.show,#tools.show{display:flex}
-  #manageWrap.show{display:block}
-  #video{max-height:40vh}
-  #nowUrlMobile{display:none}
-}
-.panelTabs{display:none}
-</style>
+    @media (max-width:1100px){
+      body{flex-direction:column}
+      .sidebar{
+        width:100%;
+        height:auto;
+        border-right:none;
+        border-bottom:1px solid var(--line);
+      }
+      .main{grid-template-columns:1fr}
+      .listpane{height:38vh}
+      .gridHead, .gridRow{grid-template-columns:160px repeat(6, minmax(120px, 1fr));}
+      .grid{min-width:860px}
+    }
+  </style>
 </head>
 <body>
-<div id="app">
-<header class="top">
-  <div class="brand"><span class="logo">📺</span><div><b>IPTV Kurdistan + World</b><div id="stats">0 kanaler</div></div></div>
-  <div class="topActions">
-    <button id="exportFav">⭐ Favoriter</button>
-    <button id="exportM3U">💾 Export</button>
-  </div>
-</header>
-
-<div id="main">
-  <!-- Player -->
-  <div id="rightPanel">
-    <div class="playerWrap">
-      <video id="video" controls autoplay playsinline></video>
-      <div id="loadingOverlay"><div style="text-align:center"><div class="spinner"></div><span id="loadTxt">Laddar kanal…</span></div></div>
+  <nav class="sidebar">
+    <div class="brand">IPTV TV App</div>
+    <div class="nav">
+      <button class="nav-btn active" data-filter="all">Alla kanaler <span id="allCount">0</span></button>
+      <button class="nav-btn" data-filter="favorites">Favoriter <span id="favCountNav">0</span></button>
+      <button class="nav-btn" data-filter="movies">Movies <span id="moviesCount">0</span></button>
+      <button class="nav-btn" data-filter="series">Series <span id="seriesCount">0</span></button>
+      <button class="nav-btn" data-filter="kids">Kids <span id="kidsCount">0</span></button>
     </div>
-    <div id="nowBar">
-      <div style="flex:1;min-width:0">
-        <div id="nowName"></div>
-        <div id="nowMeta"></div>
+
+    <div class="side-section">
+      <div class="side-title">
+        <span>Favoriter</span>
+        <small id="favoriteCount">0 st</small>
       </div>
-      <button id="favBtn" title="Favorit">☆</button>
-      <button id="copyBtn" class="pillBtn">📋 Länk</button>
-    </div>
-    <div id="nowUrlMobile" class="tiny" style="padding:8px 14px;color:#6d6f8f;word-break:break-all"></div>
-  </div>
-
-  <!-- Left panel: tabs on desktop, single view + bottom nav on mobile -->
-  <div id="leftPanel">
-    <div class="panelTabs">
-      <button data-tab="channels" class="on">📡 Kanaler</button>
-      <button data-tab="manage">⚙️ Spellistor</button>
-      <button data-tab="tools">🧰 Verktyg</button>
+      <div id="favoritesList" class="chip-list"></div>
     </div>
 
-    <div id="manageWrap">
-      <details class="manageCard" open>
-        <summary>⚙️ Hantera spellistor <span id="manageSummary">0/13 aktiva • sparas auto</span></summary>
-        <div id="playlistManager"></div>
-        <button id="loadBtn">▶️ Ladda kanaler (0 valda)</button>
-        <div class="presetRow">
-          <button data-preset="kurd">☀️ Kurdistan</button>
-          <button data-preset="tr">🇹🇷 Turkiet</button>
-          <button data-preset="all">🌍 Alla</button>
-        </div>
-        <label id="autoLoadLabel"><input type="checkbox" id="autoLoadCheck"/> Ladda mina val automatiskt vid start</label>
-      </details>
-    </div>
-
-    <div class="filters" id="filtersPanel">
-      <div id="searchWrap"><span class="icon">🔍</span><input id="search" placeholder="Sök kanal…" autocomplete="off"/></div>
-      <div id="countryChips"></div>
-      <div class="filterRow">
-        <select id="groupSelect"><option value="">Alla kategorier</option></select>
-        <select id="favFilter"><option value="all">Alla kanaler</option><option value="fav">⭐ Favoriter</option></select>
+    <div class="side-section">
+      <div class="side-title"><span>Snabbfilter</span></div>
+      <div class="chip-list">
+        <button id="favoritesOnlyBtn" class="chip">Endast favoriter: Av</button>
       </div>
     </div>
-
-    <div id="tools">
-      <div class="tiny" style="font-weight:700;color:var(--text)">🧰 Verktyg</div>
-      <div class="addRow">
-        <input type="text" id="customUrl" placeholder="https://... (egen M3U-länk)"/>
-        <button id="addCustom">Lägg till</button>
-      </div>
-      <label class="fileLabel">📁 Ladda upp .m3u-fil<input id="fileInput" type="file" accept=".m3u,.m3u8" hidden/></label>
-      <div class="tiny">Dina val, favoriter och spellistor sparas i webbläsaren (localStorage).</div>
-    </div>
-
-    <div id="channelList"></div>
-  </div>
-
-  <!-- Bottom nav mobile -->
-  <nav id="bottomNav">
-    <button data-nav="channels" class="on"><span class="ic">📡</span>Kanaler</button>
-    <button data-nav="manage"><span class="ic">⚙️</span>Spellistor</button>
-    <button data-nav="tools"><span class="ic">🧰</span>Verktyg</button>
   </nav>
-</div>
-</div>
-<div id="toast"></div>
 
-<script>
-const PLAYLISTS=[
- {id:'movies',name:'Filmer',country:'Internationell',flag:'🎬',url:'https://iptv-org.github.io/iptv/categories/movies.m3u'},
- {id:'series',name:'Serier',country:'Internationell',flag:'📺',url:'https://iptv-org.github.io/iptv/categories/series.m3u'},
- {id:'kids',name:'Barn',country:'Internationell',flag:'🧒',url:'https://iptv-org.github.io/iptv/categories/kids.m3u'},
- {id:'kurdistan',name:'Kurdistan IPTV',country:'Kurdistan',flag:'☀️',url:'https://raw.githubusercontent.com/kurdishiptvchannels/KURDISTANIPTV/refs/heads/main/KURDISTAN%20IPTV.m3u'},
- {id:'sdh',name:'Södra Kurdiska',country:'Kurdistan',flag:'☀️',url:'https://iptv-org.github.io/iptv/languages/sdh.m3u'},
- {id:'iran',name:'Iran',country:'Iran',flag:'🇮🇷',url:'https://iptv-org.github.io/iptv/countries/ir.m3u'},
- {id:'enigma',name:'Enigma - Kurdish',country:'Kurdistan',flag:'☀️',url:'https://raw.githubusercontent.com/Enigma402/Iptv/refs/heads/main/2.m3u'},
- {id:'us',name:'USA',country:'USA',flag:'🇺🇸',url:'https://iptv-org.github.io/iptv/countries/us.m3u'},
- {id:'uk',name:'UK',country:'UK',flag:'🇬🇧',url:'https://iptv-org.github.io/iptv/countries/uk.m3u'},
- {id:'au',name:'Australien',country:'Australien',flag:'🇦🇺',url:'https://iptv-org.github.io/iptv/countries/au.m3u'},
- {id:'turk1',name:'Turkiet - ilyswch',country:'Turkiet',flag:'🇹🇷',url:'https://raw.githubusercontent.com/ilyswch/turk-iptv/main/index.m3u'},
- {id:'turk2',name:'Turkiet - Uzun',country:'Turkiet',flag:'🇹🇷',url:'https://streams.uzunmuhalefet.com/lists/tr.m3u'},
- {id:'ukgeo',name:'UK - Geo (ungeouk)',country:'UK',flag:'🇬🇧',url:'https://tinyurl.com/ungeouk'},
-];
-const LS={active:'iptv_active_playlists',removed:'iptv_removed_playlists',favs:'iptv_favorites',auto:'iptv_autoload'};
-let active=new Set(JSON.parse(localStorage.getItem(LS.active)||'[]'));
-let removed=new Set(JSON.parse(localStorage.getItem(LS.removed)||'[]'));
-let favs=new Set(JSON.parse(localStorage.getItem(LS.favs)||'[]'));
-let channelsByPlaylist={},loaded=new Set();
-let currentFilterCountry='Alla',searchQ='',groupF='',showFavOnly=false;
-let currentChannel=null,hls=null,mobileTab='channels';
-const $=id=>document.getElementById(id);
+  <div class="main">
+    <section class="listpane">
+      <div class="headerbar">
+        <h1>Kanaler</h1>
+        <div class="count" id="channelCount">0 st</div>
+      </div>
+      <div class="searchbar">
+        <input id="search" type="search" placeholder="Sök kanal..." />
+        <input id="epgUrl" type="url" placeholder="EPG XMLTV URL" />
+        <button id="reload" class="primary">Ladda om</button>
+      </div>
+      <div id="status" class="loading">Laddar playlister...</div>
+      <div id="channelList"></div>
+    </section>
 
-function save(){
- localStorage.setItem(LS.active,JSON.stringify([...active]));
- localStorage.setItem(LS.removed,JSON.stringify([...removed]));
- localStorage.setItem(LS.favs,JSON.stringify([...favs]));
- updateSummary();
-}
-function updateSummary(){
- const total=PLAYLISTS.filter(p=>!removed.has(p.id)).length;
- $('manageSummary').textContent=`${active.size}/${total} valda • ${loaded.size} laddade`;
- $('loadBtn').textContent=`▶️ Ladda kanaler (${active.size} valda)`;
- $('stats').textContent=`${getAllActiveChannels().length} kanaler • ${loaded.size} listor`;
-}
-function getAllActiveChannels(){
- let arr=[];for(let id of active){if(channelsByPlaylist[id])arr=arr.concat(channelsByPlaylist[id]);}
- return arr;
-}
+    <section class="content">
+      <div class="card">
+        <div class="now">
+          <div>
+            <h2 id="currentName">Välj en kanal</h2>
+            <p id="currentGroup">Ingen stream vald ännu.</p>
+          </div>
+          <div class="badge" id="epgStatus">EPG ej laddad</div>
+        </div>
+        <video id="video" controls autoplay playsinline></video>
+      </div>
 
-/* -------- fetch with proxy fallback -------- */
-const proxies=[
- u=>u,
- u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
- u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
- u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
- u=>`https://thingproxy.freeboard.io/fetch/${u}`
-];
-async function fetchM3U(url){
- for(let i=0;i<proxies.length;i++){
-  try{
-   const r=await fetch(proxies[i](url),{cache:'no-store'});
-   if(!r.ok)continue;
-   const t=await r.text();
-   if(t&&t.length>50&&(t.includes('#EXTINF')||t.includes('#EXTM3U')))return t;
-  }catch(e){}
- }
- throw new Error('Kunde inte ladda '+url);
-}
-function parseM3U(text,playlistId){
- text=text.replace(/^\uFEFF/,'');
- const out=[];let cur=null;
- const pl=PLAYLISTS.find(p=>p.id===playlistId);
- for(let raw of text.split(/\r?\n/)){
-  const line=raw.trim();if(!line)continue;
-  if(line.startsWith('#EXTINF')){
-   const name=line.split(',').slice(1).join(',').trim()||'Okänd kanal';
-   cur={name,
-     logo:(line.match(/tvg-logo="([^"]*)"/)||[])[1]||'',
-     group:(line.match(/group-title="([^"]*)"/)||[])[1]||'',
-     playlistId,url:''};
-  }else if(!line.startsWith('#')&&cur){
-   cur.url=line;
-   cur.country=pl?pl.country:'';cur.flag=pl?pl.flag:'🔗';
-   if(cur.url.startsWith('http'))out.push(cur);
-   cur=null;
-  }
- }
- return out;
-}
-async function loadPlaylist(id){
- if(loaded.has(id)&&channelsByPlaylist[id])return channelsByPlaylist[id];
- const pl=PLAYLISTS.find(p=>p.id===id);if(!pl)return[];
- setRowStatus(id,'Laddar…','loading');
- try{
-  const chans=parseM3U(await fetchM3U(pl.url),id);
-  channelsByPlaylist[id]=chans;loaded.add(id);
-  setRowStatus(id,`✓ ${chans.length}`,'loaded');
-  return chans;
- }catch(e){setRowStatus(id,'✕ Fel','error');return[];}
-}
-function setRowStatus(id,text,state){
- const el=document.querySelector(`[data-row="${id}"] .status`);
- if(el){el.textContent=text;el.className='status '+(state||'');}
-}
+      <div class="card">
+        <div class="headrow">
+          <h2 style="margin:0;font-size:24px;">Programguide</h2>
+          <div class="note" id="programCount">0 program</div>
+        </div>
+        <div id="programs" class="programs">
+          <div class="loading">Välj en kanal för att se program.</div>
+        </div>
+      </div>
 
-/* -------- manager -------- */
-function renderManager(){
- const cont=$('playlistManager');cont.innerHTML='';
- PLAYLISTS.forEach(p=>{
-  if(removed.has(p.id))return;
-  const isActive=active.has(p.id),isLoaded=loaded.has(p.id);
-  const count=channelsByPlaylist[p.id]?.length;
-  const row=document.createElement('div');
-  row.dataset.row=p.id;
-  row.className='pRow'+(isActive?'':' off');
-  row.innerHTML=`<span class="flag">${p.flag}</span>
-   <div class="info"><div class="nm">${p.name}</div>
-   <div class="sub"><span>${p.country}</span>${count?`<span>• ${count} kanaler</span>`:''}<span class="status ${isLoaded?'loaded':''}">${isLoaded?`✓ ${count}`:'Ej laddad'}</span></div></div>
-   <div class="toggle ${isActive?'on':''}" data-toggle="${p.id}" role="switch" aria-checked="${isActive}"></div>
-   <button class="delBtn" data-remove="${p.id}" title="Ta bort">✕</button>`;
-  cont.appendChild(row);
- });
- cont.querySelectorAll('[data-toggle]').forEach(t=>{
-  t.onclick=async()=>{
-   const id=t.dataset.toggle;
-   if(active.has(id)){
-    active.delete(id);save();renderManager();rebuild();toast('Spellista avbockad');
-   }else{
-    active.add(id);save();renderManager();toast('Laddar spellista…');
-    await loadPlaylist(id);renderManager();rebuild();
-    toast(`${channelsByPlaylist[id]?.length||0} kanaler tillagda`);
-   }
-  };
- });
- cont.querySelectorAll('[data-remove]').forEach(b=>{
-  b.onclick=()=>{const id=b.dataset.remove;removed.add(id);active.delete(id);
-   delete channelsByPlaylist[id];loaded.delete(id);save();renderManager();rebuild();toast('Spellista borttagen');};
- });
- updateSummary();
-}
+      <div class="card">
+        <div class="headrow">
+          <h2 style="margin:0;font-size:24px;">TV Grid</h2>
+          <div class="note">6 timmars översikt</div>
+        </div>
+        <div class="gridNote">Kanalrader till vänster och tidskolumner överst.</div>
+        <div id="grid" class="gridWrap">
+          <div class="loading">Ladda en EPG för att se grid.</div>
+        </div>
+      </div>
+    </section>
+  </div>
 
-/* -------- filters & list -------- */
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
-function rebuild(){
- const all=getAllActiveChannels();
- const groups=[...new Set(all.map(c=>c.group).filter(Boolean))].sort();
- const sel=$('groupSelect'),curVal=sel.value;
- sel.innerHTML='<option value="">Alla kategorier</option>'+groups.map(g=>`<option>${esc(g)}</option>`).join('');
- sel.value=curVal;
- const uniq=[...new Set(PLAYLISTS.filter(p=>active.has(p.id)).map(p=>p.country))];
- const cd=uniq.map(c=>{const pl=PLAYLISTS.find(p=>p.country===c&&active.has(p.id));
-  return{country:c,flag:pl?pl.flag:'',count:all.filter(ch=>ch.country===c).length};});
- $('countryChips').innerHTML=
-  `<button data-c="Alla" class="chip ${currentFilterCountry==='Alla'?'on':''}">🌍 Alla (${all.length})</button>`+
-  cd.map(d=>`<button data-c="${esc(d.country)}" class="chip ${currentFilterCountry===d.country?'on':''}">${d.flag} ${esc(d.country)} (${d.count})</button>`).join('');
- $('countryChips').querySelectorAll('.chip').forEach(ch=>{
-  ch.onclick=()=>{currentFilterCountry=ch.dataset.c;rebuild();if(navigator.vibrate)navigator.vibrate(15);};
- });
- renderChannelList();
- updateSummary();
-}
-function renderChannelList(){
- const list=$('channelList');
- let all=getAllActiveChannels();
- if(currentFilterCountry!=='Alla')all=all.filter(c=>c.country===currentFilterCountry);
- if(groupF)all=all.filter(c=>c.group===groupF);
- if(searchQ)all=all.filter(c=>c.name.toLowerCase().includes(searchQ));
- if(showFavOnly)all=all.filter(c=>favs.has(c.url));
- const seen=new Set();all=all.filter(c=>{if(seen.has(c.url))return false;seen.add(c.url);return true;});
- if(!all.length){
-  list.innerHTML=`<div class="empty"><div class="big">📺</div><b>Inga kanaler hittades</b>
-   <span style="font-size:13px">Välj fler spellistor eller sök på något annat.<br/>Nya listor laddas automatiskt när du bockar i dem.</span></div>`;
-  return;
- }
- list.innerHTML=all.slice(0,1000).map(c=>{
-  const isFav=favs.has(c.url),playing=currentChannel&&currentChannel.url===c.url;
-  const initial=c.name?c.name[0].toUpperCase():'?';
-  const logoHtml=c.logo?`<img class="logo" src="${esc(c.logo)}" loading="lazy" onerror="this.outerHTML='<span class=placeholder>${initial}</span>'"/>`:`<span class="placeholder">${initial}</span>`;
-  return `<div class="channelRow ${playing?'playing':''}" data-url="${esc(c.url)}">
-   ${logoHtml}
-   <div class="meta"><div class="nm">${esc(c.name)}</div>
-   <div class="sub"><span>${c.flag} ${esc(c.country)}</span><span class="badge">${esc(c.group||'Allmän')}</span></div></div>
-   ${playing?'<span class="playIcon">▶</span>':''}
-   <button class="favStar ${isFav?'on':''}" data-fav="${esc(c.url)}">${isFav?'⭐':'☆'}</button></div>`;
- }).join('');
- list.querySelectorAll('.channelRow').forEach(row=>{
-  row.onclick=e=>{
-   if(e.target.classList.contains('favStar'))return;
-   playChannel(getAllActiveChannels().find(x=>x.url===row.dataset.url));
-   if(window.innerWidth<=1024)switchTab('channels');
-  };
- });
- list.querySelectorAll('.favStar').forEach(b=>{
-  b.onclick=e=>{e.stopPropagation();const u=b.dataset.fav;
-   if(favs.has(u))favs.delete(u);else favs.add(u);
-   save();b.classList.toggle('on',favs.has(u));b.textContent=favs.has(u)?'⭐':'☆';
-   if(showFavOnly)renderChannelList();updateFavBtn();
-   toast(favs.has(u)?'⭐ Tillagd i favoriter':'Borttagen från favoriter');};
- });
-}
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.dashjs.org/latest/modern/umd/dash.all.min.js"></script>
+  <script>
+    const PLAYLISTS = { movies:'https://iptv-org.github.io/iptv/categories/movies.m3u', series:'https://iptv-org.github.io/iptv/categories/series.m3u', kids:'https://iptv-org.github.io/iptv/categories/kids.m3u' };
+    const FAVORITES_KEY = 'iptv_favorites_v1';
+    const EPG_KEY = 'iptv_epg_url_v1';
+    const state = { allChannels:[], filtered:[], activeChannel:null, hls:null, dash:null, epg:{}, favoritesOnly:false, sidebarFilter:'all' };
 
-/* -------- playback -------- */
-function playChannel(c){
- if(!c)return;
- currentChannel=c;
- $('nowName').textContent=c.name;
- $('nowMeta').textContent=`${c.flag} ${c.country} • ${c.group||'Allmän'}`;
- $('nowUrlMobile').textContent=c.url;
- updateFavBtn();renderChannelList();
- const video=$('video'),ov=$('loadingOverlay');
- ov.classList.add('show');
- if(hls){hls.destroy();hls=null;}
- const isHls=/\.m3u8(\?|$)/.test(c.url)||c.url.includes('.m3u8');
- const stopLoad=()=>ov.classList.remove('show');
- if(isHls&&window.Hls&&Hls.isSupported()){
-  hls=new Hls({enableWorker:true});
-  hls.loadSource(c.url);hls.attachMedia(video);
-  hls.on(Hls.Events.MANIFEST_PARSED,()=>{video.play().catch(()=>{});stopLoad();});
-  hls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal){stopLoad();toast('Kunde inte spela kanalen 😕');}});
- }else{
-  video.src=c.url;video.play().catch(()=>{});
-  video.onplaying=stopLoad;video.onerror=()=>{stopLoad();};
- }
-}
-function updateFavBtn(){
- const btn=$('favBtn');
- if(!currentChannel){btn.textContent='☆';btn.classList.remove('isFav');return;}
- const on=favs.has(currentChannel.url);
- btn.textContent=on?'⭐':'☆';btn.classList.toggle('isFav',on);
-}
-let toastTimer;
-function toast(msg){
- const t=$('toast');t.textContent=msg;t.classList.add('show');
- clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
-}
+    const els = {
+      search:document.getElementById('search'), epgUrl:document.getElementById('epgUrl'), reload:document.getElementById('reload'),
+      favoritesOnlyBtn:document.getElementById('favoritesOnlyBtn'), list:document.getElementById('channelList'), favoritesList:document.getElementById('favoritesList'),
+      favoriteCount:document.getElementById('favoriteCount'), channelCount:document.getElementById('channelCount'), status:document.getElementById('status'),
+      currentName:document.getElementById('currentName'), currentGroup:document.getElementById('currentGroup'), video:document.getElementById('video'),
+      programs:document.getElementById('programs'), grid:document.getElementById('grid'), programCount:document.getElementById('programCount'),
+      epgStatus:document.getElementById('epgStatus'), allCount:document.getElementById('allCount'), favCountNav:document.getElementById('favCountNav'),
+      moviesCount:document.getElementById('moviesCount'), seriesCount:document.getElementById('seriesCount'), kidsCount:document.getElementById('kidsCount')
+    };
 
-/* -------- events -------- */
-$('search').oninput=e=>{searchQ=e.target.value.trim().toLowerCase();renderChannelList();};
-$('groupSelect').onchange=e=>{groupF=e.target.value;renderChannelList();};
-$('favFilter').onchange=e=>{showFavOnly=e.target.value==='fav';renderChannelList();};
-$('favBtn').onclick=()=>{if(!currentChannel)return;
- if(favs.has(currentChannel.url))favs.delete(currentChannel.url);else favs.add(currentChannel.url);
- save();updateFavBtn();renderChannelList();toast(favs.has(currentChannel.url)?'⭐ Tillagd i favoriter':'Borttagen');};
-$('copyBtn').onclick=()=>{if(currentChannel){navigator.clipboard.writeText(currentChannel.url);toast('📋 Länk kopierad');}};
-function exportM3U(chans,filename){
- let m3u='#EXTM3U\n';
- chans.forEach(c=>{m3u+=`#EXTINF:-1 tvg-logo="${c.logo||''}" group-title="${c.group||''}",${c.name}\n${c.url}\n`;});
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([m3u],{type:'text/plain'}));a.download=filename;a.click();
- toast(`${chans.length} kanaler exporterade`);
-}
-$('exportFav').onclick=()=>exportM3U(getAllActiveChannels().filter(c=>favs.has(c.url)),'favoriter.m3u');
-$('exportM3U').onclick=()=>exportM3U(getAllActiveChannels(),'valda_spellistor.m3u');
-$('loadBtn').onclick=async()=>{
- if(!active.size){toast('Välj minst en spellista först!');switchTab('manage');return;}
- const btn=$('loadBtn');btn.disabled=true;
- const ids=[...active];let ok=0;
- for(let i=0;i<ids.length;i++){
-  btn.textContent=`⏳ Laddar ${i+1}/${ids.length}…`;
-  const n=(await loadPlaylist(ids[i])).length;if(n)ok++;
-  renderManager();
- }
- btn.disabled=false;updateSummary();rebuild();switchTab('channels');
- const total=getAllActiveChannels().length;
- if(!total){toast('Inga kanaler kunde laddas – testa igen');}
- else toast(`✓ ${total} kanaler från ${ok} listor`);
-};
-document.querySelectorAll('[data-preset]').forEach(b=>{
- b.onclick=()=>{
-  const p=b.dataset.preset;active.clear();
-  if(p==='kurd')['kurdistan','sdh','enigma'].forEach(id=>active.add(id));
-  else if(p==='tr')['turk1','turk2'].forEach(id=>active.add(id));
-  else PLAYLISTS.forEach(pl=>{if(!removed.has(pl.id))active.add(pl.id);});
-  save();renderManager();$('loadBtn').click();
- };
-});
-$('addCustom').onclick=async()=>{
- const url=$('customUrl').value.trim();if(!url){toast('Skriv en länk först');return;}
- const id='custom_'+Date.now();
- PLAYLISTS.push({id,name:'Egen länk',country:'Egen',flag:'🔗',url});
- active.add(id);save();renderManager();toast('Laddar egen länk…');
- await loadPlaylist(id);renderManager();rebuild();
- toast(`${channelsByPlaylist[id]?.length||0} kanaler tillagda`);
-};
-$('fileInput').onchange=async e=>{
- const file=e.target.files[0];if(!file)return;
- const id='file_'+Date.now();
- channelsByPlaylist[id]=parseM3U(await file.text(),id);loaded.add(id);active.add(id);
- PLAYLISTS.push({id,name:file.name,country:'Fil',flag:'📁',url:''});
- save();renderManager();rebuild();switchTab('channels');
- toast(`📁 ${channelsByPlaylist[id].length} kanaler från fil`);
-};
-$('autoLoadCheck').onchange=e=>localStorage.setItem(LS.auto,e.target.checked?'1':'0');
-$('autoLoadCheck').checked=localStorage.getItem(LS.auto)==='1';
+    function channelKey(ch){ return ch.tvgId || ch.url; }
+    function loadFavorites(){ try { return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || []; } catch { return []; } }
+    function saveFavorites(list){ localStorage.setItem(FAVORITES_KEY, JSON.stringify(list)); }
+    function isFavorite(ch){ return loadFavorites().includes(channelKey(ch)); }
+    function toggleFavorite(ch){ const key=channelKey(ch); let favs=loadFavorites(); favs=favs.includes(key)?favs.filter(x=>x!==key):[...favs,key]; saveFavorites(favs); renderAll(); }
+    function getFavoriteChannels(){ const favs=loadFavorites(); return state.allChannels.filter(ch=>favs.includes(channelKey(ch))); }
 
-/* -------- mobile tabs / bottom nav -------- */
-function switchTab(tab){
- mobileTab=tab;
- const isMobile=window.innerWidth<=1024;
- if(isMobile){
-  $('filtersPanel').classList.toggle('show',tab==='channels');
-  $('manageWrap').classList.toggle('show',tab==='manage');
-  $('tools').classList.toggle('show',tab==='tools');
-  $('channelList').style.display=tab==='channels'?'flex':'none';
- }else{
-  $('channelList').style.display='flex';
- }
- document.querySelectorAll('#bottomNav [data-nav],.panelTabs [data-tab]').forEach(b=>{
-  const on=(b.dataset.nav||b.dataset.tab)===tab;
-  b.classList.toggle('on',on);
- });
-}
-document.querySelectorAll('#bottomNav [data-nav]').forEach(b=>b.onclick=()=>{switchTab(b.dataset.nav);if(navigator.vibrate)navigator.vibrate(15);});
-document.querySelectorAll('.panelTabs [data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
-window.addEventListener('resize',()=>switchTab(mobileTab));
+    function parseM3U(text, sourceName){
+      const lines=text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean); const out=[]; let meta=null;
+      for (const line of lines){
+        if (line.startsWith('#EXTINF:')){
+          const name=line.split(',').slice(1).join(',').trim(); const attrs={}; for (const m of line.matchAll(/([a-zA-Z0-9_-]+)="([^"]*)"/g)) attrs[m[1]]=m[2];
+          meta={ name, group:attrs['group-title']||sourceName, logo:attrs['tvg-logo']||'', tvgId:attrs['tvg-id']||'', source:sourceName };
+        } else if (!line.startsWith('#') && meta){ out.push({ ...meta, url:line }); meta=null; }
+      } return out;
+    }
 
-/* -------- init -------- */
-renderManager();rebuild();switchTab('channels');
-if(localStorage.getItem(LS.auto)==='1'&&active.size>0)$('loadBtn').click();
-</script>
+    function parseXMLTVDate(s){ if(!s) return null; const m=s.match(/^(\d{14})/); if(!m) return new Date(s); const v=m[1]; return new Date(Date.UTC(+v.slice(0,4),+v.slice(4,6)-1,+v.slice(6,8),+v.slice(8,10),+v.slice(10,12),+v.slice(12,14))); }
+    function parseXMLTV(xmlText){
+      const doc=new DOMParser().parseFromString(xmlText,'text/xml'); const channelMap={};
+      doc.querySelectorAll('channel').forEach(ch=>{ const id=ch.getAttribute('id'); channelMap[id]={ id, displayName:ch.querySelector('display-name')?.textContent?.trim()||id, programs:[] }; });
+      doc.querySelectorAll('programme').forEach(p=>{
+        const channel=p.getAttribute('channel'); const start=parseXMLTVDate(p.getAttribute('start')); const stop=parseXMLTVDate(p.getAttribute('stop'));
+        const title=p.querySelector('title')?.textContent?.trim()||''; const desc=p.querySelector('desc')?.textContent?.trim()||''; const item={ start, stop, title, desc };
+        if(!channelMap[channel]) channelMap[channel]={ id:channel, displayName:channel, programs:[] };
+        channelMap[channel].programs.push(item);
+      });
+      Object.values(channelMap).forEach(ch=>ch.programs.sort((a,b)=>a.start-b.start)); return channelMap;
+    }
+
+    function fmtTime(d){ return new Intl.DateTimeFormat('sv-SE',{hour:'2-digit',minute:'2-digit'}).format(d); }
+    function fmtDateTime(d){ return new Intl.DateTimeFormat('sv-SE',{weekday:'short',hour:'2-digit',minute:'2-digit'}).format(d); }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+    async function loadPlaylists(){
+      els.status.textContent='Laddar playlister...'; const all=[];
+      for (const [name,url] of Object.entries(PLAYLISTS)){ const res=await fetch(url); all.push(...parseM3U(await res.text(), name)); }
+      state.allChannels=all; updateSidebarCounts(); applyFilters(); els.status.textContent=`${state.filtered.length} kanaler laddade.`;
+    }
+
+    async function loadEPG(){
+      const url=els.epgUrl.value.trim(); state.epg={};
+      if(!url){ els.epgStatus.textContent='EPG ej laddad'; els.epgStatus.className='badge warn'; if(state.activeChannel) renderEPG(state.activeChannel); return; }
+      els.epgStatus.textContent='Laddar EPG...'; els.epgStatus.className='badge warn';
+      const res=await fetch(url); state.epg=parseXMLTV(await res.text()); els.epgStatus.textContent='EPG klar'; els.epgStatus.className='badge';
+      if(state.activeChannel) renderEPG(state.activeChannel); renderGrid();
+    }
+
+    function updateSidebarCounts(){
+      const favs=getFavoriteChannels();
+      els.allCount.textContent=state.allChannels.length;
+      els.favCountNav.textContent=favs.length;
+      els.moviesCount.textContent=state.allChannels.filter(c=>c.source==='movies').length;
+      els.seriesCount.textContent=state.allChannels.filter(c=>c.source==='series').length;
+      els.kidsCount.textContent=state.allChannels.filter(c=>c.source==='kids').length;
+    }
+
+    function applyFilters(){
+      const q=els.search.value.trim().toLowerCase();
+      state.filtered=state.allChannels.filter(ch=>{
+        const matchQ=!q || [ch.name,ch.group,ch.source].join(' ').toLowerCase().includes(q);
+        const matchSidebar=state.sidebarFilter==='all' ? true : state.sidebarFilter==='favorites' ? isFavorite(ch) : ch.source===state.sidebarFilter;
+        const matchFavOnly=!state.favoritesOnly || isFavorite(ch);
+        return matchQ && matchSidebar && matchFavOnly;
+      });
+      els.channelCount.textContent=`${state.filtered.length} st`; updateSidebarCounts(); renderList(); renderFavorites(); updateNavActive();
+    }
+
+    function updateNavActive(){ document.querySelectorAll('.nav-btn').forEach(btn=>btn.classList.toggle('active', btn.dataset.filter===state.sidebarFilter)); }
+
+    function renderFavorites(){
+      const favs=getFavoriteChannels(); els.favoriteCount.textContent=`${favs.length} st`;
+      if(!favs.length){ els.favoritesList.innerHTML='<div class="loading">Inga favoriter ännu.</div>'; return; }
+      els.favoritesList.innerHTML=favs.map(ch=>`<div class="fav-chip" tabindex="0" role="button" data-key="${escapeHtml(channelKey(ch))}"><span>★ ${escapeHtml(ch.name)}</span><button class="fav-btn on" style="width:34px;height:34px;font-size:18px" data-remove="${escapeHtml(channelKey(ch))}">×</button></div>`).join('');
+      els.favoritesList.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('click',()=>{ const ch=findChannelByKey(el.dataset.key); if(ch) playChannel(ch); }));
+      els.favoritesList.querySelectorAll('[data-remove]').forEach(btn=>btn.addEventListener('click',e=>{ e.stopPropagation(); const ch=findChannelByKey(btn.dataset.remove); if(ch) toggleFavorite(ch); }));
+    }
+
+    function renderList(){
+      els.list.innerHTML=''; if(!state.filtered.length){ els.list.innerHTML='<div class="empty">Inga kanaler matchar filtret.</div>'; return; }
+      const now = new Date();
+      for (const ch of state.filtered){
+        const fav=isFavorite(ch); const prog = state.epg[ch.tvgId]?.programs?.find(p => p.start <= now && p.stop > now); const next = state.epg[ch.tvgId]?.programs?.find(p => p.start > now);
+        const div=document.createElement('div');
+        div.className='channel'+(state.activeChannel?.url===ch.url?' active':''); div.tabIndex=0;
+        div.innerHTML=`
+          <img class="logo" src="${ch.logo || ''}" alt="" onerror="this.style.display='none'">
+          <div class="meta">
+            <div class="name">${escapeHtml(ch.name)}</div>
+            <div class="group">${escapeHtml(ch.group)} · ${escapeHtml(ch.source)}</div>
+            <div class="nowline">${prog ? 'Nu: ' + escapeHtml(prog.title) : 'Nu: ingen EPG-data'}${next ? ' · Nästa: ' + escapeHtml(next.title) : ''}</div>
+          </div>
+          <button class="fav-btn ${fav ? 'on' : ''}" title="Favorit">${fav ? '★' : '☆'}</button>
+        `;
+        div.addEventListener('click', e=>{ if(e.target.classList.contains('fav-btn')) return; playChannel(ch); });
+        div.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); playChannel(ch); } });
+        div.querySelector('.fav-btn').addEventListener('click', e=>{ e.stopPropagation(); toggleFavorite(ch); });
+        els.list.appendChild(div);
+      }
+    }
+
+    function stopPlayers(){ if(state.hls){ state.hls.destroy(); state.hls=null; } if(state.dash){ state.dash.reset(); state.dash=null; } els.video.removeAttribute('src'); els.video.load(); }
+
+    function playChannel(ch){
+      state.activeChannel=ch; els.currentName.textContent=ch.name; els.currentGroup.textContent=`${ch.group} · ${ch.source}`; renderList(); stopPlayers();
+      const url=ch.url || '';
+      if(url.includes('.mpd')){ state.dash=dashjs.MediaPlayer().create(); state.dash.initialize(els.video, url, true); }
+      else if(url.includes('.m3u8')){
+        if(els.video.canPlayType('application/vnd.apple.mpegurl')){ els.video.src=url; els.video.play().catch(()=>{}); }
+        else if(window.Hls && Hls.isSupported()){ state.hls=new Hls(); state.hls.loadSource(url); state.hls.attachMedia(els.video); state.hls.on(Hls.Events.MANIFEST_PARSED,()=>els.video.play().catch(()=>{})); }
+        else alert('HLS stöds inte i den här webbläsaren.');
+      } else alert('Okänt streamformat.');
+      renderEPG(ch); renderGrid();
+    }
+
+    function renderEPG(ch){
+      const id=ch.tvgId || ''; const data=state.epg[id]; const now=new Date();
+      if(!data || !data.programs.length){
+        els.programs.innerHTML='<div class="loading">Ingen EPG hittades för den här kanalen.</div>'; els.programCount.textContent='0 program'; return;
+      }
+      const programs=data.programs.filter(p=>p.stop && p.stop > now).slice(0,12);
+      els.programCount.textContent=`${programs.length} program`;
+      els.programs.innerHTML=programs.map(p=>{
+        const active=p.start <= now && p.stop > now;
+        return `<div class="program ${active?'nowplaying':''}"><div class="time">${fmtDateTime(p.start)}–${fmtTime(p.stop)}</div><div><div class="title">${escapeHtml(p.title || 'Okänt program')}</div><div class="desc">${escapeHtml(p.desc || '')}</div></div></div>`;
+      }).join('');
+    }
+
+    function renderGrid(){
+      const now = new Date();
+      const selected = state.activeChannel;
+      if(!selected){
+        els.grid.innerHTML = '<div class="loading">Välj en kanal för att se grid.</div>';
+        return;
+      }
+      const channels = state.filtered.filter(ch => state.epg[ch.tvgId]?.programs?.length).slice(0, 10);
+      if(!channels.length){
+        els.grid.innerHTML = '<div class="loading">Ingen grid-data hittades för filtrerade kanaler.</div>';
+        return;
+      }
+      const slots = [];
+      for(let i=0;i<6;i++){ slots.push(new Date(now.getTime()+i*30*60*1000)); }
+
+      const head = `
+        <div class="gridHead">
+          <div class="gridHeadCell left">Kanal</div>
+          ${slots.map(d => `<div class="gridHeadCell">${fmtTime(d)}</div>`).join('')}
+        </div>
+      `;
+
+      const rows = channels.map(ch => {
+        const progs = state.epg[ch.tvgId].programs.filter(p => p.stop > now && p.start < new Date(now.getTime()+3*60*60*1000)).slice(0,6);
+        const left = `
+          <div class="gridCell left" data-play="${escapeHtml(channelKey(ch))}" style="cursor:pointer;">
+            <div>
+              <div class="channelName">${escapeHtml(ch.name)}</div>
+              <div class="channelSub">${escapeHtml(ch.group)}</div>
+            </div>
+          </div>
+        `;
+        const cells = slots.map(() => '<div class="gridCell"></div>').join('');
+        return `
+          <div class="gridRow">
+            ${left}
+            ${cells}
+          </div>
+        `;
+      }).join('');
+
+      els.grid.innerHTML = `<div class="grid">${head}${rows}</div>`;
+
+      els.grid.querySelectorAll('[data-play]').forEach(el => {
+        el.addEventListener('click', () => {
+          const ch = findChannelByKey(el.dataset.play);
+          if (ch) playChannel(ch);
+        });
+      });
+
+      const topNote = document.createElement('div');
+      topNote.className = 'loading';
+      topNote.textContent = 'Grid-vyn är en kompakt översikt. Välj kanal för detaljerad programlista ovan.';
+      els.grid.prepend(topNote);
+    }
+
+    function findChannelByKey(key){ return state.allChannels.find(ch=>channelKey(ch)===key); }
+    function renderAll(){ updateSidebarCounts(); applyFilters(); renderGrid(); }
+
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => { state.sidebarFilter = btn.dataset.filter; applyFilters(); renderGrid(); }));
+    els.search.addEventListener('input', () => { applyFilters(); renderGrid(); });
+    els.reload.addEventListener('click', async () => { await loadPlaylists(); await loadEPG(); });
+    els.favoritesOnlyBtn.addEventListener('click', () => { state.favoritesOnly = !state.favoritesOnly; els.favoritesOnlyBtn.textContent = `Endast favoriter: ${state.favoritesOnly ? 'På' : 'Av'}`; applyFilters(); renderGrid(); });
+    els.epgUrl.value = localStorage.getItem(EPG_KEY) || '';
+    els.epgUrl.addEventListener('input', () => localStorage.setItem(EPG_KEY, els.epgUrl.value));
+    els.epgUrl.addEventListener('change', loadEPG);
+
+    (async () => {
+      try { await loadPlaylists(); await loadEPG(); }
+      catch (err) { els.status.textContent='Kunde inte ladda data.'; els.list.innerHTML = `<div class="loading">${escapeHtml(err.message || String(err))}</div>`; }
+    })();
+  </script>
 </body>
 </html>
