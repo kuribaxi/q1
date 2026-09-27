@@ -205,8 +205,7 @@
 
     /* ============================================================
        ARABIC AYAH SPAN INSIDE TAFSIR
-       Fix 1: modest size (was 1.15em / 2.2 line-height)
-       Fix 2: force RTL even inside English (LTR) tafsir
+       Modest size + forced RTL even inside LTR (English) tafsir
        ============================================================ */
     .tafsir-body .tafsir-aya-green {
       background: none !important;
@@ -216,31 +215,21 @@
       margin: 0 !important;
       border-radius: 0 !important;
       font-family: var(--quran-font) !important;
-      font-size: 1em !important;                 /* was 1.15em */
-      line-height: 1.9 !important;               /* was 2.2 */
-      direction: rtl !important;                 /* force RTL */
-      unicode-bidi: isolate !important;          /* keep RTL inside LTR English */
+      font-size: 1em !important;
+      line-height: 1.9 !important;
+      direction: rtl !important;
+      unicode-bidi: isolate !important;
       text-align: right !important;
       font-weight: 700;
-      display: inline-block;                     /* inline-block respects direction */
+      display: inline-block;
     }
     .tafsir-body .tafsir-aya-green,
     .tafsir-body .tafsir-aya-green * {
       color: var(--emerald) !important;
     }
-    /* Per-language refinements */
-    .tafsir-body.tafsir-ar .tafsir-aya-green {
-      font-size: 1em !important;
-      line-height: 1.85 !important;
-    }
-    .tafsir-body.tafsir-ku .tafsir-aya-green {
-      font-size: 1em !important;
-      line-height: 1.85 !important;
-    }
-    .tafsir-body.tafsir-fa .tafsir-aya-green {
-      font-size: 1.02em !important;
-      line-height: 1.9 !important;
-    }
+    .tafsir-body.tafsir-ar .tafsir-aya-green { font-size: 1em !important; line-height: 1.85 !important; }
+    .tafsir-body.tafsir-ku .tafsir-aya-green { font-size: 1em !important; line-height: 1.85 !important; }
+    .tafsir-body.tafsir-fa .tafsir-aya-green { font-size: 1.02em !important; line-height: 1.9 !important; }
     .tafsir-body.tafsir-en .tafsir-aya-green {
       font-size: 1.05em !important;
       line-height: 2 !important;
@@ -2506,11 +2495,17 @@ function applyTafsirFontStyles(bodyEl){
   bodyEl.style.setProperty('font-family', tafsirFontFamily, 'important');
   bodyEl.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
 }
+
+/* ============================================================
+   highlightArabicInTafsir — tvingar RTL på DOM-nivå
+   Detta är FIXEN: ingen extern CSS kan åsidosätta inline style + dir-attribut.
+   ============================================================ */
 function highlightArabicInTafsir(container){
   if(!container) return;
   try{
     const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     const arabicSeq = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\u0660-\u0669\u06F0-\u06F9\u060C\u061B\u061F\u0640\u064B-\u065F\u0670\u06D6-\u06ED\uFD3E\uFD3F\u0600-\u0605\u06DD\u06DE\u200C\u200D]+/g;
+
     const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
       acceptNode: function(node){
         if(!node.nodeValue) return NodeFilter.FILTER_REJECT;
@@ -2546,6 +2541,8 @@ function highlightArabicInTafsir(container){
         span.className = 'tafsir-aya-green';
         span.setAttribute('dir', 'rtl');
         span.setAttribute('lang', 'ar');
+        /* NYCKEL: tvinga RTL med inline style – ingen extern CSS kan åsidosätta */
+        span.style.cssText = 'direction:rtl !important;unicode-bidi:isolate !important;text-align:right !important;display:inline-block;font-family:var(--quran-font);color:var(--emerald);font-weight:700;line-height:1.9;font-size:1em;';
         span.textContent = match;
         frag.appendChild(span);
         lastIndex = m.index + match.length;
@@ -2555,13 +2552,27 @@ function highlightArabicInTafsir(container){
         try{ node.parentNode.replaceChild(frag, node); }catch(e){}
       }
     });
+
+    /* Extra säkerhet: alla redan existerande .tafsir-aya-green tvingas RTL */
+    container.querySelectorAll('.tafsir-aya-green').forEach(el => {
+      el.setAttribute('dir', 'rtl');
+      el.setAttribute('lang', 'ar');
+      el.style.setProperty('direction', 'rtl', 'important');
+      el.style.setProperty('unicode-bidi', 'isolate', 'important');
+      el.style.setProperty('text-align', 'right', 'important');
+      el.style.setProperty('display', 'inline-block', 'important');
+    });
   }catch(e){ console.warn('highlightArabicInTafsir error:', e); }
 }
 function resetArabicHighlight(container){
   if(!container) return;
   container.querySelectorAll('.tafsir-aya-green').forEach(span => {
     const parent = span.parentNode;
-    if(parent){ parent.replaceChild(document.createTextNode(span.textContent), span); parent.normalize(); }
+    if(parent){
+      const textNode = document.createTextNode(span.textContent);
+      parent.replaceChild(textNode, span);
+      parent.normalize();
+    }
   });
 }
 function applyTafsirContentStyles(bodyEl, lang){
