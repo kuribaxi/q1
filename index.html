@@ -1655,7 +1655,8 @@ function clearQuranSearch(){
    DAGENS AYA
    ============================================================ */
 let currentAyaData = null;
-let displayedAya = null;   // { surahNum, ayahNum, surahName } – det som visas just nu
+let displayedAya = null;          // { surahNum, ayahNum, surahName } – what is shown right now
+let tafsirRequestId = 0;          // guards against stale async tafsir responses
 let currentLang = localStorage.getItem('quranLang') || 'sv';
 
 function renderDailyAya(data){
@@ -1790,7 +1791,7 @@ function goToPrevAya(){
   fetchAya(surahNum, ayahNum);
 }
 
-/* ---- Referens till den vers som FAKTISKT visas ---- */
+/* ---- Reference to the verse that is actually shown ---- */
 function getDisplayedAyaRef(){
   if(displayedAya) return displayedAya;
   if(currentAyaData) return { surahNum: currentAyaData.surahNum, ayahNum: currentAyaData.ayahNum, surahName: currentAyaData.surahName };
@@ -1914,7 +1915,6 @@ async function getAyahArabic(surah, ayah){
   return p;
 }
 
-/* Hämta översättning för en enskild vers (för synkad visning under uppspelning) */
 const ayahTranslationCache = new Map();
 async function getAyahTranslation(surah, ayah, lang){
   const key = surah + ':' + ayah + ':' + lang;
@@ -1939,7 +1939,6 @@ async function getAyahTranslation(surah, ayah, lang){
     }
   }catch(e){ /* tyst */ }
 
-  /* Fallback: svenska saknas → använd engelska */
   if (!result && lang === 'sv'){
     try { result = await fetchAyahEdition(surah, ayah, 'en.sahih'); }catch(e){}
   }
@@ -2018,7 +2017,6 @@ function showBismillahBanner(show){
   if (content) content.prepend(el);
 }
 
-/* Uppdaterad showPlayingAyah – visar både arabiska och översättning synkat */
 async function showPlayingAyah(surah, ayah, total){
   const content = document.getElementById('dailyAyaContent');
   const progress = document.getElementById('suraProgress');
@@ -2034,18 +2032,21 @@ async function showPlayingAyah(surah, ayah, total){
   if (audioCurrentSurah !== surah || audioCurrentAyah !== ayah) return;
   showBismillahBanner(false);
 
-  /* NYTT: håll displayedAya i synk med det som faktiskt visas/spelas */
+  /* Keep BOTH refs in sync so every code path (tafsir, favorite, setLang) sees the right ayah */
   displayedAya = { surahNum: surah, ayahNum: ayah, surahName: SURAH_NAMES[surah - 1] };
+  currentAyaData = {
+    surahNum: surah, ayahNum: ayah, surahName: SURAH_NAMES[surah - 1],
+    arabic: text,
+    sv: '', en: '', fa: '', ku: '', 'ku-KM': '', phonetic: ''
+  };
   updateSaveFavBtn();
 
-  /* Visa arabisk text omedelbart + platshållare för översättning */
   content.innerHTML = `
     <div class="daily-aya-ref">${SURAH_NAMES[surah - 1]} ${surah}:${ayah}</div>
     <div class="daily-aya-arabic">${text}</div>
     <div class="daily-aya-text" id="playingAyahTranslation" style="opacity:.6">Laddar översättning…</div>
   `;
 
-  /* Hämta och visa översättningen */
   try{
     const translation = await getAyahTranslation(surah, ayah, currentLang);
     if (audioCurrentSurah !== surah || audioCurrentAyah !== ayah) return;
@@ -2060,6 +2061,7 @@ async function showPlayingAyah(surah, ayah, total){
       transEl.className = 'daily-aya-text' + extraClass;
       transEl.style.opacity = '1';
       transEl.textContent = translation;
+      if (currentAyaData) currentAyaData[currentLang] = translation;
     } else {
       transEl.className = 'daily-aya-text';
       transEl.style.opacity = '1';
@@ -2191,7 +2193,6 @@ function playAyaOnlySelected(){
   updateSuraLoopButton();
 }
 
-/* BACKWARD / FORWARD – navigerar inom vald sura */
 function getSelectedPlaySurah(){
   const sel = document.getElementById('playSuraSelect');
   return sel ? (parseInt(sel.value, 10) || 1) : 1;
@@ -2277,13 +2278,11 @@ async function saveCurrentAyaAsFavorite(){
   const ref = getDisplayedAyaRef();
   if(!ref){ toast('❌ Ingen aya att spara'); return; }
 
-  // Redan sparad? Ta bort
   if(favorites.some(f => f.surahNum === ref.surahNum && f.ayahNum === ref.ayahNum)){
     favorites = favorites.filter(f => !(f.surahNum === ref.surahNum && f.ayahNum === ref.ayahNum));
     saveFavorites(); updateSaveFavBtn(); toast('⭐ Borttagen'); return;
   }
 
-  // Hämta fullständig data (arabiska + alla språk) om vi inte redan har exakt den versen
   let data = (currentAyaData && currentAyaData.surahNum === ref.surahNum && currentAyaData.ayahNum === ref.ayahNum)
     ? currentAyaData
     : await fetchAyaFromApi(ref.surahNum, ref.ayahNum);
@@ -2428,10 +2427,8 @@ function setLang(lang){
     else if(lang === 'fa') el.classList.add('fa');
     else if(lang === 'phonetic') el.classList.add('phonetic');
   });
-  /* Rendera om det som visas – inte nödvändigtvis "dagens aya" */
   const ref = getDisplayedAyaRef();
   if(ref && (!currentAyaData || currentAyaData.surahNum !== ref.surahNum || currentAyaData.ayahNum !== ref.ayahNum)){
-    // En annan vers visas (t.ex. under sura-uppspelning) – rendera om den
     fetchAya(ref.surahNum, ref.ayahNum);
   } else if(currentAyaData){
     renderDailyAya(currentAyaData);
@@ -2685,28 +2682,42 @@ async function runGoogleTranslate(){
 
 async function fetchTafsirForAyah(surah, ayah, lang){
   lang = lang || 'en';
+  const key = surah + ':' + ayah;
+
   if(lang === 'fa') return await fetchPersianTafsirAyah(surah, ayah);
+
   const src = TAFSIR_SOURCES[lang] || TAFSIR_SOURCES.en;
+
+  /* 1) quran.com (Ibn Kathir EN/AR, Kurdish) */
   try{
-    const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${src.quranComId}/by_ayah/${surah}:${ayah}`);
+    const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${src.quranComId}/by_ayah/${key}`);
     if(res.ok){
       const data = await res.json();
       if(data && data.tafsir && data.tafsir.text){
-        return { source: src.label + ' · quran.com', body: cleanTafsirHtml(data.tafsir.text) };
+        return {
+          source: src.label + ' · quran.com · ' + key,
+          body: cleanTafsirHtml(data.tafsir.text)
+        };
       }
     }
-  }catch(e){}
+  }catch(e){ console.warn('tafsir quran.com failed:', e); }
+
+  /* 2) English fallback: Maududi via alquran.cloud */
   if(lang === 'en'){
     try{
-      const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/en.maududi`);
+      const res = await fetch(`https://api.alquran.cloud/v1/ayah/${key}/en.maududi`);
       if(res.ok){
         const data = await res.json();
         if(data && data.data && data.data.text){
-          return { source: 'Sayyid Abul A\'la Maududi (English) · alquran.cloud', body: cleanTafsirHtml(data.data.text) };
+          return {
+            source: "Sayyid Abul A'la Maududi (English) · alquran.cloud · " + key,
+            body: cleanTafsirHtml(data.data.text)
+          };
         }
       }
-    }catch(e){}
+    }catch(e){ console.warn('tafsir maududi failed:', e); }
   }
+
   return null;
 }
 
@@ -2774,15 +2785,21 @@ function cleanTafsirHtml(html){
 }
 
 async function openTafsirAyah(surah, ayah, label){
+  const reqId = ++tafsirRequestId;
+
   tafsirState.surah = surah;
   tafsirState.ayah = ayah;
   tafsirState.chapterLabel = label || (SURAH_NAMES[surah-1] + ' ' + surah + ':' + ayah);
   tafsirState.translatedTo = 'original';
   tafsirState.nativeCache = {};
+  tafsirState.originalBody = '';
+  tafsirState.originalSource = '';
+
   const modal = document.getElementById('tafsirModal');
   const title = document.getElementById('tafsirTitle');
   const source = document.getElementById('tafsirSource');
   const body = document.getElementById('tafsirBody');
+
   title.innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + escapeHtml(tafsirState.chapterLabel);
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
@@ -2791,15 +2808,20 @@ async function openTafsirAyah(surah, ayah, label){
   closeGtPanel();
   modal.classList.remove('h');
   updateTafsirTranslateBar();
+
   const result = await fetchTafsirForAyah(surah, ayah, 'en');
+
+  if(reqId !== tafsirRequestId) return;
+
   if(!result){
-    source.textContent = 'Tafsir ej tillgänglig';
+    source.textContent = 'Tafsir ej tillgänglig · ' + surah + ':' + ayah;
     body.innerHTML = '<p>Kunde inte hämta tafsir. Kontrollera internetanslutningen.</p>';
     tafsirState.originalBody = body.innerHTML;
     tafsirState.originalSource = 'Tafsir ej tillgänglig';
     applyTafsirContentStyles(body, 'en');
     return;
   }
+
   tafsirState.originalSource = result.source;
   tafsirState.originalBody = result.body;
   source.textContent = result.source;
@@ -2808,11 +2830,14 @@ async function openTafsirAyah(surah, ayah, label){
 }
 
 async function openTafsirChapter(surah, chapterName){
+  const reqId = ++tafsirRequestId;
   tafsirState.surah = surah;
   tafsirState.ayah = null;
   tafsirState.chapterLabel = (chapterName || SURAH_NAMES[surah-1]) + ' (hela suran)';
   tafsirState.translatedTo = 'original';
   tafsirState.nativeCache = {};
+  tafsirState.originalBody = '';
+  tafsirState.originalSource = '';
   const modal = document.getElementById('tafsirModal');
   const title = document.getElementById('tafsirTitle');
   const source = document.getElementById('tafsirSource');
@@ -2826,6 +2851,7 @@ async function openTafsirChapter(surah, chapterName){
   modal.classList.remove('h');
   updateTafsirTranslateBar();
   const result = await fetchTafsirForChapter(surah, 'en');
+  if(reqId !== tafsirRequestId) return;
   if(!result || !result.tafsirs || !result.tafsirs.length){
     source.textContent = 'Tafsir ej tillgänglig';
     body.innerHTML = '<p>Kunde inte hämta tafsir för denna sura.</p>';
@@ -2850,7 +2876,6 @@ async function openTafsirChapter(surah, chapterName){
   applyTafsirContentStyles(body, 'en');
 }
 
-/* NYTT: använder den vers som faktiskt visas (displayedAya), inte nödvändigtvis "dagens aya" */
 async function openTafsirDaily(){
   const ref = getDisplayedAyaRef();
   if(!ref){ toast('❌ Ingen aya laddad'); return; }
