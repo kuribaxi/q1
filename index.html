@@ -203,6 +203,11 @@
     }
     .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: var(--text); }
 
+    /* ============================================================
+       ARABIC AYAH SPAN INSIDE TAFSIR
+       Fix 1: modest size (was 1.15em / 2.2 line-height)
+       Fix 2: force RTL even inside English (LTR) tafsir
+       ============================================================ */
     .tafsir-body .tafsir-aya-green {
       background: none !important;
       color: var(--emerald) !important;
@@ -211,16 +216,38 @@
       margin: 0 !important;
       border-radius: 0 !important;
       font-family: var(--quran-font) !important;
-      font-size: 1.15em !important;
-      line-height: 2.2 !important;
-      direction: rtl;
-      text-align: right;
+      font-size: 1em !important;                 /* was 1.15em */
+      line-height: 1.9 !important;               /* was 2.2 */
+      direction: rtl !important;                 /* force RTL */
+      unicode-bidi: isolate !important;          /* keep RTL inside LTR English */
+      text-align: right !important;
       font-weight: 700;
-      display: inline;
+      display: inline-block;                     /* inline-block respects direction */
     }
     .tafsir-body .tafsir-aya-green,
     .tafsir-body .tafsir-aya-green * {
       color: var(--emerald) !important;
+    }
+    /* Per-language refinements */
+    .tafsir-body.tafsir-ar .tafsir-aya-green {
+      font-size: 1em !important;
+      line-height: 1.85 !important;
+    }
+    .tafsir-body.tafsir-ku .tafsir-aya-green {
+      font-size: 1em !important;
+      line-height: 1.85 !important;
+    }
+    .tafsir-body.tafsir-fa .tafsir-aya-green {
+      font-size: 1.02em !important;
+      line-height: 1.9 !important;
+    }
+    .tafsir-body.tafsir-en .tafsir-aya-green {
+      font-size: 1.05em !important;
+      line-height: 2 !important;
+      direction: rtl !important;
+      unicode-bidi: isolate !important;
+      text-align: right !important;
+      display: inline-block;
     }
 
     .aya-picker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px}
@@ -1655,8 +1682,8 @@ function clearQuranSearch(){
    DAGENS AYA
    ============================================================ */
 let currentAyaData = null;
-let displayedAya = null;          // { surahNum, ayahNum, surahName } – what is shown right now
-let tafsirRequestId = 0;          // guards against stale async tafsir responses
+let displayedAya = null;
+let tafsirRequestId = 0;
 let currentLang = localStorage.getItem('quranLang') || 'sv';
 
 function renderDailyAya(data){
@@ -1791,7 +1818,6 @@ function goToPrevAya(){
   fetchAya(surahNum, ayahNum);
 }
 
-/* ---- Reference to the verse that is actually shown ---- */
 function getDisplayedAyaRef(){
   if(displayedAya) return displayedAya;
   if(currentAyaData) return { surahNum: currentAyaData.surahNum, ayahNum: currentAyaData.ayahNum, surahName: currentAyaData.surahName };
@@ -2032,7 +2058,6 @@ async function showPlayingAyah(surah, ayah, total){
   if (audioCurrentSurah !== surah || audioCurrentAyah !== ayah) return;
   showBismillahBanner(false);
 
-  /* Keep BOTH refs in sync so every code path (tafsir, favorite, setLang) sees the right ayah */
   displayedAya = { surahNum: surah, ayahNum: ayah, surahName: SURAH_NAMES[surah - 1] };
   currentAyaData = {
     surahNum: surah, ayahNum: ayah, surahName: SURAH_NAMES[surah - 1],
@@ -2688,7 +2713,6 @@ async function fetchTafsirForAyah(surah, ayah, lang){
 
   const src = TAFSIR_SOURCES[lang] || TAFSIR_SOURCES.en;
 
-  /* 1) quran.com (Ibn Kathir EN/AR, Kurdish) */
   try{
     const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${src.quranComId}/by_ayah/${key}`);
     if(res.ok){
@@ -2702,7 +2726,6 @@ async function fetchTafsirForAyah(surah, ayah, lang){
     }
   }catch(e){ console.warn('tafsir quran.com failed:', e); }
 
-  /* 2) English fallback: Maududi via alquran.cloud */
   if(lang === 'en'){
     try{
       const res = await fetch(`https://api.alquran.cloud/v1/ayah/${key}/en.maududi`);
