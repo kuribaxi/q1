@@ -34,12 +34,12 @@ header{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content
 
 /* ---------- Layout ---------- */
 #layout{display:flex;height:calc(100vh - 56px);min-height:0}
-#leftPanel{width:420px;flex:0 0 auto;display:flex;flex-direction:column;background:var(--panel);
+#leftPanel{width:460px;flex:0 0 auto;display:flex;flex-direction:column;background:var(--panel);
   border-right:1px solid var(--line);min-height:0}
 #rightPanel{flex:1 1 auto;overflow-y:auto;min-width:0;background:var(--bg)}
 
 /* ---------- Left: manager ---------- */
-.leftTop{padding:12px;border-bottom:1px solid var(--line);flex-shrink:0;max-height:46%;overflow-y:auto}
+.leftTop{padding:12px;border-bottom:1px solid var(--line);flex-shrink:0;max-height:34%;overflow-y:auto}
 details.manager{background:#16162a;border:1px solid var(--line);border-radius:14px;padding:12px}
 details.manager summary{cursor:pointer;font-weight:700;font-size:13px;display:flex;
   justify-content:space-between;align-items:center;list-style:none}
@@ -89,7 +89,7 @@ select{background:var(--panel3);border:1px solid var(--line);border-radius:10px;
   padding:9px 8px;font-size:12px;flex:1}
 
 /* ---------- Left: channel list ---------- */
-#channelList{flex:1;overflow-y:auto;padding:8px;display:grid;gap:6px;align-content:start;min-height:0}
+#channelList{flex:1 1 auto;overflow-y:auto;padding:8px;display:grid;gap:6px;align-content:start;min-height:220px}
 .placeholder{text-align:center;padding:60px 16px;color:var(--muted);font-size:13px;line-height:1.7}
 .placeholder .big{font-size:42px;margin-bottom:12px}
 .channelRow{display:flex;gap:10px;align-items:center;padding:10px;border-radius:12px;cursor:pointer;
@@ -198,7 +198,7 @@ select{background:var(--panel3);border:1px solid var(--line);border-radius:10px;
 <div id="layout">
   <aside id="leftPanel">
     <div class="leftTop">
-      <details class="manager" open>
+      <details class="manager" id="manageDetails">
         <summary>⚙️ Hantera spellistor <span id="manageSummary">0/13 aktiva</span></summary>
         <div id="playlistManager"></div>
         <div class="mgrBtns">
