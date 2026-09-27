@@ -357,13 +357,18 @@ function save(){
   localStorage.setItem(LS.removed, JSON.stringify([...removed]));
   localStorage.setItem(LS.favs, JSON.stringify([...favs]));
   // Persist custom playlists so they survive reload
-  const custom = PLAYLISTS.filter(p=>p.id.startsWith('custom_'));
+  const custom = PLAYLISTS.filter(p=>p.id.startsWith('custom_')||p.id.startsWith('file_'));
   localStorage.setItem(LS.customPls, JSON.stringify(custom));
 }
 function loadCustomPlaylists(){
   try{
     const arr = JSON.parse(localStorage.getItem(LS.customPls)||'[]');
-    arr.forEach(p=>{ if(!PLAYLISTS.some(x=>x.id===p.id)) PLAYLISTS.push(p); });
+    arr.forEach(p=>{
+      if(!PLAYLISTS.some(x=>x.id===p.id)){
+        PLAYLISTS.push({id:p.id, name:p.name||'Egen lista', country:p.country||'Egen', flag:p.flag||'🔗', url:p.url||''});
+        removed.delete(p.id);
+      }
+    });
   }catch(e){}
 }
 
@@ -899,6 +904,7 @@ els.addCustom.onclick = async ()=>{
   active.add(id); save(); renderManager();
   await loadPlaylist(id); renderManager(); rebuildAll();
   els.customUrl.value='';
+  showToast('Spellista sparad – finns kvar vid nästa besök');
 };
 els.fileInput.onchange = async e=>{
   const file=e.target.files[0]; if(!file) return;
