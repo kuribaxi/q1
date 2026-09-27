@@ -209,16 +209,6 @@ select{background:var(--panel3);border:1px solid var(--line);border-radius:10px;
             <button data-preset="all" class="presetBtn">🌍 Alla</button>
           </div>
           <label class="autoLabel"><input type="checkbox" id="autoLoadCheck"/> Ladda mina valda automatiskt nästa gång</label>
-          <div class="presetRow" style="margin-top:10px">
-            <button id="importPlaylistsBtn" class="presetBtn">📥 Importera spellistor</button>
-            <button id="exportPlaylistsBtn" class="presetBtn">📤 Exportera spellistor</button>
-          </div>
-          <input type="file" id="importPlaylistsFile" accept=".json" hidden/>
-          <div class="presetRow">
-            <input id="newPlName" placeholder="Namn (t.ex. Svenska kanaler)" style="flex:1;background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--text);font-size:11px;outline:none"/>
-            <input id="newPlUrl" placeholder="M3U-URL..." style="flex:1.4;background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--text);font-size:11px;outline:none"/>
-            <button id="addPlaylistBtn" class="presetBtn" style="flex:0 0 auto;padding:8px 12px;background:#26264a">➕ Ny lista</button>
-          </div>
         </div>
       </details>
     </div>
@@ -258,7 +248,6 @@ select{background:var(--panel3);border:1px solid var(--line);border-radius:10px;
           <button id="loadEPGBtn" class="miniBtn">📡 Ladda EPG</button>
           <span id="epgStatus" class="epgBadge">EPG ej laddad</span>
           <button id="copyBtn" class="miniBtn">📋 Kopiera länk</button>
-          <button id="openExtBtn" class="miniBtn" title="Öppna streamen i ny flik / externt fönster">🔗 Öppna externt</button>
           <span id="toast"></span>
         </div>
         <div class="pRow" style="gap:14px">
@@ -306,8 +295,7 @@ const PLAYLISTS = [
 ];
 const LS = {
   active:'iptv_active_playlists', removed:'iptv_removed_playlists',
-  favs:'iptv_favorites', autoload:'iptv_autoload', epg:'iptv_epg_url',
-  customPls:'iptv_custom_playlists'
+  favs:'iptv_favorites', autoload:'iptv_autoload', epg:'iptv_epg_url'
 };
 let active   = new Set(JSON.parse(localStorage.getItem(LS.active)  ||'[]'));
 let removed  = new Set(JSON.parse(localStorage.getItem(LS.removed) ||'[]'));
@@ -356,15 +344,6 @@ function save(){
   localStorage.setItem(LS.active, JSON.stringify([...active]));
   localStorage.setItem(LS.removed, JSON.stringify([...removed]));
   localStorage.setItem(LS.favs, JSON.stringify([...favs]));
-  // Persist custom playlists so they survive reload
-  const custom = PLAYLISTS.filter(p=>p.id.startsWith('custom_'));
-  localStorage.setItem(LS.customPls, JSON.stringify(custom));
-}
-function loadCustomPlaylists(){
-  try{
-    const arr = JSON.parse(localStorage.getItem(LS.customPls)||'[]');
-    arr.forEach(p=>{ if(!PLAYLISTS.some(x=>x.id===p.id)) PLAYLISTS.push(p); });
-  }catch(e){}
 }
 
 /* ================= Helpers ================= */
@@ -770,37 +749,6 @@ els.favBtn.onclick = ()=>{
   showToast(favs.has(currentChannel.url)?'⭐ Tillagd':'Borttagen');
 };
 els.copyBtn.onclick = ()=>{ if(currentChannel){ navigator.clipboard.writeText(currentChannel.url); showToast('Länk kopierad'); } };
-els.openExtBtn.onclick = ()=>{
-  if(!currentChannel){ showToast('Välj en kanal först'); return; }
-  const url = currentChannel.url;
-  const name = currentChannel.name.replace(/'/g,"\\'");
-  const isHls = url.includes('.m3u8');
-  const playerHtml = `<!doctype html><html lang="sv"><head><meta charset="utf-8"/>
-<title>${currentChannel.name}</title>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>
-<style>html,body{margin:0;height:100%;background:#000;display:flex;flex-direction:column}
-body{font-family:system-ui}
-video{flex:1;width:100%;background:#000;min-height:0}
-.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:#111;color:#e5e7eb;font-size:13px}
-.err{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:#fca5a5;font-size:14px;background:rgba(0,0,0,.8)}
-</style></head><body>
-<div class="bar"><b>${currentChannel.name}</b><span style="opacity:.6">${url.slice(0,80)}</span></div>
-<video controls autoplay playsinline></video>
-<div class="err" id="err">Kanalen kunde inte spelas.</div>
-<script>
-const v=document.querySelector('video'), err=document.getElementById('err');
-const url='${url.replace(/\\/g,'/').replace(/'/g,"\\'")}';
-if(url.includes('.m3u8') && window.Hls && Hls.isSupported()){
-  const h=new Hls(); h.loadSource(url); h.attachMedia(v);
-  h.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
-  h.on(Hls.Events.ERROR,(_,d)=>{ if(d.fatal) err.style.display='flex'; });
-} else { v.src=url; v.play().catch(()=>{ err.style.display='flex'; }); v.onerror=()=>err.style.display='flex'; }
-<\/script></body></html>`;
-  const w = window.open('', '_blank', 'noopener,width=1000,height=640');
-  if(!w){ showToast('Tillåt popup-fönster i webbläsaren'); return; }
-  w.document.write(playerHtml); w.document.close();
-  showToast('Öppnad i externt fönster');
-};
 els.loadEPGBtn.onclick = loadEPG;
 els.epgUrl.value = localStorage.getItem(LS.epg)||'';
 els.epgUrl.onchange = loadEPG;
@@ -865,7 +813,6 @@ $('clearFilters').onclick = ()=>{
 };
 
 /* ================= Init ================= */
-loadCustomPlaylists();
 renderManager(); rebuildAll(); setEPGStatus('EPG ej laddad','warn');
 if(localStorage.getItem(LS.autoload)==='1' && active.size>0) els.loadBtn.click();
 
