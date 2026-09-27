@@ -205,7 +205,9 @@
 
     /* ============================================================
        ARABIC AYAH SPAN INSIDE TAFSIR
-       Modest size + forced RTL even inside LTR (English) tafsir
+       FIX 1: unicode-bidi:plaintext tvingar alltid RTL på arabisk text
+       (oavsett om omgivande tafsir är LTR som engelska eller RTL)
+       FIX 2: samma font-size/line-height för alla tafsir-språk
        ============================================================ */
     .tafsir-body .tafsir-aya-green {
       background: none !important;
@@ -215,10 +217,10 @@
       margin: 0 !important;
       border-radius: 0 !important;
       font-family: var(--quran-font) !important;
-      font-size: 1em !important;
-      line-height: 1.9 !important;
+      font-size: 1.05em !important;
+      line-height: 2 !important;
       direction: rtl !important;
-      unicode-bidi: isolate !important;
+      unicode-bidi: plaintext !important;
       text-align: right !important;
       font-weight: 700;
       display: inline-block;
@@ -227,14 +229,14 @@
     .tafsir-body .tafsir-aya-green * {
       color: var(--emerald) !important;
     }
-    .tafsir-body.tafsir-ar .tafsir-aya-green { font-size: 1em !important; line-height: 1.85 !important; }
-    .tafsir-body.tafsir-ku .tafsir-aya-green { font-size: 1em !important; line-height: 1.85 !important; }
-    .tafsir-body.tafsir-fa .tafsir-aya-green { font-size: 1.02em !important; line-height: 1.9 !important; }
+    .tafsir-body.tafsir-ar .tafsir-aya-green,
+    .tafsir-body.tafsir-ku .tafsir-aya-green,
+    .tafsir-body.tafsir-fa .tafsir-aya-green,
     .tafsir-body.tafsir-en .tafsir-aya-green {
       font-size: 1.05em !important;
       line-height: 2 !important;
       direction: rtl !important;
-      unicode-bidi: isolate !important;
+      unicode-bidi: plaintext !important;
       text-align: right !important;
       display: inline-block;
     }
@@ -2498,7 +2500,9 @@ function applyTafsirFontStyles(bodyEl){
 
 /* ============================================================
    highlightArabicInTafsir — tvingar RTL på DOM-nivå
-   Detta är FIXEN: ingen extern CSS kan åsidosätta inline style + dir-attribut.
+   FIX: unicode-bidi:plaintext garanterar RTL för arabiska ayat
+   även när omgivande tafsir är LTR (engelska), och samma
+   font-size/line-height används för alla tafsir-språk.
    ============================================================ */
 function highlightArabicInTafsir(container){
   if(!container) return;
@@ -2541,8 +2545,8 @@ function highlightArabicInTafsir(container){
         span.className = 'tafsir-aya-green';
         span.setAttribute('dir', 'rtl');
         span.setAttribute('lang', 'ar');
-        /* NYCKEL: tvinga RTL med inline style – ingen extern CSS kan åsidosätta */
-        span.style.cssText = 'direction:rtl !important;unicode-bidi:isolate !important;text-align:right !important;display:inline-block;font-family:var(--quran-font);color:var(--emerald);font-weight:700;line-height:1.9;font-size:1em;';
+        /* FIX: unicode-bidi:plaintext tvingar RTL – ingen extern CSS kan åsidosätta */
+        span.style.cssText = 'direction:rtl !important;unicode-bidi:plaintext !important;text-align:right !important;display:inline-block;font-family:var(--quran-font);color:var(--emerald);font-weight:700;line-height:2;font-size:1.05em;';
         span.textContent = match;
         frag.appendChild(span);
         lastIndex = m.index + match.length;
@@ -2558,7 +2562,7 @@ function highlightArabicInTafsir(container){
       el.setAttribute('dir', 'rtl');
       el.setAttribute('lang', 'ar');
       el.style.setProperty('direction', 'rtl', 'important');
-      el.style.setProperty('unicode-bidi', 'isolate', 'important');
+      el.style.setProperty('unicode-bidi', 'plaintext', 'important');
       el.style.setProperty('text-align', 'right', 'important');
       el.style.setProperty('display', 'inline-block', 'important');
     });
