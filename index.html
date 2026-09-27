@@ -39,13 +39,13 @@ header{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content
 #rightPanel{flex:1 1 auto;overflow-y:auto;min-width:0;background:var(--bg)}
 
 /* ---------- Left: manager ---------- */
-.leftTop{padding:12px;border-bottom:1px solid var(--line);flex-shrink:0}
+.leftTop{padding:12px;border-bottom:1px solid var(--line);flex-shrink:0;max-height:46%;overflow-y:auto}
 details.manager{background:#16162a;border:1px solid var(--line);border-radius:14px;padding:12px}
 details.manager summary{cursor:pointer;font-weight:700;font-size:13px;display:flex;
   justify-content:space-between;align-items:center;list-style:none}
 details.manager summary::-webkit-details-marker{display:none}
 #manageSummary{font-size:11px;color:var(--muted);font-weight:500}
-#playlistManager{margin-top:10px;display:grid;gap:6px;max-height:280px;overflow-y:auto;padding-right:2px}
+#playlistManager{margin-top:10px;display:grid;gap:6px;max-height:240px;overflow-y:auto;padding-right:2px}
 .plRow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;
   border-radius:10px;background:var(--panel3)}
 .plRow.off .plName,.plRow.off .plMeta{opacity:.45}
@@ -79,7 +79,7 @@ details.manager summary::-webkit-details-marker{display:none}
 #search{width:100%;background:var(--panel3);border:1px solid var(--line);border-radius:12px;
   padding:11px 14px;color:var(--text);font-size:14px;outline:none}
 #search:focus{border-color:var(--accent)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;max-height:84px;overflow-y:auto}
 .chip{font-size:12px;background:#1e1e33;color:var(--text);border:1px solid var(--line);
   padding:7px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .chip:hover{background:#26264a}
@@ -220,7 +220,9 @@ select{background:var(--panel3);border:1px solid var(--line);border-radius:10px;
       <div class="selectRow">
         <select id="groupSelect"><option value="">Alla kategorier</option></select>
         <select id="favFilter"><option value="all">Alla kanaler</option><option value="fav">⭐ Favoriter</option></select>
+        <button id="clearFilters" class="chip" style="flex:0 0 auto" title="Rensa alla filter">🧹 Rensa</button>
       </div>
+      <div class="note" id="listCount" style="margin-top:8px">0 kanaler synliga</div>
     </div>
     <div id="channelList"></div>
   </aside>
@@ -527,7 +529,11 @@ function applyFilters(){
   }
   const seen=new Set();
   filtered = all.filter(c=>{ if(seen.has(c.url)) return false; seen.add(c.url); return true; });
-  renderChannelList(); renderGrid();
+  renderListCount(); renderChannelList(); renderGrid();
+}
+function renderListCount(){
+  const el = $('listCount');
+  if(el) el.textContent = filtered.length + ' av ' + allChannels.length + ' kanaler synliga';
 }
 function renderChannelList(){
   if(!filtered.length){
@@ -798,6 +804,13 @@ els.fileInput.onchange = async e=>{
 };
 els.autoLoadCheck.onchange = e=>localStorage.setItem(LS.autoload, e.target.checked?'1':'0');
 els.autoLoadCheck.checked = localStorage.getItem(LS.autoload)==='1';
+$('clearFilters').onclick = ()=>{
+  searchQ=''; groupF=''; showFavOnly=false;
+  countryFilter='Alla'; langFilter='Alla'; gridFilter='Alla';
+  els.search.value=''; els.groupSelect.value=''; els.favFilter.value='all';
+  showToast('Filter rensade');
+  applyFilters();
+};
 
 /* ================= Init ================= */
 renderManager(); rebuildAll(); setEPGStatus('EPG ej laddad','warn');
