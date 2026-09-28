@@ -714,9 +714,29 @@ function showToast(msg){
   els.toast.textContent=msg; els.toast.classList.add('show');
   clearTimeout(showToast._t); showToast._t=setTimeout(()=>els.toast.classList.remove('show'),3000);
 }
-function isExternalOnly(url){ return extOnly.has(url); }
+
+/* ============================================================
+   SPÄRRAD EXTERN-MINNE
+   Kanaler vars URL matchar något av dessa mönster hamnar ALDRIG
+   i extern-minnet. De försöker alltid spelas i spelaren.
+   ============================================================ */
+const NEVER_EXTERNAL_PATTERNS = [
+  'ncdn.telewebion.ir',
+  'ncdn.telewebion.net',
+  'telewebion.ir',
+  'telewebion.net'
+];
+function isNeverExternal(url){
+  if(!url) return false;
+  return NEVER_EXTERNAL_PATTERNS.some(p => url.includes(p));
+}
+function isExternalOnly(url){
+  if(isNeverExternal(url)) return false;
+  return extOnly.has(url);
+}
 function markExternalOnly(url){
   if(!url || extOnly.has(url)) return;
+  if(isNeverExternal(url)) return;
   extOnly.add(url); save();
 }
 
@@ -1170,6 +1190,7 @@ function playChannel(c){
   updateActiveChannelRow();
   renderFavPanel();
 
+  // ENDAST för icke-spärrade kanaler: om känd som extern-only, hoppa direkt
   if(isExternalOnly(c.url)){
     showExternalFallback(c, 'Känd för att kräva extern flik (CORS)', true);
     renderEPG(); renderGrid();
@@ -1183,8 +1204,26 @@ function playChannel(c){
 function tryNextCandidate(c, candidates, idx){
   if(idx >= candidates.length){
     const tried = playChannel._attempts.map(a=>a.id).join(' → ');
+    // Mahabad/Telewebion: markera inte som extern-only
     markExternalOnly(c.url);
-    showExternalFallback(c, 'Testade: '+tried, true);
+    // För spärrade kanaler: visa manuell fallback UTAN auto-öppning
+    if(isNeverExternal(c.url)){
+      showOverlay(
+        '🚫 <b>Kanalen kunde inte spelas just nu.</b><br>'+
+        `<span style="color:#94a3b8;font-size:13px">Testade: ${escapeHtml(tried)}</span><br><br>`+
+        'Servern kan vara tillfälligt överbelastad.<br>'+
+        'Prova igen om en stund, eller öppna manuellt.',
+        true,
+        [
+          {label:'🔄 Försök igen', primary:true, action:()=>{ hideOverlay(); playChannel(c); }},
+          {label:'🔗 Öppna externt', action:()=>openStreamExternal(c, true)},
+          {label:'📋 Kopiera URL', action:()=>{ navigator.clipboard.writeText(c.url); showToast('URL kopierad'); }},
+          {label:'✖ Stäng', action:()=>hideOverlay()}
+        ]
+      );
+    } else {
+      showExternalFallback(c, 'Testade: '+tried, true);
+    }
     stopPlayer();
     updateActiveChannelRow();
     renderChannelList();
