@@ -25,7 +25,6 @@ button{font-family:inherit;font-size:16px;touch-action:manipulation}
 button:focus-visible,input:focus-visible,select:focus-visible,.toggle:focus-visible{
   outline:none;box-shadow:0 0 0 4px rgba(250,204,21,.75)}
 
-/* ---------- TV Focus ---------- */
 .tv-focus{
   outline:4px solid var(--tv-focus) !important;
   outline-offset:3px;
@@ -36,7 +35,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,.toggle:focus-visi
 }
 .tv-zone-active{border-color:var(--tv-focus) !important}
 
-/* ---------- Header ---------- */
 header{height:64px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
   padding:0 16px;background:#11111c;border-bottom:1px solid var(--line);
   position:sticky;top:0;z-index:20}
@@ -49,13 +47,11 @@ header{height:64px;flex-shrink:0;display:flex;align-items:center;justify-content
   padding:9px 14px;border-radius:11px;cursor:pointer;min-height:44px}
 .hbtn:hover{background:#26264a}
 
-/* ---------- Layout ---------- */
 #layout{display:flex;height:calc(100vh - 64px);min-height:0}
 #leftPanel{width:460px;flex:0 0 auto;display:flex;flex-direction:column;background:var(--panel);
   border-right:1px solid var(--line);min-height:0}
 #rightPanel{flex:1 1 auto;overflow-y:auto;min-width:0;background:var(--bg)}
 
-/* TV-läge */
 body.tv-player-mode #leftPanel{display:none}
 body.tv-player-mode #rightPanel{width:100%}
 body.tv-player-mode .rightInner{max-width:none;padding:0}
@@ -63,7 +59,6 @@ body.tv-player-mode .card{display:none}
 body.tv-player-mode .playerCard{border-radius:0;border:none;padding:0;height:calc(100vh - 64px)}
 body.tv-player-mode .playerWrap{height:calc(100vh - 220px);aspect-ratio:auto;border-radius:0}
 
-/* ---------- Accordion ---------- */
 .acc{background:var(--panel2);border:1px solid var(--line);border-radius:14px;
   margin:10px;overflow:hidden;flex-shrink:0}
 .accHead{display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -82,7 +77,67 @@ body.tv-player-mode .playerWrap{height:calc(100vh - 220px);aspect-ratio:auto;bor
 .accBody{display:none;padding:12px 14px 14px}
 .accBody.open{display:block}
 
-/* ---------- Playlist manager ---------- */
+/* Lägg till spellista */
+.addPlBox{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.addPlHead{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;min-height:40px}
+.addPlHead:hover{color:var(--text)}
+.accToggle.small{width:32px;height:32px;font-size:16px}
+.addPlBody{display:none;padding-top:10px}
+.addPlBody.open{display:block}
+.addPlRow{display:flex;gap:8px;margin-bottom:8px}
+.addPlRow input{flex:1}
+.addPlBox input[type="text"],
+.addPlBox input[type="url"],
+.addPlBox input:not([type]){width:100%;background:var(--panel3);border:2px solid var(--line);
+  border-radius:10px;color:var(--text);padding:11px 12px;font-size:14px;
+  outline:none;min-height:44px;margin-bottom:8px}
+.addPlBox input:focus{border-color:var(--accent)}
+.addPlActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.addPlActions .miniBtn{flex:1;min-width:0;justify-content:center;display:inline-flex;align-items:center}
+.addPlActions .miniBtn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.addPlActions .miniBtn.primary:hover{filter:brightness(1.1)}
+.linkBtn{background:none;border:none;color:var(--focus);cursor:pointer;font-size:11px;
+  text-decoration:underline;padding:4px;margin-left:6px}
+.linkBtn:hover{color:#fff}
+.customBadge{font-size:9px;padding:2px 6px;border-radius:6px;background:rgba(139,92,246,.2);
+  color:#c4b5fd;font-weight:700;margin-left:6px}
+
+/* Favorit-panel */
+.favTabs{display:flex;gap:6px;margin-bottom:10px;background:#0f0f1a;
+  border-radius:10px;padding:4px}
+.favTab{flex:1;background:transparent;border:2px solid transparent;color:var(--muted);
+  padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;
+  min-height:42px;transition:.15s}
+.favTab:hover{background:#1a1a2e;color:var(--text)}
+.favTab.active{background:var(--panel3);color:var(--text);border-color:var(--accent)}
+.favActions{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.favActions .miniBtn{flex:1;min-width:0;padding:9px 8px;font-size:12px;min-height:42px}
+.favActions .miniBtn.danger{color:#fca5a5;border-color:rgba(239,68,68,.4)}
+.favActions .miniBtn.danger:hover{background:rgba(239,68,68,.1)}
+
+.favList{display:grid;gap:5px;max-height:240px;overflow-y:auto;padding-right:2px}
+.favItem{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;
+  background:var(--panel3);border:2px solid transparent;cursor:pointer;min-height:56px}
+.favItem:hover{background:#1e1e33}
+.favItem.active{border-color:rgba(139,92,246,.8);background:rgba(139,92,246,.15)}
+.favItem img{width:38px;height:38px;border-radius:9px;object-fit:contain;background:#000;
+  flex:0 0 auto;padding:2px}
+.favItemMeta{flex:1;min-width:0}
+.favItemName{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.favItemSub{font-size:11px;color:var(--muted);margin-top:2px}
+.favItemRemove{background:none;border:2px solid transparent;color:var(--muted);
+  font-size:14px;cursor:pointer;padding:6px;border-radius:8px;min-width:34px;min-height:34px}
+.favItemRemove:hover{color:#fca5a5}
+
+.selCheck{background:var(--panel3);border:2px solid var(--line);border-radius:8px;
+  width:34px;height:34px;min-width:34px;cursor:pointer;color:var(--muted);
+  font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex:0 0 auto;padding:0;transition:.15s}
+.selCheck:hover{border-color:var(--accent);color:var(--text)}
+.selCheck.on{background:var(--accent2);border-color:var(--accent2);color:#fff}
+
 #playlistManager{display:grid;gap:6px;max-height:260px;overflow-y:auto;padding-right:2px}
 .plRow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;
   border-radius:10px;background:var(--panel3);min-height:52px;border:2px solid transparent}
@@ -116,7 +171,6 @@ body.tv-player-mode .playerWrap{height:calc(100vh - 220px);aspect-ratio:auto;bor
 .autoLabel{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);
   margin-top:6px;cursor:pointer;min-height:44px}
 
-/* ---------- Filters ---------- */
 #search{width:100%;background:var(--panel3);border:2px solid var(--line);border-radius:12px;
   padding:12px 14px;color:var(--text);font-size:16px;outline:none;min-height:48px}
 #search:focus{border-color:var(--accent)}
@@ -131,12 +185,11 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
 .sideSecTitle{font-size:11px;color:var(--muted);font-weight:700;margin-top:12px;
   text-transform:uppercase;letter-spacing:.6px}
 
-/* ---------- Channel list ---------- */
 #channelListWrap{flex:1 1 auto;min-height:200px;overflow:hidden;display:flex;flex-direction:column}
 #channelList{flex:1;overflow-y:auto;padding:8px;display:grid;gap:6px;align-content:start}
 .placeholder{text-align:center;padding:50px 16px;color:var(--muted);font-size:14px;line-height:1.8}
 .placeholder .big{font-size:44px;margin-bottom:10px}
-.channelRow{display:flex;gap:10px;align-items:center;padding:10px;border-radius:12px;cursor:pointer;
+.channelRow{display:flex;gap:8px;align-items:center;padding:10px;border-radius:12px;cursor:pointer;
   background:var(--panel2);border:3px solid transparent;min-height:70px}
 .channelRow:hover{background:#1e1e33}
 .channelRow.active{border-color:rgba(139,92,246,.8);background:rgba(139,92,246,.15)}
@@ -150,13 +203,12 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
 .nowline{font-size:12px;color:#cbd5e1;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nowline b{color:#86efac;font-weight:700}
 .favStar{background:none;border:2px solid transparent;font-size:22px;cursor:pointer;color:var(--fav);
-  padding:8px;flex:0 0 auto;border-radius:10px;min-width:44px;min-height:44px}
+  padding:6px;flex:0 0 auto;border-radius:10px;min-width:38px;min-height:38px}
 .favStar.notFav{color:#3f3f55}
-.extIcon{background:none;border:2px solid transparent;font-size:18px;cursor:pointer;color:var(--focus);
-  padding:8px;flex:0 0 auto;border-radius:10px;min-width:44px;min-height:44px}
+.extIcon{background:none;border:2px solid transparent;font-size:16px;cursor:pointer;color:var(--focus);
+  padding:6px;flex:0 0 auto;border-radius:10px;min-width:38px;min-height:38px}
 .extIcon:hover{color:#fff}
 
-/* ---------- Right panel ---------- */
 .rightInner{padding:14px;display:grid;gap:14px;max-width:1400px}
 .playerCard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
 .playerWrap{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
@@ -202,7 +254,6 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
 .tvHint kbd{background:#1e1e33;border:1px solid var(--line);border-radius:6px;padding:2px 7px;
   font-family:monospace;font-size:11px;color:#e5e7eb}
 
-/* ---------- Cards ---------- */
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
 .cardHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
 .cardHead h2{margin:0;font-size:19px;font-weight:800}
@@ -215,7 +266,6 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
 .ptitle{font-weight:700;font-size:15px;margin-bottom:5px}
 .pdesc{font-size:13px;color:var(--muted);line-height:1.55}
 
-/* ---------- Grid ---------- */
 .gridWrap{overflow:auto;border:1px solid var(--line);border-radius:12px;
   background:rgba(15,23,42,.4);max-height:480px;-webkit-overflow-scrolling:touch}
 .grid{min-width:900px}
@@ -236,7 +286,6 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
 .progCard .n{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gridChips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 
-/* ---------- MOBIL ---------- */
 @media (max-width: 900px){
   body{overflow:auto}
   header{height:auto;padding:10px 12px;flex-direction:column;gap:10px;position:sticky;top:0}
@@ -273,15 +322,15 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
   .ptitle{font-size:14px}
   .pdesc{font-size:12px}
 
-  /* Kanal-listan på mobil */
   #channelListWrap{height:auto;max-height:none}
   #channelList{max-height:60vh;padding:6px;gap:5px}
   .channelRow{padding:9px;min-height:64px;gap:8px}
   .cLogo{width:44px;height:44px}
   .cName{font-size:14px}
   .cSub{font-size:11px;gap:5px}
-  .favStar{font-size:20px;min-width:40px;min-height:40px;padding:6px}
-  .extIcon{font-size:16px;min-width:40px;min-height:40px;padding:6px}
+  .favStar{font-size:20px;min-width:36px;min-height:36px;padding:5px}
+  .extIcon{font-size:15px;min-width:36px;min-height:36px;padding:5px}
+  .selCheck{width:32px;height:32px;min-width:32px;font-size:15px}
 
   .acc{margin:8px}
   .accHead{padding:11px 12px}
@@ -297,6 +346,16 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
 
   .presetRow{flex-wrap:wrap}
   .presetBtn{flex:1 1 calc(33% - 6px);min-width:0;font-size:12px;padding:10px 4px}
+
+  .favActions .miniBtn{flex:1 1 calc(50% - 3px);font-size:11px;padding:9px 6px}
+  .favList{max-height:200px}
+  .favItem{padding:7px;min-height:52px}
+  .favItem img{width:34px;height:34px}
+  .favItemName{font-size:12px}
+
+  .addPlRow{flex-wrap:wrap}
+  .addPlRow input{min-width:0;flex:1 1 calc(50% - 4px)}
+  .addPlActions .miniBtn{flex:1 1 100%}
 }
 
 @media (max-width: 480px){
@@ -308,7 +367,6 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
   .programs .program{padding:9px 10px}
 }
 
-/* Skyddar mot överlapp – alla paneler staplas */
 .acc, .playerCard, .card{position:relative}
 </style>
 </head>
@@ -330,7 +388,6 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
 <div id="layout">
   <aside id="leftPanel">
 
-    <!-- Accordion: Spellistor -->
     <div class="acc" id="accPlaylists">
       <div class="accHead" data-acc="playlists">
         <div class="accTitle">⚙️ <span>Hantera spellistor</span>
@@ -340,6 +397,34 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
       </div>
       <div class="accBody" id="accBodyPlaylists">
         <div id="playlistManager"></div>
+
+        <div class="addPlBox">
+          <div class="addPlHead" id="addPlHead">
+            <span>➕ Lägg till egen spellista</span>
+            <button class="accToggle small" id="toggleAddPl" aria-label="Öppna/stäng">+</button>
+          </div>
+          <div class="addPlBody" id="addPlBody">
+            <div class="addPlRow">
+              <input id="newPlName" placeholder="Namn (t.ex. Min lista)" maxlength="60"/>
+              <input id="newPlFlag" placeholder="🌍" maxlength="4" style="max-width:64px;text-align:center"/>
+            </div>
+            <input id="newPlUrl" placeholder="https://exempel.com/lista.m3u" type="url"/>
+            <div class="addPlRow">
+              <input id="newPlCountry" placeholder="Land/region (valfritt)" maxlength="40"/>
+            </div>
+            <div class="addPlActions">
+              <button id="addNewPl" class="miniBtn primary">➕ Lägg till URL</button>
+              <label class="miniBtn" style="display:inline-flex;align-items:center;cursor:pointer;justify-content:center">
+                📁 Välj .m3u-fil<input id="addPlFile" type="file" accept=".m3u,.m3u8" hidden/>
+              </label>
+            </div>
+            <div class="note" style="margin-top:6px;font-size:11px">
+              Listan sparas lokalt i webbläsaren. <span id="customPlCount">0 egna</span>
+              <button id="restoreRemoved" class="linkBtn" style="display:none">↺ Återställ borttagna</button>
+            </div>
+          </div>
+        </div>
+
         <div class="mgrBtns">
           <button id="loadBtn" class="primaryBtn">▶️ Ladda kanaler (0 valda)</button>
           <div class="presetRow">
@@ -352,7 +437,30 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
       </div>
     </div>
 
-    <!-- Accordion: Filter -->
+    <div class="acc" id="accFavs">
+      <div class="accHead" data-acc="favs">
+        <div class="accTitle">⭐ <span>Favoriter & valda</span>
+          <span class="sub" id="favSummary">0 ⭐ · 0 valda</span>
+        </div>
+        <button class="accToggle" data-acc-toggle="favs" aria-label="Öppna/stäng">+</button>
+      </div>
+      <div class="accBody" id="accBodyFavs">
+        <div class="favTabs">
+          <button class="favTab active" data-favtab="favs">⭐ Favoriter (<span id="tabFavCount">0</span>)</button>
+          <button class="favTab" data-favtab="selected">✓ Valda (<span id="tabSelCount">0</span>)</button>
+        </div>
+        <div class="favActions">
+          <button id="playAllFavs" class="miniBtn" title="Spela första">▶️ Spela</button>
+          <button id="openAllFavs" class="miniBtn" title="Öppna externt">🔗 Öppna</button>
+          <button id="exportFavsList" class="miniBtn" title="Exportera .m3u">💾 .m3u</button>
+          <button id="clearFavsList" class="miniBtn danger" title="Rensa listan">🗑️ Rensa</button>
+        </div>
+        <div id="favList" class="favList">
+          <div class="note" style="padding:12px;text-align:center">Inga favoriter än</div>
+        </div>
+      </div>
+    </div>
+
     <div class="acc" id="accFilters">
       <div class="accHead" data-acc="filters">
         <div class="accTitle">🔍 <span>Filter & sökning</span>
@@ -367,14 +475,13 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
         <div id="langChips" class="chips"></div>
         <div class="selectRow">
           <select id="groupSelect"><option value="">Alla kategorier</option></select>
-          <select id="favFilter"><option value="all">Alla kanaler</option><option value="fav">⭐ Favoriter</option></select>
+          <select id="favFilter"><option value="all">Alla kanaler</option><option value="fav">⭐ Favoriter</option><option value="sel">✓ Valda</option></select>
           <button id="clearFilters" class="chip" style="flex:0 0 auto" title="Rensa filter">🧹 Rensa</button>
         </div>
         <div class="note" id="listCount" style="margin-top:8px">0 kanaler synliga</div>
       </div>
     </div>
 
-    <!-- Kanal-listan -->
     <div id="channelListWrap">
       <div id="channelList"></div>
     </div>
@@ -447,7 +554,6 @@ select{background:var(--panel3);border:2px solid var(--line);border-radius:10px;
 </div>
 
 <script>
-/* ================= Data ================= */
 const PLAYLISTS = [
  {id:'movies', name:'Filmer', country:'Internationell', flag:'🎬', url:'https://iptv-org.github.io/iptv/categories/movies.m3u'},
  {id:'series', name:'Serier', country:'Internationell', flag:'📺', url:'https://iptv-org.github.io/iptv/categories/series.m3u'},
@@ -465,15 +571,18 @@ const PLAYLISTS = [
 ];
 const LS = {
   active:'iptv_active_playlists', removed:'iptv_removed_playlists',
-  favs:'iptv_favorites', autoload:'iptv_autoload', epg:'iptv_epg_url',
-  extOnly:'iptv_external_only', proxyMode:'iptv_proxy_mode', tvMode:'iptv_tv_mode',
-  accOpen:'iptv_acc_open'
+  favs:'iptv_favorites', selected:'iptv_selected', autoload:'iptv_autoload',
+  epg:'iptv_epg_url', extOnly:'iptv_external_only', proxyMode:'iptv_proxy_mode',
+  tvMode:'iptv_tv_mode', accOpen:'iptv_acc_open',
+  customPls:'iptv_custom_playlists', plMeta:'iptv_playlist_meta'
 };
 let active   = new Set(JSON.parse(localStorage.getItem(LS.active)  ||'[]'));
 let removed  = new Set(JSON.parse(localStorage.getItem(LS.removed) ||'[]'));
 let favs     = new Set(JSON.parse(localStorage.getItem(LS.favs)    ||'[]'));
+let selected = new Set(JSON.parse(localStorage.getItem(LS.selected)||'[]'));
 let extOnly  = new Set(JSON.parse(localStorage.getItem(LS.extOnly) ||'[]'));
-let accOpen  = JSON.parse(localStorage.getItem(LS.accOpen) || '{"playlists":false,"filters":false}');
+let accOpen  = JSON.parse(localStorage.getItem(LS.accOpen) || '{"playlists":false,"filters":false,"favs":false}');
+let customPlaylists = JSON.parse(localStorage.getItem(LS.customPls) || '[]');
 let channelsByPlaylist = {};
 let loaded = new Set();
 let allChannels = [];
@@ -483,6 +592,7 @@ let hls = null;
 let epg = {};
 let epgLoading = false;
 let proxyMode = localStorage.getItem(LS.proxyMode) || 'auto';
+let favTab = 'favs';
 
 let searchQ='', groupF='', showFavOnly=false;
 let countryFilter='Alla', langFilter='Alla', gridFilter='Alla';
@@ -500,6 +610,30 @@ channelsByPlaylist[BUILTIN_ID] = [
 loaded.add(BUILTIN_ID);
 if(active.size===0){ active.add(BUILTIN_ID); }
 
+/* Ladda sparad metadata för egna listor */
+(function loadPlaylistMeta(){
+  const saved = JSON.parse(localStorage.getItem(LS.plMeta) || '{}');
+  Object.entries(saved).forEach(([id, meta])=>{
+    const found = PLAYLISTS.find(p=>p.id===id);
+    if(found){ Object.assign(found, meta); }
+    else if(meta.custom){ PLAYLISTS.push({id, ...meta, custom:true}); }
+  });
+  customPlaylists.forEach(cp=>{
+    if(!PLAYLISTS.find(p=>p.id===cp.id)) PLAYLISTS.push({...cp, custom:true});
+  });
+})();
+function savePlaylistMeta(){
+  const meta = {};
+  PLAYLISTS.forEach(p=>{ meta[p.id] = {name:p.name, country:p.country, flag:p.flag, url:p.url, custom:!!p.custom}; });
+  localStorage.setItem(LS.plMeta, JSON.stringify(meta));
+}
+function saveCustomPlaylists(){
+  customPlaylists = PLAYLISTS.filter(p=>p.custom).map(p=>({
+    id:p.id, name:p.name, country:p.country, flag:p.flag, url:p.url
+  }));
+  localStorage.setItem(LS.customPls, JSON.stringify(customPlaylists));
+}
+
 const $ = id => document.getElementById(id);
 const els = {
   stats:$('stats'), manageSummary:$('manageSummary'), playlistManager:$('playlistManager'),
@@ -513,16 +647,22 @@ const els = {
   addCustom:$('addCustom'), fileInput:$('fileInput'), autoLoadCheck:$('autoLoadCheck'),
   openExternalBtn:$('openExternalBtn'), vlcBtn:$('vlcBtn'),
   proxySelect:$('proxySelect'), openAllBtn:$('openAllBtn'), tvModeBtn:$('tvModeBtn'),
-  filterSummary:$('filterSummary')
+  filterSummary:$('filterSummary'),
+  favSummary:$('favSummary'), tabFavCount:$('tabFavCount'), tabSelCount:$('tabSelCount'),
+  favList:$('favList'), playAllFavs:$('playAllFavs'), openAllFavs:$('openAllFavs'),
+  exportFavsList:$('exportFavsList'), clearFavsList:$('clearFavsList')
 };
 
 function save(){
   localStorage.setItem(LS.active, JSON.stringify([...active]));
   localStorage.setItem(LS.removed, JSON.stringify([...removed]));
   localStorage.setItem(LS.favs, JSON.stringify([...favs]));
+  localStorage.setItem(LS.selected, JSON.stringify([...selected]));
   localStorage.setItem(LS.extOnly, JSON.stringify([...extOnly]));
   localStorage.setItem(LS.proxyMode, proxyMode);
   localStorage.setItem(LS.accOpen, JSON.stringify(accOpen));
+  savePlaylistMeta();
+  saveCustomPlaylists();
 }
 
 /* ================= Accordion ================= */
@@ -546,12 +686,18 @@ function toggleAccordion(key){
   applyAccordion();
   setTimeout(()=>tvNav.refresh(), 100);
 }
-document.querySelectorAll('[data-acc], [data-acc-toggle]').forEach(el=>{
-  el.addEventListener('click', e=>{
-    const key = el.dataset.acc || el.dataset.accToggle;
-    if(!key) return;
+document.querySelectorAll('.acc > .accHead').forEach(head=>{
+  head.addEventListener('click', e=>{
+    if(e.target.closest('.accToggle')) return;
+    const key = head.dataset.acc;
+    if(key) toggleAccordion(key);
+  });
+});
+document.querySelectorAll('.accToggle[data-acc-toggle]').forEach(btn=>{
+  btn.addEventListener('click', e=>{
     e.stopPropagation();
-    toggleAccordion(key);
+    const key = btn.dataset.accToggle;
+    if(key) toggleAccordion(key);
   });
 });
 
@@ -571,7 +717,6 @@ function markExternalOnly(url){
   extOnly.add(url); save();
 }
 
-/* ================= Proxy ================= */
 const STREAM_PROXIES = [
   {id:'none',      name:'Ingen',       build:u=>u},
   {id:'allorig',   name:'AllOrigins',  build:u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`},
@@ -591,7 +736,6 @@ function buildStreamCandidates(url){
   return out;
 }
 
-/* ================= M3U ================= */
 const proxies = [
   u=>u,
   u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
@@ -636,6 +780,10 @@ async function loadPlaylist(id){
   if(loaded.has(id) && channelsByPlaylist[id]) return channelsByPlaylist[id];
   const pl = PLAYLISTS.find(p=>p.id===id);
   if(!pl) return [];
+  if(!pl.url){
+    // Fil-baserad – hoppa över fetch
+    return channelsByPlaylist[id] || [];
+  }
   setRowStatus(id,'Laddar...','loading');
   try{
     const chans = parseM3U(await fetchM3U(pl.url), pl);
@@ -651,6 +799,52 @@ async function loadPlaylist(id){
 function setRowStatus(id,text,state){
   const el = document.querySelector(`[data-row="${id}"] .status`);
   if(el){ el.textContent=text; el.className='status '+(state||'idle'); }
+}
+
+/* ================= Lägg till egen spellista ================= */
+async function addCustomPlaylist({name, url, flag, country, silent}){
+  name = (name||'').trim();
+  url = (url||'').trim();
+  if(!name){ showToast('Ange ett namn'); return null; }
+  if(!url){ showToast('Ange en URL'); return null; }
+  if(!/^https?:\/\//i.test(url)){ showToast('URL måste börja med http:// eller https://'); return null; }
+  if(PLAYLISTS.find(p=>p.url === url)){
+    showToast('Denna URL finns redan');
+    return null;
+  }
+  const id = 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+  const pl = {
+    id, name,
+    country: (country||'Egen').trim() || 'Egen',
+    flag: (flag||'🔗').trim() || '🔗',
+    url,
+    custom: true
+  };
+  PLAYLISTS.push(pl);
+  active.add(id);
+  savePlaylistMeta();
+  saveCustomPlaylists();
+  save();
+  if(!silent) showToast('Laddar lista…');
+  await loadPlaylist(id);
+  renderManager();
+  rebuildAll();
+  if(!silent) showToast((channelsByPlaylist[id]?.length||0)+' kanaler tillagda');
+  return id;
+}
+
+function deleteCustomPlaylist(id){
+  const idx = PLAYLISTS.findIndex(p=>p.id===id);
+  if(idx >= 0 && PLAYLISTS[idx].custom){
+    PLAYLISTS.splice(idx, 1);
+    delete channelsByPlaylist[id];
+    loaded.delete(id);
+    active.delete(id);
+    removed.delete(id);
+    savePlaylistMeta();
+    saveCustomPlaylists();
+    save();
+  }
 }
 
 /* ================= Playlist manager ================= */
@@ -682,7 +876,7 @@ function renderManager(){
       <div class="plInfo">
         <span style="font-size:18px">${p.flag}</span>
         <div style="flex:1;min-width:0">
-          <div class="plName">${escapeHtml(p.name)}</div>
+          <div class="plName">${escapeHtml(p.name)}${p.custom?'<span class="customBadge">EGEN</span>':''}</div>
           <div class="plMeta">${escapeHtml(p.country)}${count?' • '+count+' kanaler':''}</div>
         </div>
         <span class="status ${isLoaded?'loaded':'idle'}">${isLoaded?(count?'Laddad ('+count+')':'Laddad'):'Ej laddad'}</span>
@@ -703,21 +897,50 @@ function renderManager(){
   });
   els.playlistManager.querySelectorAll('[data-remove]').forEach(b=>{
     b.onclick = ()=>{
-      const id=b.dataset.remove;
-      removed.add(id); active.delete(id); delete channelsByPlaylist[id]; loaded.delete(id);
-      save(); renderManager(); rebuildAll(); showToast('Spellista borttagen');
+      const id = b.dataset.remove;
+      const pl = PLAYLISTS.find(p=>p.id===id);
+      if(pl?.custom){
+        showOverlay(
+          `🗑️ <b>Ta bort "${escapeHtml(pl.name)}" permanent?</b><br><br>`+
+          `<span style="font-size:13px;color:#94a3b8">Den egna listan raderas helt.</span>`,
+          true,
+          [
+            {label:'🗑️ Ja, radera', primary:true, action:()=>{
+              deleteCustomPlaylist(id);
+              renderManager();
+              rebuildAll();
+              hideOverlay();
+              showToast('Lista raderad');
+            }},
+            {label:'✖ Avbryt', action:()=>hideOverlay()}
+          ]
+        );
+      } else {
+        removed.add(id);
+        active.delete(id);
+        delete channelsByPlaylist[id];
+        loaded.delete(id);
+        save();
+        renderManager();
+        rebuildAll();
+        showToast('Lista borttagen (kan återställas)');
+      }
     };
   });
   updateSummary();
+  const countEl = $('customPlCount');
+  if(countEl) countEl.textContent = PLAYLISTS.filter(p=>p.custom).length + ' egna';
+  const restoreBtn = $('restoreRemoved');
+  if(restoreBtn) restoreBtn.style.display = removed.size > 0 ? 'inline' : 'none';
 }
 function updateSummary(){
   const total = PLAYLISTS.filter(p=>!removed.has(p.id)).length;
   const proxyLabel = {off:'🚫', auto:'🌐', always:'🔁'}[proxyMode] || '';
   els.manageSummary.textContent = `${active.size}/${total} aktiva · proxy ${proxyLabel}`;
   els.loadBtn.textContent = `▶️ Ladda kanaler (${active.size} valda)`;
-  els.stats.textContent = `${allChannels.length} kan • ${favs.size} ⭐`;
+  els.stats.textContent = `${allChannels.length} kan • ${favs.size} ⭐ • ${selected.size} ✓`;
+  els.favSummary.textContent = `${favs.size} ⭐ · ${selected.size} valda`;
 }
-
 function updateFilterSummary(){
   const parts = [];
   if(searchQ) parts.push('sök:'+searchQ);
@@ -728,7 +951,6 @@ function updateFilterSummary(){
   els.filterSummary.textContent = parts.length ? parts.join(' · ') : 'Inga filter';
 }
 
-/* ================= Filters ================= */
 function rebuildAll(){
   allChannels = (channelsByPlaylist[BUILTIN_ID]||[]).slice();
   for(const id of active){ if(id!==BUILTIN_ID && channelsByPlaylist[id]) allChannels = allChannels.concat(channelsByPlaylist[id]); }
@@ -755,13 +977,15 @@ function rebuildAll(){
   els.gridFilters.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{ gridFilter=b.dataset.g; rebuildAll(); });
   applyFilters();
   updateSummary();
+  renderFavPanel();
 }
 function applyFilters(){
   let all = allChannels.slice();
   if(countryFilter!=='Alla') all = all.filter(c=>(c.plCountry||c.country)===countryFilter);
   if(langFilter!=='Alla')    all = all.filter(c=>c.lang===langFilter);
   if(groupF)                all = all.filter(c=>c.group===groupF);
-  if(showFavOnly)           all = all.filter(c=>favs.has(c.url));
+  if(showFavOnly === 'fav') all = all.filter(c=>favs.has(c.url));
+  if(showFavOnly === 'sel') all = all.filter(c=>selected.has(c.url));
   if(searchQ){
     const q=searchQ.toLowerCase();
     all = all.filter(c=>[c.name,c.group,c.lang,c.country,c.playlistId].join(' ').toLowerCase().includes(q));
@@ -776,7 +1000,6 @@ function renderListCount(){
   if(el) el.textContent = filtered.length + ' av ' + allChannels.length + ' kanaler synliga';
 }
 
-/* ================= Channel list ================= */
 function renderChannelList(){
   const prevScrollTop = els.channelList.scrollTop;
   if(!filtered.length){
@@ -787,6 +1010,7 @@ function renderChannelList(){
   const now = new Date();
   els.channelList.innerHTML = filtered.slice(0,600).map(c=>{
     const isFav = favs.has(c.url);
+    const isSel = selected.has(c.url);
     const isExt = isExternalOnly(c.url);
     const progs = epg[c.tvgId]?.programs;
     const nowP  = progs?.find(p=>p.start<=now && p.stop>now);
@@ -803,6 +1027,7 @@ function renderChannelList(){
         </div>
         ${progs ? `<div class="nowline">${nowP?'<b>Nu:</b> '+escapeHtml(nowP.title):'Nu: ingen EPG-data'}${nextP?' · Nästa: '+escapeHtml(nextP.title):''}</div>` : ''}
       </div>
+      <button class="selCheck ${isSel?'on':''}" data-selkey="${escapeHtml(channelKey(c))}" title="Markera som vald" tabindex="-1">${isSel?'✓':''}</button>
       <button class="extIcon" data-extkey="${escapeHtml(channelKey(c))}" title="Öppna externt" tabindex="-1">🔗</button>
       <button class="favStar ${isFav?'':'notFav'}" data-favkey="${escapeHtml(channelKey(c))}" tabindex="-1">${isFav?'⭐':'☆'}</button>
     </div>`;
@@ -810,7 +1035,9 @@ function renderChannelList(){
 
   els.channelList.querySelectorAll('.channelRow').forEach(row=>{
     row.onclick = e=>{
-      if(e.target.classList.contains('favStar') || e.target.classList.contains('extIcon')) return;
+      if(e.target.classList.contains('favStar') ||
+         e.target.classList.contains('extIcon') ||
+         e.target.classList.contains('selCheck')) return;
       const ch = findChannelByKey(row.dataset.key); if(ch) playChannel(ch);
     };
   });
@@ -819,7 +1046,7 @@ function renderChannelList(){
       e.stopPropagation();
       const ch = findChannelByKey(b.dataset.favkey); if(!ch) return;
       if(favs.has(ch.url)) favs.delete(ch.url); else favs.add(ch.url);
-      save(); updateSummary(); updateFavBtn();
+      save(); updateSummary(); updateFavBtn(); renderFavPanel();
       b.textContent = favs.has(ch.url)?'⭐':'☆';
       b.classList.toggle('notFav', !favs.has(ch.url));
     };
@@ -831,6 +1058,17 @@ function renderChannelList(){
       if(ch) openStreamExternal(ch);
     };
   });
+  els.channelList.querySelectorAll('.selCheck').forEach(b=>{
+    b.onclick = e=>{
+      e.stopPropagation();
+      const ch = findChannelByKey(b.dataset.selkey); if(!ch) return;
+      if(selected.has(ch.url)) selected.delete(ch.url); else selected.add(ch.url);
+      save(); updateSummary();
+      b.textContent = selected.has(ch.url)?'✓':'';
+      b.classList.toggle('on', selected.has(ch.url));
+      renderFavPanel();
+    };
+  });
   requestAnimationFrame(()=>{ els.channelList.scrollTop = prevScrollTop; });
 }
 function updateActiveChannelRow(){
@@ -840,7 +1078,59 @@ function updateActiveChannelRow(){
   });
 }
 
-/* ================= Playback ================= */
+function renderFavPanel(){
+  els.tabFavCount.textContent = favs.size;
+  els.tabSelCount.textContent = selected.size;
+  els.favSummary.textContent = `${favs.size} ⭐ · ${selected.size} valda`;
+
+  document.querySelectorAll('.favTab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.favtab === favTab);
+  });
+
+  const urls = favTab === 'favs' ? [...favs] : [...selected];
+  if(!urls.length){
+    els.favList.innerHTML = `<div class="note" style="padding:12px;text-align:center">
+      ${favTab==='favs' ? 'Inga favoriter än' : 'Inga valda kanaler än'}
+    </div>`;
+    return;
+  }
+  const chans = urls
+    .map(u => allChannels.find(c => c.url === u))
+    .filter(Boolean);
+  if(!chans.length){
+    els.favList.innerHTML = '<div class="note" style="padding:12px;text-align:center">Kanaler är inte laddade</div>';
+    return;
+  }
+  els.favList.innerHTML = chans.map(c=>{
+    const isActive = currentChannel?.url === c.url;
+    return `<div class="favItem ${isActive?'active':''}" data-url="${escapeHtml(c.url)}" tabindex="0">
+      <img src="${escapeHtml(c.logo)}" onerror="this.style.visibility='hidden'" alt=""/>
+      <div class="favItemMeta">
+        <div class="favItemName">${escapeHtml(c.name)}</div>
+        <div class="favItemSub">${c.flag} ${escapeHtml(c.plCountry||c.country)} · ${escapeHtml(c.group||'Allmän')}</div>
+      </div>
+      <button class="favItemRemove" data-removeurl="${escapeHtml(c.url)}" title="Ta bort" tabindex="-1">✕</button>
+    </div>`;
+  }).join('');
+
+  els.favList.querySelectorAll('.favItem').forEach(el=>{
+    el.onclick = e=>{
+      if(e.target.classList.contains('favItemRemove')) return;
+      const ch = allChannels.find(c=>c.url === el.dataset.url);
+      if(ch) playChannel(ch);
+    };
+  });
+  els.favList.querySelectorAll('.favItemRemove').forEach(b=>{
+    b.onclick = e=>{
+      e.stopPropagation();
+      const url = b.dataset.removeurl;
+      if(favTab === 'favs') favs.delete(url); else selected.delete(url);
+      save(); updateSummary(); renderChannelList(); renderFavPanel();
+      showToast('Borttagen');
+    };
+  });
+}
+
 function stopPlayer(){
   clearTimeout(playChannel._timeout);
   if(hls){ hls.destroy(); hls=null; }
@@ -862,6 +1152,7 @@ function playChannel(c){
   stopPlayer();
   openStreamExternal._last = null;
   updateActiveChannelRow();
+  renderFavPanel();
 
   if(isExternalOnly(c.url) && proxyMode === 'off'){
     showOverlay('🚫 Kanalen kan inte spelas i webbläsaren.<br>Öppnar externt…');
@@ -972,7 +1263,6 @@ function updateFavBtn(){
   els.favBtn.textContent = favs.has(currentChannel.url)?'⭐':'☆';
 }
 
-/* ================= Extern ================= */
 function isTvEnvironment(){
   return /web0s|webos|netcast|smarttv|hbbtv|viera|tizen/i.test(navigator.userAgent);
 }
@@ -1044,7 +1334,6 @@ function openAllVisibleTabs(){
   );
 }
 
-/* ================= EPG ================= */
 function parseXMLTVDate(s){
   if(!s) return null;
   const m = s.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
@@ -1110,7 +1399,6 @@ function renderEPG(){
   }).join('');
 }
 
-/* ================= Grid ================= */
 function renderGrid(){
   const now = new Date();
   let chans = filtered.filter(c=>epg[c.tvgId]?.programs?.length);
@@ -1160,7 +1448,6 @@ function renderGrid(){
   });
 }
 
-/* ================= TV Fjärrkontroll ================= */
 const tvNav = {
   zones: ['leftPanel','rightPanel'],
   currentZone: 0,
@@ -1169,7 +1456,7 @@ const tvNav = {
   getZoneEl(){ return document.getElementById(this.zones[this.currentZone]); },
   refresh(){
     const zone = this.getZoneEl();
-    const sel = 'button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, .channelRow, .progCard, .gridCell.left, .chip, .toggle';
+    const sel = 'button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, .channelRow, .progCard, .gridCell.left, .chip, .toggle, .favItem, .favTab';
     this.elements = [...zone.querySelectorAll(sel)].filter(el=>{
       if(el.offsetParent === null) return false;
       if(el.closest('#loadingOverlay')) return false;
@@ -1179,9 +1466,7 @@ const tvNav = {
     this.applyFocus();
   },
   applyFocus(){
-    this.elements.forEach((el, i)=>{
-      el.classList.toggle('tv-focus', i === this.focusIndex);
-    });
+    this.elements.forEach((el, i)=>{ el.classList.toggle('tv-focus', i === this.focusIndex); });
     const el = this.elements[this.focusIndex];
     if(el) el.scrollIntoView({block:'nearest', behavior:'smooth'});
     document.getElementById('leftPanel').classList.toggle('tv-zone-active', this.zones[this.currentZone]==='leftPanel');
@@ -1307,14 +1592,13 @@ document.addEventListener('keydown', e=>{
   }
 });
 
-/* ================= Events ================= */
 els.search.oninput = e=>{ searchQ=e.target.value; applyFilters(); };
 els.groupSelect.onchange = e=>{ groupF=e.target.value; applyFilters(); };
-els.favFilter.onchange = e=>{ showFavOnly=e.target.value==='fav'; applyFilters(); };
+els.favFilter.onchange = e=>{ showFavOnly = e.target.value === 'fav' ? 'fav' : e.target.value === 'sel' ? 'sel' : false; applyFilters(); };
 els.favBtn.onclick = ()=>{
   if(!currentChannel) return;
   if(favs.has(currentChannel.url)) favs.delete(currentChannel.url); else favs.add(currentChannel.url);
-  save(); updateFavBtn(); updateSummary();
+  save(); updateFavBtn(); updateSummary(); renderFavPanel();
   const row = els.channelList.querySelector('.channelRow.active');
   if(row){
     const star = row.querySelector('.favStar');
@@ -1342,6 +1626,62 @@ els.proxySelect.onchange = e=>{
 els.openAllBtn.onclick = openAllVisibleTabs;
 els.tvModeBtn.onclick = toggleTvMode;
 
+document.querySelectorAll('.favTab').forEach(t=>{
+  t.onclick = ()=>{ favTab = t.dataset.favtab; renderFavPanel(); };
+});
+els.playAllFavs.onclick = ()=>{
+  const urls = favTab === 'favs' ? [...favs] : [...selected];
+  const first = urls.map(u=>allChannels.find(c=>c.url===u)).filter(Boolean)[0];
+  if(first) playChannel(first);
+  else showToast('Inga kanaler i listan');
+};
+els.openAllFavs.onclick = ()=>{
+  const urls = favTab === 'favs' ? [...favs] : [...selected];
+  const chans = urls.map(u=>allChannels.find(c=>c.url===u)).filter(Boolean);
+  if(!chans.length){ showToast('Inga kanaler i listan'); return; }
+  showOverlay(
+    `🔗 <b>Öppna ${chans.length} kanaler externt?</b>`,
+    true,
+    [
+      {label:'✅ Öppna alla', primary:true, action:()=>{
+        hideOverlay();
+        if(isTvEnvironment()){
+          window.location.href = chans[0].url;
+        } else {
+          chans.forEach((c, i)=>{
+            setTimeout(()=>window.open(c.url, '_blank', 'noopener,noreferrer'), i * 250);
+          });
+          showToast(`Öppnar ${chans.length} flikar...`);
+        }
+      }},
+      {label:'✖ Avbryt', action:()=>hideOverlay()}
+    ]
+  );
+};
+els.exportFavsList.onclick = ()=>{
+  const urls = favTab === 'favs' ? [...favs] : [...selected];
+  const chans = urls.map(u=>allChannels.find(c=>c.url===u)).filter(Boolean);
+  if(!chans.length){ showToast('Inga kanaler att exportera'); return; }
+  exportM3U(chans, favTab === 'favs' ? 'favoriter.m3u' : 'valda.m3u');
+  showToast(chans.length + ' kanaler exporterade');
+};
+els.clearFavsList.onclick = ()=>{
+  const label = favTab === 'favs' ? 'favoriter' : 'valda kanaler';
+  showOverlay(
+    `🗑️ <b>Rensa alla ${label}?</b><br><br>`+
+    `<span style="font-size:13px;color:#94a3b8">Detta kan inte ångras.</span>`,
+    true,
+    [
+      {label:'🗑️ Ja, rensa', primary:true, action:()=>{
+        if(favTab === 'favs') favs.clear(); else selected.clear();
+        save(); updateSummary(); renderChannelList(); renderFavPanel();
+        hideOverlay(); showToast('Rensat');
+      }},
+      {label:'✖ Avbryt', action:()=>hideOverlay()}
+    ]
+  );
+};
+
 function exportM3U(chans, filename){
   let m3u='#EXTM3U\n';
   chans.forEach(c=>{ m3u+=`#EXTINF:-1 tvg-logo="${c.logo||''}" tvg-id="${c.tvgId||''}" group-title="${c.group||''}",${c.name}\n${c.url}\n`; });
@@ -1350,7 +1690,7 @@ function exportM3U(chans, filename){
   a.download=filename; a.click();
 }
 els.exportFav.onclick = ()=>{ exportM3U(allChannels.filter(c=>favs.has(c.url)),'favoriter.m3u'); showToast('Favoriter exporterade'); };
-els.exportM3U.onclick = ()=>{ exportM3U(filtered,'valda.m3u'); showToast('Kanaler exporterade'); };
+els.exportM3U.onclick = ()=>{ exportM3U(allChannels.filter(c=>selected.has(c.url)),'valda.m3u'); showToast('Valda exporterade'); };
 
 els.loadBtn.onclick = async ()=>{
   if(!active.size){ showToast('Välj minst en spellista först!'); return; }
@@ -1375,22 +1715,106 @@ document.querySelectorAll('[data-preset]').forEach(b=>{
     save(); renderManager(); els.loadBtn.click();
   };
 });
+
+/* Formulär: lägg till spellista */
+$('toggleAddPl').onclick = e=>{
+  e.stopPropagation();
+  const body = $('addPlBody');
+  const toggle = $('toggleAddPl');
+  const open = body.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+  toggle.textContent = open ? '−' : '+';
+  tvNav.refresh();
+};
+$('addPlHead').addEventListener('click', e=>{
+  if(e.target.closest('#toggleAddPl')) return;
+  $('toggleAddPl').click();
+});
+
+$('addNewPl').onclick = async ()=>{
+  const name = $('newPlName').value;
+  const url = $('newPlUrl').value;
+  const flag = $('newPlFlag').value;
+  const country = $('newPlCountry').value;
+  const id = await addCustomPlaylist({name, url, flag, country});
+  if(id){
+    $('newPlName').value = '';
+    $('newPlUrl').value = '';
+    $('newPlFlag').value = '';
+    $('newPlCountry').value = '';
+  }
+};
+
+$('addPlFile').onchange = async e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const name = file.name.replace(/\.(m3u8?|txt)$/i,'') || 'Egen fil';
+  const id = 'file_' + Date.now();
+  try{
+    const chans = parseM3U(await file.text(), {
+      id, country: 'Fil', flag: '📁'
+    });
+    channelsByPlaylist[id] = chans;
+    loaded.add(id);
+    active.add(id);
+    PLAYLISTS.push({id, name, country:'Fil', flag:'📁', url:'', custom:true});
+    savePlaylistMeta();
+    saveCustomPlaylists();
+    save();
+    renderManager();
+    rebuildAll();
+    showToast(chans.length+' kanaler från fil');
+  }catch(err){
+    showToast('Kunde inte läsa filen');
+  }
+  e.target.value = '';
+};
+
+$('restoreRemoved').onclick = ()=>{
+  if(!removed.size) return;
+  showOverlay(
+    `↺ <b>Återställ ${removed.size} borttagna spellistor?</b>`,
+    true,
+    [
+      {label:'↺ Återställ', primary:true, action:()=>{
+        removed.clear();
+        save();
+        renderManager();
+        rebuildAll();
+        hideOverlay();
+        showToast('Spellistor återställda');
+      }},
+      {label:'✖ Avbryt', action:()=>hideOverlay()}
+    ]
+  );
+};
+
 els.addCustom.onclick = async ()=>{
-  const url = els.customUrl.value.trim(); if(!url) return;
-  const id='custom_'+Date.now();
-  PLAYLISTS.push({id, name:'Egen länk', country:'Egen', flag:'🔗', url});
-  active.add(id); save(); renderManager();
-  await loadPlaylist(id); renderManager(); rebuildAll();
-  els.customUrl.value='';
+  const url = els.customUrl.value.trim();
+  if(!url) return;
+  const id = await addCustomPlaylist({
+    name: 'Snabbval ' + new Date().toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit'}),
+    url,
+    flag: '🔗',
+    country: 'Egen'
+  });
+  if(id) els.customUrl.value = '';
 };
 els.fileInput.onchange = async e=>{
   const file=e.target.files[0]; if(!file) return;
   const id='file_'+Date.now();
-  const chans = parseM3U(await file.text(), {id, country:'Fil', flag:'📁'});
-  channelsByPlaylist[id]=chans; loaded.add(id); active.add(id);
-  PLAYLISTS.push({id, name:file.name, country:'Fil', flag:'📁', url:''});
-  save(); renderManager(); rebuildAll();
-  showToast(chans.length+' kanaler från fil');
+  try{
+    const chans = parseM3U(await file.text(), {id, country:'Fil', flag:'📁'});
+    channelsByPlaylist[id]=chans; loaded.add(id); active.add(id);
+    PLAYLISTS.push({id, name:file.name, country:'Fil', flag:'📁', url:'', custom:true});
+    savePlaylistMeta();
+    saveCustomPlaylists();
+    save(); renderManager(); rebuildAll();
+    showToast(chans.length+' kanaler från fil');
+  }catch(err){
+    showToast('Kunde inte läsa filen');
+  }
+  e.target.value = '';
 };
 els.autoLoadCheck.onchange = e=>localStorage.setItem(LS.autoload, e.target.checked?'1':'0');
 els.autoLoadCheck.checked = localStorage.getItem(LS.autoload)==='1';
@@ -1405,11 +1829,11 @@ $('clearFilters').onclick = ()=>{
 /* ================= Init ================= */
 renderManager(); rebuildAll(); setEPGStatus('EPG ej laddad','warn');
 applyAccordion();
+renderFavPanel();
 if(localStorage.getItem(LS.autoload)==='1' && active.size>0) els.loadBtn.click();
 if(localStorage.getItem(LS.tvMode)==='1') toggleTvMode();
 setTimeout(()=>tvNav.refresh(), 200);
 
-/* Nätverksvarning */
 (async ()=>{
   try{
     await fetch('https://iptv-org.github.io/iptv/categories/movies.m3u', {method:'GET', cache:'no-store'});
