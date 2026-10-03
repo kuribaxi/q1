@@ -308,7 +308,7 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
         <button class="btn" id="jsToggleBtn" onclick="toggleJSengine()">JS PA</button>
       </div>
     </div>
-    <div class="video-wrapper" id="vwrap"><div class="error-msg"><h3>Välj en kanal - Gardin + Radio Edition</h3><p>Universal Player • HLS/TS/DASH • Proxy • Radio • Gardin • Quran EN</p></div></div>
+    <div class="video-wrapper" id="vwrap"><div class="error-msg"><h3>Välj en kanal - Gardin + Radio Edition</h3><p>Universal Player • HLS/TS/DASH • Smart proxy • Radio • Gardin • Quran EN</p></div></div>
   </main>
   <aside class="channel-list" id="channel-list"><button class="close-btn" onclick="toggleList()">Stäng</button><div id="ch-container"></div></aside>
 </div>
@@ -316,6 +316,7 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
 <script>
 /* ============================================================
    PROXY-KONFIGURATION
+   Används ENDAST för kanaler som markerats med proxied:true
    ============================================================ */
 const PROXY_BASE = 'http://localhost:8787';
 
@@ -328,16 +329,14 @@ function proxify(url){
 /* ============================================================
    GEMENSAM PLAYER (Universal Player)
    Kräver: hls.js, mpegts.js, dash.js
+   Proxy används ENDAST om opts.proxy === true
    ============================================================ */
 (function(global){
   'use strict';
-  var PROXY_ENABLED_DEFAULT = true;
-
   var _hls = null;
   var _mpegts = null;
   var _dash = null;
   var _vid = null;
-  var _currentUrl = null;
 
   function destroyAllPlayers(){
     if(_hls){ try{ _hls.destroy(); }catch(e){} _hls = null; }
@@ -347,7 +346,6 @@ function proxify(url){
       try{ _vid.pause(); _vid.removeAttribute('src'); _vid.load(); }catch(e){}
       _vid = null;
     }
-    _currentUrl = null;
   }
 
   function detectStreamType(url){
@@ -445,22 +443,24 @@ function proxify(url){
 
     destroyAllPlayers();
     _vid = videoEl;
-    _currentUrl = url;
 
     videoEl.muted = false;
     videoEl.autoplay = true;
     videoEl.playsInline = true;
     videoEl.controls = true;
 
-    var useProxy = (opts.proxy !== undefined) ? opts.proxy : PROXY_ENABLED_DEFAULT;
+    // ===== ALTERNATIV 2: proxy är AV som default =====
+    // Bara kanaler med proxied:true går genom proxyn.
+    var useProxy = (opts.proxy === true);
     var type = opts.forceType || detectStreamType(url);
     var playUrl = useProxy ? proxify(url) : url;
 
     if(opts.onStart) opts.onStart({type:type, url:playUrl, proxied:useProxy});
 
     var fallbackFn = function(){
+      // Om vi använde proxy och det failade, försök direkt
       if(useProxy && opts.allowDirectFallback !== false){
-        console.warn('[playUniversal] fallback till direkt (utan proxy)');
+        console.warn('[playUniversal] proxy misslyckades → testar direkt');
         tryDirectFallback(videoEl, url, type, opts);
         return;
       }
@@ -488,7 +488,10 @@ function proxify(url){
       _hls = new Hls({enableWorker:false});
       _hls.loadSource(directUrl);
       _hls.attachMedia(videoEl);
-      _hls.on(Hls.Events.MANIFEST_PARSED, function(){ videoEl.play().catch(function(){}); });
+      _hls.on(Hls.Events.MANIFEST_PARSED, function(){
+        videoEl.play().catch(function(){});
+        if(opts.onReady) opts.onReady('hls.js-direct');
+      });
       return;
     }
     if(type === 'ts' && global.mpegts && mpegts.isSupported()){
@@ -496,10 +499,12 @@ function proxify(url){
       _mpegts.attachMediaElement(videoEl);
       _mpegts.load();
       _mpegts.play().catch(function(){});
+      if(opts.onReady) opts.onReady('mpegts.js-direct');
       return;
     }
     videoEl.src = directUrl;
     videoEl.play().catch(function(){});
+    if(opts.onReady) opts.onReady('file-direct');
   }
 
   global.playUniversal = playUniversal;
@@ -509,6 +514,8 @@ function proxify(url){
 
 /* ============================================================
    KANALLISTOR
+   proxied:true används ENDAST för kanaler som behöver proxy
+   (t.ex. line.trxdnscloud.ru med IP/UA-lås)
    ============================================================ */
 function getKarwanDirectCDN(karwanUrl){
   try{
@@ -618,7 +625,7 @@ var diniRaw = [
   { name: 'Eman TV', url: 'https://avr.host247.net/live/emantv/tracks-v1a1/mono.m3u8', color: 'blue' },
   { name: 'Dang Quran', url: 'https://live20.bozztv.com/giatv/giatv-Quran/Quran/playlist.m3u8', color: 'blue' },
   { name: 'Peshang tv', url: 'https://stream.forcaroo.com/stream/hls/desktop.m3u8', color:'blue' },
-  { name: 'Walla Quran', url: 'http://cdn.karwan.tv/WALAQURAN/index.m3u8', method:'external', color:'blue' },
+  { name: 'Walla Quran', url: 'http://cdn.karwan.tv/WALAQURAN/index.m3u8', method:'external',color:'blue' },
   { name: 'Ashna Quran TV', url: 'https://karwan.tv/ashna-quran/', method:'iframe', color:'blue' },
   { name: 'Ashti QuranTV', url: 'http://avrstream.com:1935/live/AshtiTV/playlist.m3u8', color:'blue' },
   { name: 'IMK Quran TV', url: 'http://avrstream.com:1935/live/IMKQURANHD/playlist.m3u8', color:'blue' },
@@ -771,7 +778,7 @@ function row(ch,hideSub){
   var m=ch.method||'hls'; var active=(cur&&cur.url===ch.url)?'active':'';
   var isFav=favs.some(function(f){ return f.url===ch.url; }); var star=isFav?'★':'☆';
   var tag=''; if(!hideSub){
-    if(ch.proxied) tag=' <span style="font-size:0.6rem;opacity:0.9;background:#4ecca333;color:#4ecca3;padding:1px 5px;border-radius:10px;">proxy</span>';
+    if(ch.proxied) tag=' <span style="font-size:0.6rem;opacity:0.9;background:#ff8a4c33;color:#ff8a4c;padding:1px 5px;border-radius:10px;">proxy</span>';
     else if(m==='ts') tag=' <span style="font-size:0.6rem;opacity:0.9;background:#4ecca333;color:#4ecca3;padding:1px 5px;border-radius:10px;">mpegts</span>';
     else if(m==='iframe') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">live</span>';
     else if(m==='audio') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">radio</span>';
@@ -801,7 +808,7 @@ function renderRadioPlayer(url, name){
   if(aud){ aud.volume=1.0; aud.play().catch(function(){}); }
 }
 
-function renderAudioOnlyPlayer(url, name){
+function renderAudioOnlyPlayer(url, name, useProxy){
   var wrap=document.getElementById('vwrap');
   wrap.innerHTML=
     '<div class="audio-only-player">'+
@@ -825,13 +832,11 @@ function renderAudioOnlyPlayer(url, name){
   var badge=document.getElementById('audioStatusBadge');
   var volSlider=document.getElementById('audioVolSlider');
   if(volSlider) volSlider.addEventListener('input', function(){ if(vid) vid.volume=parseFloat(volSlider.value); });
-
-  // Använd universal player även i audio-läget
   if(!vid) return;
   vid.muted = false;
   playUniversal(vid, url, {
-    proxy: true,
-    onStart: function(info){ if(badge) badge.textContent = '📡 ' + info.type.toUpperCase() + ' · ljud'; },
+    proxy: !!useProxy,
+    onStart: function(info){ if(badge) badge.textContent = '📡 ' + info.type.toUpperCase() + (info.proxied?' · PROXY':'') + ' · ljud'; },
     onReady: function(engine){ if(badge) badge.textContent = '✅ LIVE · ' + engine; },
     onError: function(type){ if(badge) badge.textContent = '⚠ Fel: ' + type; }
   });
@@ -839,8 +844,8 @@ function renderAudioOnlyPlayer(url, name){
 
 /* ============================================================
    HUVUD-PLAY
-   Använder playUniversal för HLS/TS/DASH/MP4/audio
-   Behåller iframe för karwan.tv, sepehrtv.ir, cihanhd.com etc.
+   proxied=true  → kör via lokal proxy (behövs för IP/UA-lås)
+   proxied=false → spela direkt (default, funkar för MMN etc.)
    ============================================================ */
 function play(url,name,method,proxied){
   if(window.innerWidth<=768) document.getElementById('channel-list').classList.remove('show');
@@ -869,8 +874,7 @@ function play(url,name,method,proxied){
         '</div></div>';
       render(curFilter); return;
     }
-    // hls / ts / dash / mp4 / unknown → audio-only med universal player
-    renderAudioOnlyPlayer(proxied?proxify(url):url, name);
+    renderAudioOnlyPlayer(url, name, proxied);
     render(curFilter); return;
   }
 
@@ -887,12 +891,10 @@ function play(url,name,method,proxied){
   }
 
   if(method==='iframe'){
-    // karwan.tv – försök hämta direkt CDN först
     if(url.indexOf('karwan.tv')!==-1){
       var directCDN = getKarwanDirectCDN(url);
       if(directCDN){
         wrap.innerHTML='<div class="extract-box"><div class="spinner"></div><div style="margin-top:14px;color:#4ecca3;font-weight:bold;">'+escapeHtml(name)+'</div><div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔍 Hämtar direkt HLS...<br><span style="font-size:0.7rem;opacity:0.6;">'+escapeHtml(directCDN)+'</span></div></div>';
-        // Skapa video och spela direkt CDN via universal player
         setTimeout(function(){
           wrap.innerHTML='<video id="vplayer" controls autoplay playsinline style="width:100%;height:100%;"></video><div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;">✅ Karwan HLS</div>';
           var vid=document.getElementById('vplayer');
@@ -900,7 +902,6 @@ function play(url,name,method,proxied){
             proxy: false,
             onReady: function(){ if(vid) vid.play().catch(function(){}); },
             onError: function(){
-              // fallback till iframe
               wrap.innerHTML='<iframe src="'+escapeHtml(url)+'" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;background:#000;"></iframe>';
               render(curFilter);
             }
@@ -916,18 +917,17 @@ function play(url,name,method,proxied){
     render(curFilter); return;
   }
 
-  // ============ UNIVERSAL PLAYER (HLS, TS, DASH, MP4, unknown) ============
+  // ============ UNIVERSAL PLAYER ============
   wrap.innerHTML='<video id="vplayer" controls autoplay playsinline muted style="width:100%;height:100%;background:#000;"></video>'+
     '<div id="playerStatus" style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:#4ecca3;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;z-index:5;">Startar...</div>'+
-    (proxied ? '<div style="position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;z-index:5;">🛰 Proxy</div>' : '');
+    (proxied ? '<div style="position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#ff8a4c,#c95a2e);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;z-index:5;">🛰 Proxy</div>' : '');
   var vid=document.getElementById('vplayer');
   var statusEl=document.getElementById('playerStatus');
 
-  // Sätt muted först (autoplay-policy), avmuta när den spelar
   vid.muted = true;
 
   playUniversal(vid, url, {
-    proxy: proxied !== false,           // proxa om proxied=true (default)
+    proxy: proxied === true,             // ← ALTERNATIV 2: bara proxied:true går via proxy
     allowDirectFallback: true,
     onStart: function(info){
       if(statusEl) statusEl.textContent = '📡 ' + info.type.toUpperCase() + (info.proxied ? ' · PROXY' : ' · DIREKT');
