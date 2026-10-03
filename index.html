@@ -13,48 +13,272 @@
 body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);color:#fff;min-height:100vh}
 .header{display:none!important}
 
-.fixed-clock-corner{position:fixed;top:10px;right:10px;left:auto;z-index:9997;display:flex;flex-direction:column;align-items:flex-end;gap:6px;pointer-events:none;transition:all 0.45s cubic-bezier(0.4,0,0.2,1);transform:translateX(0);opacity:1}
-.fixed-weather-corner{position:fixed;top:10px;left:10px;right:auto;z-index:9997;display:flex;flex-direction:column;align-items:flex-start;gap:6px;pointer-events:none;transition:all 0.45s cubic-bezier(0.4,0,0.2,1);transform:translateX(0);opacity:1}
+/* ===== FIXED KLOCKA & VÄDER - VAR SITT HÖRN - LITEN STORLEK ===== */
+.fixed-clock-corner{
+  position:fixed;
+  top:10px;
+  right:10px;
+  left:auto;
+  z-index:9997;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:6px;
+  pointer-events:none;
+  transition:all 0.45s cubic-bezier(0.4,0,0.2,1);
+  transform:translateX(0);
+  opacity:1;
+}
+.fixed-weather-corner{
+  position:fixed;
+  top:10px;
+  left:10px;
+  right:auto;
+  z-index:9997;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+  pointer-events:none;
+  transition:all 0.45s cubic-bezier(0.4,0,0.2,1);
+  transform:translateX(0);
+  opacity:1;
+}
 .fixed-clock-corner > *, .fixed-weather-corner > *{ pointer-events:auto; }
-.fixed-clock-corner.hidden-by-curtain,.fixed-clock-corner.modal-hidden{opacity:0;pointer-events:none;transform:translateX(120%);visibility:hidden}
-.fixed-weather-corner.hidden-by-curtain,.fixed-weather-corner.modal-hidden{opacity:0;pointer-events:none;transform:translateX(-120%);visibility:hidden}
-.fixed-clock-box{min-height:48px;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);border:1px solid #4ecca355;border-radius:14px;padding:9px 12px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(0,0,0,0.6);cursor:pointer;transition:all 0.2s}
-.fixed-clock-box:hover{border-color:#4ecca3;box-shadow:0 8px 32px rgba(78,204,163,0.35)}
-.fixed-clock-display{font-family:'Courier New',monospace;font-weight:800;font-size:1.15rem;letter-spacing:2px;color:#4ecca3;text-shadow:0 0 14px #4ecca3aa;white-space:nowrap;line-height:1.1}
-.fixed-date-text{font-size:0.78rem;opacity:0.9;color:#e0ffef;white-space:nowrap;font-weight:700;line-height:1.2}
-.fixed-weather-box{min-height:48px;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);border:1px solid #4ecca355;border-radius:14px;padding:9px 12px;display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(0,0,0,0.5);cursor:pointer;transition:all 0.2s;font-size:0.85rem;white-space:nowrap}
-.fixed-weather-box:hover{border-color:#4ecca3;box-shadow:0 8px 32px rgba(78,204,163,0.35)}
+.fixed-clock-corner.hidden-by-curtain,
+.fixed-clock-corner.modal-hidden{
+  opacity:0;
+  pointer-events:none;
+  transform:translateX(120%);
+  visibility:hidden;
+}
+.fixed-weather-corner.hidden-by-curtain,
+.fixed-weather-corner.modal-hidden{
+  opacity:0;
+  pointer-events:none;
+  transform:translateX(-120%);
+  visibility:hidden;
+}
+.fixed-clock-box{
+  min-height: 48px;
+  background:rgba(0,0,0,0.82);
+  backdrop-filter:blur(10px);
+  border:1px solid #4ecca355;
+  border-radius:14px;
+  padding:9px 12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  box-shadow:0 8px 28px rgba(0,0,0,0.6);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.fixed-clock-box:hover{
+  border-color:#4ecca3;
+  box-shadow:0 8px 32px rgba(78,204,163,0.35);
+}
+.fixed-clock-display{
+  font-family:'Courier New',monospace;
+  font-weight:800;
+  font-size:1.15rem;
+  letter-spacing:2px;
+  color:#4ecca3;
+  text-shadow:0 0 14px #4ecca3aa;
+  white-space:nowrap;
+  line-height:1.1;
+}
+.fixed-date-text{
+  font-size:0.78rem;
+  opacity:0.9;
+  color:#e0ffef;
+  white-space:nowrap;
+  font-weight:700;
+  line-height:1.2;
+}
+.fixed-weather-box{
+  min-height: 48px;
+  background:rgba(0,0,0,0.82);
+  backdrop-filter:blur(10px);
+  border:1px solid #4ecca355;
+  border-radius:14px;
+  padding:9px 12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.5);
+  cursor:pointer;
+  transition:all 0.2s;
+  font-size:0.85rem;
+  white-space:nowrap;
+}
+.fixed-weather-box:hover{
+  border-color:#4ecca3;
+  box-shadow:0 8px 32px rgba(78,204,163,0.35);
+}
 .fixed-weather-icon{font-size:1.35rem}
 .fixed-weather-temp{font-weight:800;color:#4ecca3;font-size:1.05rem}
 .fixed-weather-city{opacity:0.8;font-size:0.78rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-.fixed-weather-details{display:none;background:rgba(0,0,0,0.92);backdrop-filter:blur(14px);border:1px solid #4ecca366;border-radius:22px;padding:18px 22px;font-size:1.15rem;box-shadow:0 10px 36px rgba(0,0,0,0.7);min-width:380px;text-align:center}
+.fixed-weather-details{
+  display:none;
+  background:rgba(0,0,0,0.92);
+  backdrop-filter:blur(14px);
+  border:1px solid #4ecca366;
+  border-radius:22px;
+  padding:18px 22px;
+  font-size:1.15rem;
+  box-shadow:0 10px 36px rgba(0,0,0,0.7);
+  min-width:380px;
+  text-align:center;
+}
 .fixed-weather-details.show{display:block}
-.fixed-weather-details .fw-week{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
-.fixed-weather-details .fw-day{background:rgba(0,0,0,0.4);border:1px solid rgba(78,204,163,0.25);border-radius:12px;padding:8px 10px;min-width:76px;text-align:center;font-size:1rem}
-.fixed-weather-details .fw-day.today{border-color:#4ecca3;background:rgba(78,204,163,0.18)}
+.fixed-weather-details .fw-week{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:12px;
+}
+.fixed-weather-details .fw-day{
+  background:rgba(0,0,0,0.4);
+  border:1px solid rgba(78,204,163,0.25);
+  border-radius:12px;
+  padding:8px 10px;
+  min-width:76px;
+  text-align:center;
+  font-size:1rem;
+}
+.fixed-weather-details .fw-day.today{
+  border-color:#4ecca3;
+  background:rgba(78,204,163,0.18);
+}
 .fixed-weather-details .fw-day .fwd-icon{font-size:1.8rem;margin:4px 0}
 .fixed-weather-details .fw-day .fwd-temp{font-weight:800;font-size:1.15rem}
 .fixed-weather-details .fw-day .fwd-name{opacity:0.75;font-size:0.85rem;text-transform:uppercase}
-.weather-hide-btn{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:#ff4d6d;color:#fff;border:2px solid #0a1e26;font-size:0.7rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;line-height:1;padding:0;box-shadow:0 2px 8px rgba(0,0,0,0.5)}
+.fixed-clock-corner .fixed-hide-btn, .fixed-weather-corner .fixed-hide-btn, .fixed-info-corner .fixed-hide-btn{
+  background:rgba(0,0,0,0.6);
+  border:1px solid #4ecca355;
+  color:#4ecca3;
+  border-radius:50%;
+  width:34px;
+  height:34px;
+  font-size:0.95rem;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  align-self:flex-end;
+  transition:all 0.2s;
+}
+.fixed-info-corner .fixed-hide-btn:hover{background:#4ecca3;color:#000}
+.fixed-info-corner.hidden .fixed-clock-box,
+.fixed-info-corner.hidden .fixed-weather-box,
+.fixed-info-corner.hidden .fixed-weather-details{display:none}
+.fixed-info-corner.hidden .fixed-hide-btn{background:#4ecca3;color:#000}
+@media(max-width:900px){
+  .fixed-info-corner{top:8px;right:8px;left:auto;max-width:340px;gap:6px}
+  .fixed-clock-box{padding:10px 16px;gap:10px;border-radius:16px}
+  .fixed-clock-display{font-size:1.5rem}
+  .fixed-date-text{font-size:0.85rem}
+  .fixed-weather-box{font-size:1rem;padding:8px 14px;gap:10px;border-radius:16px}
+  .fixed-weather-icon{font-size:1.8rem}
+  .fixed-weather-temp{font-size:1.35rem}
+  .fixed-weather-city{font-size:0.85rem;max-width:140px}
+  .fixed-weather-details{font-size:0.85rem;min-width:260px;padding:12px 14px}
+  .fixed-weather-details .fw-day{min-width:56px;padding:5px 6px;font-size:0.8rem}
+  .fixed-weather-details .fw-day .fwd-icon{font-size:1.3rem}
+  .fixed-weather-details .fw-day .fwd-temp{font-size:0.9rem}
+  .fixed-weather-details .fw-day .fwd-name{font-size:0.7rem}
+  .fixed-clock-corner .fixed-hide-btn, .fixed-weather-corner .fixed-hide-btn, .fixed-info-corner .fixed-hide-btn{width:26px;height:26px;font-size:0.8rem}
+}
+
+/* ===== MOBIL: KLOCKA UPPE HÖGER, VÄDER NER MED GÖM-KNAPP ===== */
+@media(max-width:600px){
+  .fixed-weather-corner{
+    top:auto !important;
+    bottom:8px;
+    left:8px;
+    right:auto;
+    max-width:calc(100vw - 16px);
+  }
+  .fixed-clock-corner{
+    top:8px;
+    right:8px;
+    left:auto;
+  }
+  .fixed-weather-box,
+  .fixed-clock-box{
+    padding:6px 10px;
+    min-height:40px;
+  }
+  .fixed-clock-display{font-size:1rem}
+  .fixed-date-text{font-size:0.65rem}
+  .fixed-weather-temp{font-size:0.9rem}
+  .fixed-weather-city{font-size:0.68rem;max-width:90px}
+}
+
+/* Göm-knapp för väder (liten ✕) */
+.weather-hide-btn{
+  position:absolute;
+  top:-8px;
+  right:-8px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#ff4d6d;
+  color:#fff;
+  border:2px solid #0a1e26;
+  font-size:0.7rem;
+  font-weight:800;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  line-height:1;
+  padding:0;
+  box-shadow:0 2px 8px rgba(0,0,0,0.5);
+}
 .weather-hide-btn:hover{background:#ff2a4d;transform:scale(1.1)}
-.weather-show-btn{position:fixed;bottom:8px;left:8px;z-index:9997;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);border:1px solid #4ecca355;border-radius:14px;padding:6px 12px;color:#4ecca3;font-size:0.8rem;font-weight:700;cursor:pointer;display:none;align-items:center;gap:6px;box-shadow:0 6px 18px rgba(0,0,0,0.5);transition:all 0.2s}
+
+/* När vädret är gömt – visa en liten "visa"-knapp */
+.weather-show-btn{
+  position:fixed;
+  bottom:8px;
+  left:8px;
+  z-index:9997;
+  background:rgba(0,0,0,0.82);
+  backdrop-filter:blur(10px);
+  border:1px solid #4ecca355;
+  border-radius:14px;
+  padding:6px 12px;
+  color:#4ecca3;
+  font-size:0.8rem;
+  font-weight:700;
+  cursor:pointer;
+  display:none;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.5);
+  transition:all 0.2s;
+}
 .weather-show-btn:hover{border-color:#4ecca3;box-shadow:0 8px 24px rgba(78,204,163,0.35)}
 .weather-show-btn.show{display:flex}
 .fixed-weather-corner.hidden-by-user{display:none !important}
 
-.curtain-wrapper{position:relative;z-index:80}
-.top-wrapper{background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.3));backdrop-filter:blur(4px);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1),opacity 0.45s ease,max-height 0.65s cubic-bezier(0.4,0,0.2,1);overflow:hidden;max-height:2000px;transform:translateY(0);opacity:1}
-.top-wrapper.curtain-closed{transform:translateY(-100%);opacity:0;max-height:0;pointer-events:none}
-.curtain-handle{background:linear-gradient(135deg,#1a3a42,#0f2a32);border:1px solid #4ecca3;border-top:none;border-radius:0 0 22px 22px;padding:10px 28px 12px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;box-shadow:0 6px 20px rgba(0,0,0,0.5),0 2px 0 #4ecca3 inset;margin:0 auto;width:fit-content;min-width:300px;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;z-index:81}
-.curtain-handle:hover{background:linear-gradient(135deg,#2a5a62,#1a3a42);transform:translateY(2px) scale(1.02);box-shadow:0 8px 25px rgba(78,204,163,0.3)}
-.curtain-handle:active{transform:translateY(4px) scale(0.98)}
-.handle-bar{width:70px;height:6px;background:linear-gradient(90deg,#4ecca3,#a8ffde);border-radius:10px;opacity:0.9;box-shadow:0 0 8px rgba(78,204,163,0.6);transition:all 0.3s}
-.curtain-handle:hover .handle-bar{width:85px;box-shadow:0 0 12px rgba(78,204,163,0.9)}
-#handleText{font-size:0.85rem;font-weight:800;color:#4ecca3;letter-spacing:0.8px;text-shadow:0 0 8px rgba(78,204,163,0.4);transition:all 0.3s}
-#handleIcon{font-size:1.1rem;color:#4ecca3;transition:transform 0.4s ease}
-.top-wrapper.curtain-closed + .curtain-handle #handleIcon{transform:rotate(180deg)}
-.curtain-handle.closed{border-radius:0 0 22px 22px;animation:handlePulse 2s ease-in-out infinite}
-@keyframes handlePulse{0%,100%{box-shadow:0 6px 20px rgba(0,0,0,0.5),0 0 0 0 rgba(78,204,163,0.4)}50%{box-shadow:0 6px 20px rgba(0,0,0,0.5),0 0 0 6px rgba(78,204,163,0.15)}}
+/* ===== GARDIN / CURTAIN ===== */
+.curtain-wrapper{position:relative;z-index:80;}
+.top-wrapper{background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.3));backdrop-filter:blur(4px);transition:transform 0.65s cubic-bezier(0.4,0,0.2,1),opacity 0.45s ease,max-height 0.65s cubic-bezier(0.4,0,0.2,1);overflow:hidden;max-height:2000px;transform:translateY(0);opacity:1;}
+.top-wrapper.curtain-closed{transform:translateY(-100%);opacity:0;max-height:0;pointer-events:none;}
+.curtain-handle{background:linear-gradient(135deg,#1a3a42,#0f2a32);border:1px solid #4ecca3;border-top:none;border-radius:0 0 22px 22px;padding:10px 28px 12px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;box-shadow:0 6px 20px rgba(0,0,0,0.5),0 2px 0 #4ecca3 inset; margin:0 auto; width:fit-content; min-width:300px; transition:all 0.3s cubic-bezier(0.4,0,0.2,1); position:relative; z-index:81;}
+.curtain-handle:hover{background:linear-gradient(135deg,#2a5a62,#1a3a42);transform:translateY(2px) scale(1.02);box-shadow:0 8px 25px rgba(78,204,163,0.3);}
+.curtain-handle:active{transform:translateY(4px) scale(0.98);}
+.handle-bar{width:70px;height:6px;background:linear-gradient(90deg,#4ecca3,#a8ffde);border-radius:10px;opacity:0.9;box-shadow:0 0 8px rgba(78,204,163,0.6);transition:all 0.3s;}
+.curtain-handle:hover .handle-bar{width:85px;box-shadow:0 0 12px rgba(78,204,163,0.9);}
+#handleText{font-size:0.85rem;font-weight:800;color:#4ecca3;letter-spacing:0.8px;text-shadow:0 0 8px rgba(78,204,163,0.4);transition:all 0.3s;}
+#handleIcon{font-size:1.1rem;color:#4ecca3;transition:transform 0.4s ease;}
+.top-wrapper.curtain-closed + .curtain-handle #handleIcon{transform:rotate(180deg);}
+.curtain-handle.closed{border-radius:0 0 22px 22px; animation:handlePulse 2s ease-in-out infinite;}
+@keyframes handlePulse{0%,100%{box-shadow:0 6px 20px rgba(0,0,0,0.5),0 0 0 0 rgba(78,204,163,0.4);}50%{box-shadow:0 6px 20px rgba(0,0,0,0.5),0 0 0 6px rgba(78,204,163,0.15);}}
 
 .quran-bar{background:linear-gradient(135deg,rgba(0,40,30,0.98),rgba(15,60,45,0.98));backdrop-filter:blur(14px);border-bottom:2px solid #4ecca3;padding:20px 22px 16px;text-align:center;position:relative;display:block!important;visibility:visible!important;opacity:1!important;min-height:160px}
 .quran-bar::before{content:"﷽";position:absolute;top:4px;left:50%;transform:translateX(-50%);font-size:1.6rem;color:rgba(78,204,163,0.35)}
@@ -118,16 +342,72 @@ canvas.analog-canvas{width:140px;height:140px;background:radial-gradient(ellipse
 .weather-day .wd-min{font-size:0.7rem;opacity:0.6}
 @media(max-width:1100px){.info-panel{background:rgba(0,0,0,0.55);backdrop-filter:blur(12px);border-bottom:1px solid #4ecca380;padding:14px 18px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:stretch;gap:14px}.clock-date-section,.weather-section{background:rgba(20,40,45,0.75);border-radius:14px;padding:6px 8px;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.05);display:flex;align-items:center;flex-wrap:wrap;border:1px solid rgba(78,204,163,0.15)}}
 
-.nav-buttons-wrapper{position:sticky;top:0;z-index:200;transition:transform 0.35s cubic-bezier(0.4,0,0.2,1),opacity 0.35s ease}
-.nav-buttons-wrapper.scroll-hidden{transform:translateY(-120%);opacity:0;pointer-events:none}
-.nav-buttons-wrapper.nav-hidden .nav-buttons{display:none}
-.nav-toggle-btn{position:absolute;top:100%;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1a3a42,#0f2a32);border:1px solid #4ecca3;border-top:none;border-radius:0 0 12px 12px;color:#4ecca3;width:44px;height:22px;padding:0;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.5),0 1px 0 #4ecca3 inset;z-index:201;transition:all 0.25s ease;line-height:1}
-.nav-toggle-btn:hover{background:linear-gradient(135deg,#2a5a62,#1a3a42);box-shadow:0 6px 18px rgba(78,204,163,0.4),0 1px 0 #4ecca3 inset;color:#a8ffde}
-.nav-toggle-btn .ntb-icon{font-size:0.85rem;transition:transform 0.35s ease;display:inline-block}
-.nav-buttons-wrapper.nav-hidden .nav-toggle-btn .ntb-icon{transform:rotate(180deg)}
-.nav-buttons-wrapper.nav-hidden .nav-toggle-btn{animation:navPulse 2s ease-in-out infinite}
-@keyframes navPulse{0%,100%{box-shadow:0 4px 14px rgba(0,0,0,0.5),0 0 0 0 rgba(78,204,163,0.4)}50%{box-shadow:0 4px 14px rgba(0,0,0,0.5),0 0 0 5px rgba(78,204,163,0.15)}}
-.nav-buttons{position:static !important;transition:none}
+/* ===== NAV-BUTTONS GÖM-KNAPP (LITEN PIL) ===== */
+.nav-buttons-wrapper{
+  position:sticky;
+  top:0;
+  z-index:200;
+  transition:transform 0.35s cubic-bezier(0.4,0,0.2,1),opacity 0.35s ease;
+}
+.nav-buttons-wrapper.scroll-hidden{
+  transform:translateY(-120%);
+  opacity:0;
+  pointer-events:none;
+}
+.nav-buttons-wrapper.nav-hidden .nav-buttons{
+  display:none;
+}
+.nav-toggle-btn{
+  position:absolute;
+  top:100%;
+  left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,#1a3a42,#0f2a32);
+  border:1px solid #4ecca3;
+  border-top:none;
+  border-radius:0 0 12px 12px;
+  color:#4ecca3;
+  width:44px;
+  height:22px;
+  padding:0;
+  font-size:0.9rem;
+  font-weight:800;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 14px rgba(0,0,0,0.5),0 1px 0 #4ecca3 inset;
+  z-index:201;
+  transition:all 0.25s ease;
+  line-height:1;
+}
+.nav-toggle-btn:hover{
+  background:linear-gradient(135deg,#2a5a62,#1a3a42);
+  box-shadow:0 6px 18px rgba(78,204,163,0.4),0 1px 0 #4ecca3 inset;
+  color:#a8ffde;
+}
+.nav-toggle-btn .ntb-icon{
+  font-size:0.85rem;
+  transition:transform 0.35s ease;
+  display:inline-block;
+}
+.nav-buttons-wrapper.nav-hidden .nav-toggle-btn .ntb-icon{
+  transform:rotate(180deg);
+}
+.nav-buttons-wrapper.nav-hidden .nav-toggle-btn{
+  animation:navPulse 2s ease-in-out infinite;
+}
+@keyframes navPulse{
+  0%,100%{box-shadow:0 4px 14px rgba(0,0,0,0.5),0 0 0 0 rgba(78,204,163,0.4);}
+  50%{box-shadow:0 4px 14px rgba(0,0,0,0.5),0 0 0 5px rgba(78,204,163,0.15);}
+}
+/* Behåll gamla .nav-buttons oförändrad men ta bort sticky */
+.nav-buttons{
+  position:static !important;
+  transition:none;
+}
+
+/* ===== NAV-BUTTONS UTSEENDE ===== */
 .nav-buttons{display:flex;justify-content:center;flex-wrap:wrap;padding:12px 16px;background:rgba(0,0,0,0.25);border-bottom:1px solid rgba(78,204,163,0.15);backdrop-filter:blur(10px)}
 .nav-btn{background:#1e2f3f;color:#e0e0e0;border:none;padding:8px 18px;border-radius:40px;cursor:pointer;font-weight:600;transition:all 0.2s ease;font-size:0.9rem;box-shadow:0 1px 3px rgba(0,0,0,0.2);white-space:nowrap;margin:4px 4px}
 .nav-btn:hover,.nav-btn.active{background:#4ecca3;color:#0a1c2a;transform:scale(1.03)}
@@ -154,25 +434,97 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
 .fav-btn.is-fav{color:#fff}
 .close-btn{display:none;position:fixed;top:18px;right:18px;z-index:1001;background:#dc3545;color:white;border:none;padding:9px 18px;border-radius:40px;cursor:pointer;font-weight:bold}
 .js-toggle-off{background:#c95a2e!important}
-.category-header{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:1.15rem;padding:12px 10px 10px;color:#4ecca3;border-bottom:2px solid #4ecca3;margin:14px 0 8px;cursor:pointer;user-select:none;transition:all 0.2s}
-.category-header:hover{background:rgba(78, 204, 163, 0.08);border-radius:8px 8px 0 0}
-.category-header .cat-toggle{background:rgba(78, 204, 163, 0.15);border:1px solid #4ecca3;color:#4ecca3;width:28px;height:28px;border-radius:50%;font-size:1.2rem;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:1;transition:all 0.25s ease;flex-shrink:0}
-.category-header .cat-toggle:hover{background:#4ecca3;color:#0a1c2a;transform:scale(1.1)}
-.category-header.collapsed .cat-toggle{background:#4ecca3;color:#0a1c2a}
-.category-group{overflow:hidden;transition:max-height 0.4s ease, opacity 0.3s ease;max-height:5000px;opacity:1}
-.category-group.collapsed{max-height:0;opacity:0;margin:0;padding:0}
-@media(max-width:768px){
-  .container{flex-direction:column;padding:8px;gap:8px;min-height:auto}
-  .video-container{order:1;min-height:52vh}
-  .channel-list{order:2;position:static !important;transform:none !important;width:100% !important;max-width:100% !important;height:auto !important;max-height:42vh;border-radius:16px;padding:10px;overflow-y:auto;background:rgba(0,0,0,0.45);top:auto !important}
-  .channel-list.show{transform:none !important}
-  .close-btn{display:none !important}
-  .video-wrapper{min-height:44vh}
+
+/* ===== KATEGORI-TOGGLE (+ / −) ===== */
+.category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 12px 10px 10px;
+  color: #4ecca3;
+  border-bottom: 2px solid #4ecca3;
+  margin: 14px 0 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
 }
+.category-header:hover {
+  background: rgba(78, 204, 163, 0.08);
+  border-radius: 8px 8px 0 0;
+}
+.category-header .cat-toggle {
+  background: rgba(78, 204, 163, 0.15);
+  border: 1px solid #4ecca3;
+  color: #4ecca3;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+.category-header .cat-toggle:hover {
+  background: #4ecca3;
+  color: #0a1c2a;
+  transform: scale(1.1);
+}
+.category-header.collapsed .cat-toggle {
+  background: #4ecca3;
+  color: #0a1c2a;
+}
+.category-group {
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  max-height: 5000px;
+  opacity: 1;
+}
+.category-group.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== MOBIL – VISA KANALER + PLAY DIREKT ===== */
+@media(max-width:768px){
+  .container{
+    flex-direction:column;
+    padding:8px;
+    gap:8px;
+    min-height:auto;
+  }
+  .video-container{ order:1; min-height:52vh; }
+  .channel-list{
+    order:2;
+    position:static !important;
+    transform:none !important;
+    width:100% !important;
+    max-width:100% !important;
+    height:auto !important;
+    max-height:42vh;
+    border-radius:16px;
+    padding:10px;
+    overflow-y:auto;
+    background:rgba(0,0,0,0.45);
+    top:auto !important;
+  }
+  .channel-list.show{ transform:none !important; }
+  .close-btn{ display:none !important; }
+  .video-wrapper{ min-height:44vh; }
+}
+
 .mode-switcher{display:flex;align-items:center;background:rgba(0,0,0,0.4);border-radius:40px;padding:4px 6px;border:1px solid #4ecca355;margin:3px 4px}
 .mode-btn{background:transparent;border:none;color:#aaa;padding:5px 13px;border-radius:30px;cursor:pointer;font-size:0.78rem;font-weight:700;transition:all 0.2s}
 .mode-btn.active{background:#4ecca3;color:#0a1c2a}
 .mode-btn:hover{background:rgba(78,204,163,0.2);color:#fff}
+.iframe-overlay{position:absolute;bottom:12px;left:12px;right:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;z-index:5}
 .radio-player{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;background:radial-gradient(ellipse at center,#0f2a35 0%,#060f14 100%);padding:30px;width:100%}
 .radio-icon{font-size:4rem;animation:pulse 2s ease-in-out infinite;margin-bottom:22px;filter:drop-shadow(0 0 12px #4ecca388)}
 @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.85}}
@@ -203,6 +555,7 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
 </head>
 <body>
 
+<!-- FIXED KLOCKA - HÖGER HORN - ENDAST NÄR KANALER VISAS -->
 <div class="fixed-clock-corner hidden-by-curtain" id="fixedClockCorner">
   <div class="fixed-clock-box" id="fixedClockBox" title="Klicka för att byta kalender">
     <div class="fixed-clock-display" id="fixedClockDisplay">--:--:--</div>
@@ -210,6 +563,7 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
   </div>
 </div>
 
+<!-- FIXED VÄDER - VÄNSTER HORN - MED GÖM-KNAPP -->
 <div class="fixed-weather-corner hidden-by-curtain" id="fixedWeatherCorner">
   <div class="fixed-weather-box" id="fixedWeatherBox" title="Klicka för att visa detaljer" style="position:relative;">
     <span class="fixed-weather-icon" id="fixedWeatherIcon">🌤</span>
@@ -308,7 +662,7 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
         <button class="btn" id="jsToggleBtn" onclick="toggleJSengine()">JS PA</button>
       </div>
     </div>
-    <div class="video-wrapper" id="vwrap"><div class="error-msg"><h3>Välj en kanal - Gardin + Radio Edition</h3><p>Universal Player • HLS/TS/DASH • Smart proxy • Radio • Gardin • Quran EN</p></div></div>
+    <div class="video-wrapper" id="vwrap"><div class="error-msg"><h3>Välj en kanal - Gardin + Radio Edition</h3><p>Sepehr FIXED • Video/Audio för ALLA • MPEG-TS • Radio med visualizer • Gardin • Quran EN</p></div></div>
   </main>
   <aside class="channel-list" id="channel-list"><button class="close-btn" onclick="toggleList()">Stäng</button><div id="ch-container"></div></aside>
 </div>
@@ -316,207 +670,14 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
 <script>
 /* ============================================================
    PROXY-KONFIGURATION
-   Används ENDAST för kanaler som markerats med proxied:true
    ============================================================ */
 const PROXY_BASE = 'http://localhost:8787';
 
 function proxify(url){
   if(!PROXY_BASE) return url;
-  if(!/^https?:\/\//i.test(url)) return url;
   return PROXY_BASE + '/proxy?url=' + encodeURIComponent(url);
 }
 
-/* ============================================================
-   GEMENSAM PLAYER (Universal Player)
-   Kräver: hls.js, mpegts.js, dash.js
-   Proxy används ENDAST om opts.proxy === true
-   ============================================================ */
-(function(global){
-  'use strict';
-  var _hls = null;
-  var _mpegts = null;
-  var _dash = null;
-  var _vid = null;
-
-  function destroyAllPlayers(){
-    if(_hls){ try{ _hls.destroy(); }catch(e){} _hls = null; }
-    if(_mpegts){ try{ _mpegts.destroy(); }catch(e){} _mpegts = null; }
-    if(_dash){ try{ _dash.reset(); }catch(e){} _dash = null; }
-    if(_vid){
-      try{ _vid.pause(); _vid.removeAttribute('src'); _vid.load(); }catch(e){}
-      _vid = null;
-    }
-  }
-
-  function detectStreamType(url){
-    if(!url) return 'unknown';
-    var u = url.toLowerCase().split('?')[0].split('#')[0];
-    if(/\.m3u8$/.test(u)) return 'hls';
-    if(/\.mpd$/.test(u))  return 'dash';
-    if(/\.(ts|m2ts)$/.test(u)) return 'ts';
-    if(/\.(mp4|webm|ogg|ogv|m4v|mov)$/.test(u)) return 'file';
-    if(/\.(mp3|aac|m4a|ogg|opus|wav|flac)$/.test(u)) return 'audio';
-    if(/\/live\//.test(u) || /\/hls\//.test(u)) return 'hls';
-    return 'unknown';
-  }
-
-  function playHls(videoEl, playUrl, opts){
-    if(global.Hls && Hls.isSupported()){
-      _hls = new Hls({enableWorker:true, lowLatencyMode:true, backBufferLength:30});
-      _hls.loadSource(playUrl);
-      _hls.attachMedia(videoEl);
-      _hls.on(Hls.Events.MANIFEST_PARSED, function(){
-        videoEl.play().catch(function(){});
-        if(opts.onReady) opts.onReady('hls.js');
-      });
-      _hls.on(Hls.Events.ERROR, function(ev, data){
-        if(!data.fatal) return;
-        console.warn('[hls.js] fatal:', data.type, data.details);
-        if(data.type === Hls.ErrorTypes.MEDIA_ERROR){
-          try{ _hls.recoverMediaError(); return; }catch(e){}
-        }
-        if(opts.onError) opts.onError('hls', data);
-        if(opts.fallback) opts.fallback();
-      });
-      return true;
-    }
-    if(videoEl.canPlayType('application/vnd.apple.mpegurl')){
-      videoEl.src = playUrl;
-      videoEl.play().catch(function(){});
-      if(opts.onReady) opts.onReady('hls-native');
-      return true;
-    }
-    return false;
-  }
-
-  function playTs(videoEl, playUrl, opts){
-    if(global.mpegts && mpegts.isSupported()){
-      _mpegts = mpegts.createPlayer({
-        type:'mpegts', isLive:true, url:playUrl
-      }, {
-        enableWorker:false,
-        lazyLoad:false,
-        liveBufferLatencyChasing:true,
-        liveBufferLatencyMaxLatency:1.5,
-        liveBufferLatencyMinRemain:0.5
-      });
-      _mpegts.attachMediaElement(videoEl);
-      _mpegts.load();
-      _mpegts.play().catch(function(){});
-      _mpegts.on(mpegts.Events.ERROR, function(type, details){
-        console.warn('[mpegts.js] error:', type, details);
-        if(opts.onError) opts.onError('ts', {type:type, details:details});
-        if(opts.fallback) opts.fallback();
-      });
-      if(opts.onReady) opts.onReady('mpegts.js');
-      return true;
-    }
-    videoEl.src = playUrl;
-    videoEl.play().catch(function(){});
-    if(opts.onReady) opts.onReady('ts-direct');
-    return true;
-  }
-
-  function playDash(videoEl, playUrl, opts){
-    if(global.dashjs){
-      _dash = dashjs.MediaPlayer().create();
-      _dash.initialize(videoEl, playUrl, true);
-      if(opts.onReady) opts.onReady('dash.js');
-      return true;
-    }
-    videoEl.src = playUrl;
-    videoEl.play().catch(function(){});
-    if(opts.onReady) opts.onReady('dash-direct');
-    return true;
-  }
-
-  function playFile(videoEl, playUrl, opts){
-    videoEl.src = playUrl;
-    videoEl.play().catch(function(){});
-    if(opts.onReady) opts.onReady('file');
-    return true;
-  }
-
-  function playUniversal(videoEl, url, opts){
-    opts = opts || {};
-    if(!videoEl || !url) return;
-
-    destroyAllPlayers();
-    _vid = videoEl;
-
-    videoEl.muted = false;
-    videoEl.autoplay = true;
-    videoEl.playsInline = true;
-    videoEl.controls = true;
-
-    // ===== ALTERNATIV 2: proxy är AV som default =====
-    // Bara kanaler med proxied:true går genom proxyn.
-    var useProxy = (opts.proxy === true);
-    var type = opts.forceType || detectStreamType(url);
-    var playUrl = useProxy ? proxify(url) : url;
-
-    if(opts.onStart) opts.onStart({type:type, url:playUrl, proxied:useProxy});
-
-    var fallbackFn = function(){
-      // Om vi använde proxy och det failade, försök direkt
-      if(useProxy && opts.allowDirectFallback !== false){
-        console.warn('[playUniversal] proxy misslyckades → testar direkt');
-        tryDirectFallback(videoEl, url, type, opts);
-        return;
-      }
-      if(opts.onError) opts.onError(type, 'all-failed');
-    };
-    opts.fallback = fallbackFn;
-
-    var ok = false;
-    switch(type){
-      case 'hls':   ok = playHls(videoEl, playUrl, opts); break;
-      case 'ts':    ok = playTs(videoEl, playUrl, opts); break;
-      case 'dash':  ok = playDash(videoEl, playUrl, opts); break;
-      case 'audio':
-      case 'file':  ok = playFile(videoEl, playUrl, opts); break;
-      default:
-        ok = playHls(videoEl, playUrl, opts);
-        if(!ok) ok = playTs(videoEl, playUrl, opts);
-        if(!ok) ok = playFile(videoEl, playUrl, opts);
-    }
-    if(!ok) fallbackFn();
-  }
-
-  function tryDirectFallback(videoEl, directUrl, type, opts){
-    if(type === 'hls' && global.Hls && Hls.isSupported()){
-      _hls = new Hls({enableWorker:false});
-      _hls.loadSource(directUrl);
-      _hls.attachMedia(videoEl);
-      _hls.on(Hls.Events.MANIFEST_PARSED, function(){
-        videoEl.play().catch(function(){});
-        if(opts.onReady) opts.onReady('hls.js-direct');
-      });
-      return;
-    }
-    if(type === 'ts' && global.mpegts && mpegts.isSupported()){
-      _mpegts = mpegts.createPlayer({type:'mpegts', isLive:true, url:directUrl});
-      _mpegts.attachMediaElement(videoEl);
-      _mpegts.load();
-      _mpegts.play().catch(function(){});
-      if(opts.onReady) opts.onReady('mpegts.js-direct');
-      return;
-    }
-    videoEl.src = directUrl;
-    videoEl.play().catch(function(){});
-    if(opts.onReady) opts.onReady('file-direct');
-  }
-
-  global.playUniversal = playUniversal;
-  global.destroyAllPlayers = destroyAllPlayers;
-  global.detectStreamType = detectStreamType;
-})(window);
-
-/* ============================================================
-   KANALLISTOR
-   proxied:true används ENDAST för kanaler som behöver proxy
-   (t.ex. line.trxdnscloud.ru med IP/UA-lås)
-   ============================================================ */
 function getKarwanDirectCDN(karwanUrl){
   try{
     var clean = karwanUrl.replace(/\/+$/,'').split('?')[0].split('#')[0];
@@ -572,7 +733,8 @@ var musikRaw = [
   { name: 'RanyaCity', url: 'https://avr.host247.net/Ranya/RanyaCity/tracks-v1a1/mono.m3u8', color:'teal' },
   { name: 'Geryan tv', url: 'https://live20.bozztv.com/giatv/giatv-halabja88garyan/halabja88garyan/chunks.m3u8', color:'teal' },
   { name: '4 Kurd', url: 'https://4kuhls.persiana.live/hls/stream.m3u8', color: 'teal' },
-];
+
+ ];
 var minalRaw = [
   { name: 'Kidco', url: 'http://avrstream.com:1935/live/kidcohd/tracks-v1a1/mono.m3u8', color: 'blue' },
   { name: 'Baxche', url: 'https://5dcabf026b188.streamlock.net/afarinTV/livestream/playlist.m3u8', color: 'blue' },
@@ -602,7 +764,7 @@ var filmRaw = [
   { name: 'Soran Entertainment', url: 'http://avrstream.com:1935/live/SoranEntertainment/playlist.m3u8', color:'purple' },
   { name: 'Iraqia Kurdish', url: 'https://imn-live.esite-lab.com/hls/iraqia-kurdish.m3u8', color:'purple' },
   { name: 'UTV Hewler org', url: 'https://utvhawler.net/index.htm', method:'iframe', color:'purple' },
-  { name: 'UTV Hawler', url: 'http://line.trxdnscloud.ru:80/live/1naebx0n1p/en1cy28eqj/324667.ts', method:'ts', proxied:true, color: 'purple' },
+  { name: 'UTV Hawler', url: 'http://line.trxdnscloud.ru:80/live/1naebx0n1p/en1cy28eqj/324667.ts', method:'ts', color: 'purple' },
   { name: 'Cihan TV', url: 'https://www.cihanhd.com/', method:'iframe', color: 'purple' },
   { name: 'Cihan TV (external)', url: 'https://kurdtvs.net/channels.php?slug=cihan-tv-hd', method:'external', color: 'purple' },
   { name: 'Kurdmax (extern)', url: 'https://www.kurdmax.tv/live-stream', method:'external', color: 'purple' },
@@ -614,7 +776,9 @@ var filmRaw = [
   { name: 'New Movies', url: 'https://karwan.tv/bnar-movies', method:'iframe', color:'purple' },
   { name: 'New Action TV', url: 'https://karwan.tv/bnar-action/', method:'iframe', color:'purple' },
   { name: 'Soz Movie', url: 'https://live20.bozztv.com/giatv/giatv-sozetv/sozetv/chunks.m3u8', color:'purple' },
-];
+  
+]
+  
 var diniRaw = [
   { name: 'Amozhgary', url: 'https://app-live.org/live/3268334b/index.m3u8', color: 'blue' },
   { name: 'Amozhgary academy', url: 'https://app-live.org/live/a267c1b3/index.m3u8', color:'blue' },
@@ -630,7 +794,8 @@ var diniRaw = [
   { name: 'Ashti QuranTV', url: 'http://avrstream.com:1935/live/AshtiTV/playlist.m3u8', color:'blue' },
   { name: 'IMK Quran TV', url: 'http://avrstream.com:1935/live/IMKQURANHD/playlist.m3u8', color:'blue' },
   { name: 'Farmoda TV', url: 'https://avr.host247.net/live/FarmodaTV/playlist.m3u8', color:'blue' },
-];
+
+ ];
 var sportRaw = [
   { name: 'MMN Sport', url: 'http://mmn.mypsx.net:1935/live/mmnhdsport/playlist.m3u8', color:'green' },
   { name: 'Gewher Sport',url: 'https://iptv-link.short.gy/Gewher_Sport.m3u8', color: 'green' },
@@ -666,7 +831,7 @@ var RadioRaw = [
 ];
 
 var channels = {heval: hevalRaw.slice(),musik: musikRaw.slice(),minal: minalRaw.slice(),film: filmRaw.slice(),dini: diniRaw.slice(),sport: sportRaw.slice(),karwan: karwanRaw.slice(),Radio: RadioRaw.slice()};
-var cur=null, favs=[], jsEnabled=true, curFilter=null, playMode='tv', currentUA='';
+var hlsInst=null, mpegtsPlayer=null, cur=null, favs=[], jsEnabled=true, curFilter=null, playMode='tv', currentUA='';
 try{ favs=JSON.parse(localStorage.getItem('xomfavs')||'[]'); }catch(e){ favs=[]; }
 try{ currentUA=localStorage.getItem('xom_ua')||''; }catch(e){}
 try{ playMode=localStorage.getItem('xom_playmode')||'tv'; }catch(e){}
@@ -711,29 +876,45 @@ function initCurtain(){
     try{ document.getElementById('topWrapper').classList.remove('curtain-closed'); }catch(e2){}
   }
 }
-function reload(){ if(cur) play(cur.url,cur.name,cur.method,cur.proxied); }
+function destroyPlayers(){
+  if(hlsInst){ try{hlsInst.destroy();}catch(e){} hlsInst=null; }
+  if(mpegtsPlayer){ try{mpegtsPlayer.destroy();}catch(e){} mpegtsPlayer=null; }
+}
+function reload(){ if(cur) play(cur.url,cur.name,cur.method,''); }
 function fs(){ var w=document.getElementById('vwrap'); if(document.fullscreenElement){ document.exitFullscreen(); } else if(w.requestFullscreen){ w.requestFullscreen().catch(function(){}); } }
-function pip(){ var vid=document.getElementById('vplayer'); if(!vid) { alert('PiP funkar endast i Video-läge med video-kanal'); return; } if(document.pictureInPictureElement){ document.exitPictureInPicture().catch(function(){}); } else if(vid.requestPictureInPicture){ vid.requestPictureInPicture().catch(function(){ alert('PiP stöds ej för denna kanal'); }); } else { alert('PiP stöds ej'); } }
+function pip(){ var vid=document.getElementById('vplayer'); if(!vid) { alert('PiP funkar endast i Video-läge med HLS kanal'); return; } if(document.pictureInPictureElement){ document.exitPictureInPicture().catch(function(){}); } else if(vid.requestPictureInPicture){ vid.requestPictureInPicture().catch(function(){ alert('PiP stöds ej för denna kanal'); }); } else { alert('PiP stöds ej'); } }
 function toggleTV(){ var btn=document.getElementById('tv-btn'); if(document.fullscreenElement){ document.exitFullscreen(); btn.textContent='TV-läge'; } else { document.documentElement.requestFullscreen().catch(function(){}); btn.textContent='Normal'; } }
-function toggleJSengine(){ jsEnabled=!jsEnabled; var btn=document.getElementById('jsToggleBtn'); btn.textContent=jsEnabled?'JS PA':'JS AV'; btn.classList.toggle('js-toggle-off', !jsEnabled); if(cur) play(cur.url,cur.name,cur.method,cur.proxied); }
-function setUA(){ var sel=document.getElementById('ua-select'); currentUA=sel.value; try{ localStorage.setItem('xom_ua',currentUA);}catch(e){} if(cur) play(cur.url,cur.name,cur.method,cur.proxied); }
+function toggleJSengine(){ jsEnabled=!jsEnabled; var btn=document.getElementById('jsToggleBtn'); btn.textContent=jsEnabled?'JS PA':'JS AV'; btn.classList.toggle('js-toggle-off', !jsEnabled); if(cur) play(cur.url,cur.name,cur.method,''); }
+function setUA(){ var sel=document.getElementById('ua-select'); currentUA=sel.value; try{ localStorage.setItem('xom_ua',currentUA);}catch(e){} if(cur) play(cur.url,cur.name,cur.method,''); }
 function openCurrentNewTab(){ if(!cur){ alert('Välj kanal först'); return; } window.open(cur.url,'_blank'); }
 function fav(url,name){ var i=-1; for(var j=0;j<favs.length;j++){ if(favs[j].url===url){ i=j; break; } } if(i>-1) favs.splice(i,1); else favs.push({url:url,name:name}); localStorage.setItem('xomfavs',JSON.stringify(favs)); render(curFilter); }
 function toggleList(){ document.getElementById('channel-list').classList.toggle('show'); }
-function setPlayMode(mode){ playMode=mode; localStorage.setItem('xom_playmode',mode); document.getElementById('mode-tv').classList.toggle('active',mode==='tv'); document.getElementById('mode-audio').classList.toggle('active',mode==='audio'); if(cur) play(cur.url,cur.name,cur.method,cur.proxied); }
+function setPlayMode(mode){ playMode=mode; localStorage.setItem('xom_playmode',mode); document.getElementById('mode-tv').classList.toggle('active',mode==='tv'); document.getElementById('mode-audio').classList.toggle('active',mode==='audio'); if(cur) play(cur.url,cur.name,cur.method,''); }
 function updateModeSwitcherUI(){ document.getElementById('mode-tv').classList.toggle('active',playMode==='tv'); document.getElementById('mode-audio').classList.toggle('active',playMode==='audio'); }
 
+/* ===== NAV-BUTTONS GÖM/VISA (LITEN PIL) ===== */
 function toggleNav(){
   var wrapper = document.getElementById('navWrapper');
   if(!wrapper) return;
   var isHidden = wrapper.classList.contains('nav-hidden');
-  if(isHidden){ wrapper.classList.remove('nav-hidden'); try{ localStorage.setItem('nav_hidden','false'); }catch(e){} }
-  else { wrapper.classList.add('nav-hidden'); try{ localStorage.setItem('nav_hidden','true'); }catch(e){} }
+  if(isHidden){
+    wrapper.classList.remove('nav-hidden');
+    try{ localStorage.setItem('nav_hidden','false'); }catch(e){}
+  } else {
+    wrapper.classList.add('nav-hidden');
+    try{ localStorage.setItem('nav_hidden','true'); }catch(e){}
+  }
 }
 function initNavToggle(){
-  try{ if(localStorage.getItem('nav_hidden') === 'true'){ var wrapper = document.getElementById('navWrapper'); if(wrapper){ wrapper.classList.add('nav-hidden'); } } }catch(e){}
+  try{
+    if(localStorage.getItem('nav_hidden') === 'true'){
+      var wrapper = document.getElementById('navWrapper');
+      if(wrapper){ wrapper.classList.add('nav-hidden'); }
+    }
+  }catch(e){}
 }
 
+/* ============ RENDER MED KATEGORI-TOGGLE (STÄNGD SOM STANDARD) ============ */
 function render(filter){
   curFilter=filter; var html='';
   if(filter==='__favs__'){
@@ -770,21 +951,25 @@ function toggleCategory(catId, headerEl){
   var toggle = headerEl.querySelector('.cat-toggle');
   if(!group) return;
   var isCollapsed = group.classList.contains('collapsed');
-  if(isCollapsed){ group.classList.remove('collapsed'); headerEl.classList.remove('collapsed'); toggle.textContent='−'; localStorage.setItem('cat_collapsed_'+catId, '0'); }
-  else { group.classList.add('collapsed'); headerEl.classList.add('collapsed'); toggle.textContent='+'; localStorage.setItem('cat_collapsed_'+catId, '1'); }
+  if(isCollapsed){
+    group.classList.remove('collapsed');
+    headerEl.classList.remove('collapsed');
+    toggle.textContent='−';
+    localStorage.setItem('cat_collapsed_'+catId, '0');
+  } else {
+    group.classList.add('collapsed');
+    headerEl.classList.add('collapsed');
+    toggle.textContent='+';
+    localStorage.setItem('cat_collapsed_'+catId, '1');
+  }
 }
 
 function row(ch,hideSub){
   var m=ch.method||'hls'; var active=(cur&&cur.url===ch.url)?'active':'';
   var isFav=favs.some(function(f){ return f.url===ch.url; }); var star=isFav?'★':'☆';
-  var tag=''; if(!hideSub){
-    if(ch.proxied) tag=' <span style="font-size:0.6rem;opacity:0.9;background:#ff8a4c33;color:#ff8a4c;padding:1px 5px;border-radius:10px;">proxy</span>';
-    else if(m==='ts') tag=' <span style="font-size:0.6rem;opacity:0.9;background:#4ecca333;color:#4ecca3;padding:1px 5px;border-radius:10px;">mpegts</span>';
-    else if(m==='iframe') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">live</span>';
-    else if(m==='audio') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">radio</span>';
-    else if(m==='external') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">extern</span>';
-  }
-  return '<div class="channel-item '+ch.color+' '+active+'" data-url="'+escapeHtml(ch.url)+'" data-name="'+escapeHtml(ch.name)+'" data-method="'+m+'" data-proxied="'+(ch.proxied?'1':'0')+'"><span>'+escapeHtml(ch.name)+tag+'</span><button class="fav-btn '+(isFav?'is-fav':'')+'" onclick="event.stopPropagation();fav(\''+escapeHtml(ch.url)+'\',\''+escapeHtml(ch.name)+'\')">'+star+'</button></div>';
+  var tag=''; if(!hideSub){ if(ch.proxied) tag=' <span style="font-size:0.6rem;opacity:0.9;background:#4ecca333;color:#4ecca3;padding:1px 5px;border-radius:10px;">proxy</span>'; else if(m==='iframe') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">live</span>'; else if(m==='audio') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">radio</span>'; else if(m==='external') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">extern</span>'; else if(m==='ts') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">mpegts</span>'; }
+  var extra=''; if(ch.name.toLowerCase().includes('sepehr') || ch.name.toLowerCase().includes('kordestan') || ch.name.toLowerCase().includes('mahabad') || ch.name.toLowerCase().includes('sahar')) extra=' ✅';
+  return '<div class="channel-item '+ch.color+' '+active+'" data-url="'+escapeHtml(ch.url)+'" data-name="'+escapeHtml(ch.name)+'" data-method="'+m+'" data-proxied="'+(ch.proxied?'1':'0')+'"><span>'+escapeHtml(ch.name)+extra+tag+'</span><button class="fav-btn '+(isFav?'is-fav':'')+'" onclick="event.stopPropagation();fav(\''+escapeHtml(ch.url)+'\',\''+escapeHtml(ch.name)+'\')">'+star+'</button></div>';
 }
 function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function attachChannelEvents(){ var items=document.querySelectorAll('.channel-item'); for(var i=0;i<items.length;i++){ items[i].addEventListener('click', function(){ play(this.dataset.url,this.dataset.name,this.dataset.method,this.dataset.proxied==='1'); }); } }
@@ -804,17 +989,17 @@ function renderRadioPlayer(url, name){
       '<div class="radio-status">LIVE · RADIO STREAM · '+escapeHtml(name)+'</div>'+
       '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn" onclick="setPlayMode(\'tv\')">📺 Video</button><button class="btn newtab" onclick="openCurrentNewTab()">↗ Ny flik</button></div>'+
     '</div>';
-  var aud=document.getElementById('vwrap').querySelector('audio');
+  var aud=document.getElementById('vwrap').querySelector('audio'); 
   if(aud){ aud.volume=1.0; aud.play().catch(function(){}); }
 }
 
-function renderAudioOnlyPlayer(url, name, useProxy){
+function renderAudioOnlyPlayer(url, name){
   var wrap=document.getElementById('vwrap');
   wrap.innerHTML=
     '<div class="audio-only-player">'+
       '<div class="audio-only-icon">💿</div>'+
       '<div class="audio-only-name">'+escapeHtml(name)+'</div>'+
-      '<div class="audio-only-label">LJUD-LÄGE · VIDEO DOLD</div>'+
+      '<div class="audio-only-label">LJUD-LÄGE · HLS STREAM</div>'+
       '<div class="audio-visualizer">'+
         '<div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>'+
         '<div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>'+
@@ -831,34 +1016,33 @@ function renderAudioOnlyPlayer(url, name, useProxy){
   var vid=document.getElementById('vplayer');
   var badge=document.getElementById('audioStatusBadge');
   var volSlider=document.getElementById('audioVolSlider');
-  if(volSlider) volSlider.addEventListener('input', function(){ if(vid) vid.volume=parseFloat(volSlider.value); });
-  if(!vid) return;
-  vid.muted = false;
-  playUniversal(vid, url, {
-    proxy: !!useProxy,
-    onStart: function(info){ if(badge) badge.textContent = '📡 ' + info.type.toUpperCase() + (info.proxied?' · PROXY':'') + ' · ljud'; },
-    onReady: function(engine){ if(badge) badge.textContent = '✅ LIVE · ' + engine; },
-    onError: function(type){ if(badge) badge.textContent = '⚠ Fel: ' + type; }
-  });
+  volSlider.addEventListener('input', function(){ if(vid) vid.volume=parseFloat(volSlider.value); });
+  if(typeof Hls!=='undefined' && Hls.isSupported() && jsEnabled){
+    hlsInst=new Hls({enableWorker:false});
+    hlsInst.loadSource(url);
+    hlsInst.attachMedia(vid);
+    hlsInst.on(Hls.Events.MANIFEST_PARSED, function(){ vid.play().catch(function(){ badge.textContent='Tryck Play i webbläsaren'; }); badge.textContent='LIVE · Spelar'; });
+    hlsInst.on(Hls.Events.ERROR, function(ev,d){ if(d.fatal){ badge.textContent='Fel - försöker igen...'; if(d.type===Hls.ErrorTypes.NETWORK_ERROR) setTimeout(function(){ if(hlsInst) hlsInst.startLoad(); },2000); else destroyPlayers(); } });
+  } else {
+    vid.src=url; vid.play().catch(function(){ badge.textContent='Kunde inte spela'; }); badge.textContent='LIVE';
+  }
 }
 
-/* ============================================================
-   HUVUD-PLAY
-   proxied=true  → kör via lokal proxy (behövs för IP/UA-lås)
-   proxied=false → spela direkt (default, funkar för MMN etc.)
-   ============================================================ */
 function play(url,name,method,proxied){
   if(window.innerWidth<=768) document.getElementById('channel-list').classList.remove('show');
-  cur={url:url,name:name,method:method,proxied:!!proxied};
-  document.getElementById('ch-title').textContent=name;
-  destroyAllPlayers();
+  cur={url:url,name:name,method:method,proxied:!!proxied}; document.getElementById('ch-title').textContent=name; destroyPlayers();
   var wrap=document.getElementById('vwrap');
   updateModeSwitcherUI();
 
-  // ============ LJUD-LÄGE ============
+  var playUrl = proxied ? proxify(url) : url;
+
   if(playMode==='audio'){
     if(method==='audio'){
-      renderRadioPlayer(proxied?proxify(url):url, name);
+      renderRadioPlayer(playUrl,name);
+      render(curFilter); return;
+    }
+    if(!method || method==='hls'){
+      renderAudioOnlyPlayer(playUrl,name);
       render(curFilter); return;
     }
     if(method==='iframe' || method==='external'){
@@ -871,80 +1055,130 @@ function play(url,name,method,proxied){
         '<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">'+
           '<button class="btn primary" onclick="setPlayMode(\'tv\')">📺 Byt till Video</button>'+
           '<button class="btn newtab" onclick="openCurrentNewTab()">↗ Öppna i ny flik</button>'+
-        '</div></div>';
+        '</div>'+
+        '<div style="margin-top:12px;opacity:0.5;font-size:0.7rem;">UA: '+(currentUA? 'Custom':'Auto')+' · '+method+'</div></div>';
       render(curFilter); return;
     }
-    renderAudioOnlyPlayer(url, name, proxied);
-    render(curFilter); return;
   }
 
-  // ============ VIDEO-LÄGE ============
   if(method==='external'){
     wrap.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;"><div style="font-size:2.5rem">🔗</div><div style="color:#4ecca3;font-weight:bold;margin:10px 0;">'+escapeHtml(name)+'</div><div style="background:#4ecca333;border:1px solid #4ecca3;padding:8px 14px;border-radius:20px;font-size:0.8rem;color:#4ecca3;">✅ Öppnad i ny flik</div><div style="display:flex;gap:10px;margin-top:14px;"><a href="'+escapeHtml(url)+'" target="_blank" class="btn primary" style="text-decoration:none;padding:10px 20px;display:inline-block;">▶ Öppna igen</a><button class="btn" onclick="setPlayMode(\'audio\')">🎵 Ljud-läge</button></div></div>';
     window.open(url,'_blank');
     render(curFilter); return;
   }
-
   if(method==='audio'){
-    renderRadioPlayer(proxied?proxify(url):url, name);
+    renderRadioPlayer(playUrl,name);
     render(curFilter); return;
   }
+  if(method==='ts'){
+    wrap.innerHTML='<video id="vplayer" controls autoplay playsinline muted style="width:100%;height:100%;background:#000;"></video>'+
+      '<div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;">📡 MPEG-TS'+(proxied?' · PROXY':'')+'</div>'+
+      '<div id="tsStatus" style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.7);color:#4ecca3;padding:4px 10px;border-radius:12px;font-size:0.7rem;">Startar...</div>';
+    var tsVid=document.getElementById('vplayer');
+    var tsStatus=document.getElementById('tsStatus');
+    var tsUrl = playUrl;
+    tsVid.muted = true;
 
+    if(typeof mpegts !== 'undefined' && mpegts.isSupported() && jsEnabled){
+      try{
+        mpegtsPlayer = mpegts.createPlayer({
+          type:'mpegts', isLive:true, url:tsUrl
+        }, {
+          enableWorker:false,
+          liveBufferLatencyChasing:true,
+          liveBufferLatencyMaxLatency:1.5,
+          liveBufferLatencyMinRemain:0.5
+        });
+        mpegtsPlayer.attachMediaElement(tsVid);
+        mpegtsPlayer.load();
+        mpegtsPlayer.play().then(function(){
+          if(tsStatus) tsStatus.textContent='✅ LIVE · mpegts'+(proxied?' · proxy':'');
+          setTimeout(function(){ tsVid.muted=false; }, 400);
+        }).catch(function(){
+          if(tsStatus) tsStatus.textContent='Klicka ▶ för ljud';
+        });
+        mpegtsPlayer.on(mpegts.Events.ERROR, function(type, details){
+          console.warn('mpegts error:', type, details);
+          if(tsStatus) tsStatus.textContent='⚠ '+details;
+        });
+      }catch(e){
+        console.warn('mpegts init failed', e);
+        tsVid.src = tsUrl;
+        tsVid.play().catch(function(){});
+      }
+    } else {
+      tsVid.src = tsUrl;
+      tsVid.play().catch(function(){});
+      if(tsStatus) tsStatus.textContent='Spelar direkt (ingen mpegts)';
+    }
+    render(curFilter); return;
+  }
   if(method==='iframe'){
     if(url.indexOf('karwan.tv')!==-1){
       var directCDN = getKarwanDirectCDN(url);
       if(directCDN){
-        wrap.innerHTML='<div class="extract-box"><div class="spinner"></div><div style="margin-top:14px;color:#4ecca3;font-weight:bold;">'+escapeHtml(name)+'</div><div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔍 Hämtar direkt HLS...<br><span style="font-size:0.7rem;opacity:0.6;">'+escapeHtml(directCDN)+'</span></div></div>';
-        setTimeout(function(){
-          wrap.innerHTML='<video id="vplayer" controls autoplay playsinline style="width:100%;height:100%;"></video><div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;">✅ Karwan HLS</div>';
-          var vid=document.getElementById('vplayer');
-          playUniversal(vid, directCDN, {
-            proxy: false,
-            onReady: function(){ if(vid) vid.play().catch(function(){}); },
-            onError: function(){
-              wrap.innerHTML='<iframe src="'+escapeHtml(url)+'" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;background:#000;"></iframe>';
-              render(curFilter);
+        wrap.innerHTML='<div class="extract-box"><div class="spinner"></div><div style="margin-top:14px;color:#4ecca3;font-weight:bold;">'+escapeHtml(name)+'</div><div style="font-size:0.8rem;opacity:0.7;margin-top:6px;">🔍 Hämtar direkt länk via proxy...<br><span style="font-size:0.7rem;opacity:0.6;">'+escapeHtml(directCDN)+'</span></div></div>';
+        (function(cdn, originalUrl, channelName){
+          var vidId = 'vplayer_karwan_'+Date.now();
+          var testWrap = document.createElement('div'); testWrap.style.display='none'; testWrap.innerHTML='<video id="'+vidId+'"></video>'; document.body.appendChild(testWrap);
+          var testVid = document.getElementById(vidId); var played = false;
+          var timeout = setTimeout(function(){
+            if(!played){ if(testWrap.parentNode) testWrap.parentNode.removeChild(testWrap);
+              wrap.innerHTML='<iframe src="'+escapeHtml(originalUrl)+'" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;background:#000;"></iframe><div style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.7);color:#ff8a4c;padding:4px 10px;border-radius:12px;font-size:0.7rem;">⚠ Direkt HLS misslyckades • Visar iframe fallback</div>'; render(curFilter);
             }
-          });
-          render(curFilter);
-        }, 300);
+          }, 5000);
+          if(typeof Hls!=='undefined' && Hls.isSupported() && jsEnabled){
+            var tempHls = new Hls({enableWorker:false}); tempHls.loadSource(cdn); tempHls.attachMedia(testVid);
+            tempHls.on(Hls.Events.MANIFEST_PARSED, function(){ played=true; clearTimeout(timeout); if(testWrap.parentNode) testWrap.parentNode.removeChild(testWrap); tempHls.destroy();
+              wrap.innerHTML='<video id="vplayer" controls autoplay playsinline style="width:100%;height:100%;"></video><div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;">✅ Direkt HLS • '+escapeHtml(channelName)+'</div>';
+              var vid=document.getElementById('vplayer'); destroyPlayers();
+              if(typeof Hls!=='undefined' && Hls.isSupported() && jsEnabled){ hlsInst=new Hls({enableWorker:false}); hlsInst.loadSource(cdn); hlsInst.attachMedia(vid); hlsInst.on(Hls.Events.MANIFEST_PARSED,function(){ vid.play().catch(function(){}); }); }else{ vid.src=cdn; vid.play().catch(function(){}); }
+              render(curFilter);
+            });
+            tempHls.on(Hls.Events.ERROR, function(ev,data){ if(data.fatal){ clearTimeout(timeout); played=true; if(testWrap.parentNode) testWrap.parentNode.removeChild(testWrap); tempHls.destroy(); wrap.innerHTML='<iframe src="'+escapeHtml(originalUrl)+'" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>'; render(curFilter); } });
+          }else{
+            testVid.src=cdn;
+            testVid.addEventListener('loadedmetadata', function(){ played=true; clearTimeout(timeout); if(testWrap.parentNode) testWrap.parentNode.removeChild(testWrap);
+              wrap.innerHTML='<video id="vplayer" controls autoplay playsinline style="width:100%;height:100%;"></video><div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;">✅ Direkt HLS</div>';
+              var vid=document.getElementById('vplayer'); destroyPlayers(); vid.src=cdn; vid.play().catch(function(){}); render(curFilter);
+            });
+          }
+        })(directCDN, url, name);
         return;
       }
     }
     var isSepehr = url.includes('sepehr') || url.includes('telewebion') || name.toLowerCase().includes('sepehr') || name.toLowerCase().includes('sahar') || name.toLowerCase().includes('kordestan') || name.toLowerCase().includes('mahabad');
-    var sepehrBadge = isSepehr ? '<div style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;z-index:10;">✅ Sepehr</div>' : '';
+    var sepehrBadge = isSepehr ? '<div style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;z-index:10;">✅ Sepehr FIXED</div>' : '';
     wrap.innerHTML=sepehrBadge+'<iframe id="iframePlayer" src="'+escapeHtml(url)+'" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none;"></iframe>';
     render(curFilter); return;
   }
 
-  // ============ UNIVERSAL PLAYER ============
-  wrap.innerHTML='<video id="vplayer" controls autoplay playsinline muted style="width:100%;height:100%;background:#000;"></video>'+
-    '<div id="playerStatus" style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.7);color:#4ecca3;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;z-index:5;">Startar...</div>'+
-    (proxied ? '<div style="position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#ff8a4c,#c95a2e);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;z-index:5;">🛰 Proxy</div>' : '');
-  var vid=document.getElementById('vplayer');
-  var statusEl=document.getElementById('playerStatus');
-
-  vid.muted = true;
-
-  playUniversal(vid, url, {
-    proxy: proxied === true,             // ← ALTERNATIV 2: bara proxied:true går via proxy
-    allowDirectFallback: true,
-    onStart: function(info){
-      if(statusEl) statusEl.textContent = '📡 ' + info.type.toUpperCase() + (info.proxied ? ' · PROXY' : ' · DIREKT');
-    },
-    onReady: function(engine){
-      if(statusEl) statusEl.textContent = '✅ LIVE · ' + engine;
-      setTimeout(function(){ if(vid) vid.muted = false; }, 400);
-    },
-    onError: function(type, err){
-      console.warn('Player error:', type, err);
-      if(statusEl) statusEl.textContent = '⚠ Fel: ' + type;
-    }
-  });
-
+  wrap.innerHTML='<video id="vplayer" controls autoplay playsinline style="width:100%;height:100%;"></video>'+
+    (proxied ? '<div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;">🛰 Proxy aktiv</div>' : '');
+  var vid=document.getElementById('vwrap').querySelector('video');
+  if(!vid) vid=document.getElementById('vplayer');
+  if(typeof Hls!=='undefined' && Hls.isSupported() && jsEnabled){
+    hlsInst=new Hls({
+      enableWorker:false,
+      xhrSetup: function(xhr){
+        if(currentUA) try{ xhr.setRequestHeader('X-Forwarded-User-Agent', currentUA); }catch(e){}
+      }
+    });
+    hlsInst.loadSource(playUrl);
+    hlsInst.attachMedia(vid);
+    hlsInst.on(Hls.Events.MANIFEST_PARSED,function(){ vid.play().catch(function(){}); });
+    hlsInst.on(Hls.Events.ERROR, function(ev,d){
+      if(d.fatal){
+        console.warn('HLS fatal error:', d);
+        if(d.type===Hls.ErrorTypes.NETWORK_ERROR){ setTimeout(function(){ if(hlsInst) hlsInst.startLoad(); },2000); }
+        else { destroyPlayers(); }
+      }
+    });
+  } else {
+    vid.src=playUrl; vid.play().catch(function(){});
+  }
   render(curFilter);
 }
-
 function setAllBtnsInactive(){ var btns=document.querySelectorAll('.nav-btn'); for(var i=0;i<btns.length;i++) btns[i].classList.remove('active'); }
 function showAll(btn){ setAllBtnsInactive(); btn.classList.add('active'); render(null); }
 function showFavs(btn){ setAllBtnsInactive(); btn.classList.add('active'); render('__favs__'); }
@@ -998,16 +1232,31 @@ var quranAyahs=[
 var quranFullLoaded=false;
 var quranMode='short';
 var LONG_AYAH_THRESHOLD=80;
-function buildQuranRef(surahNum, ayahNum, surahName){ return (surahName? surahName+' ': '') + surahNum + ':' + ayahNum; }
+
+function buildQuranRef(surahNum, ayahNum, surahName){
+  return (surahName? surahName+' ': '') + surahNum + ':' + ayahNum;
+}
 function colorizeMushafArabic(text){
   if(!text) return '';
   var esc=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   esc=esc.replace(/(اللَّه|اللّٰه|الله|لِلَّه|لِلّهِ|بِاللَّه|فَاللَّه|اللَّهِ|اللَّهُ)/g,'<span class="allah-red">$1</span>');
   return esc;
 }
-function getShortPart(text, maxWords){ if(!text) return ''; maxWords=maxWords||10; var words=text.trim().split(/\s+/); if(words.length<=maxWords) return text; return words.slice(0,maxWords).join(' ')+' ...'; }
-function getAyahDisplayText(ayah, mode){ var fullAr=ayah.ar||''; var isLong=fullAr.length>LONG_AYAH_THRESHOLD || fullAr.split(/\s+/).length>12; if(mode==='short' && isLong){ return {text:getShortPart(fullAr,10),isShort:true,isLong:true,full:fullAr}; } return {text:fullAr,isShort:false,isLong:isLong,full:fullAr}; }
-function getTranslationShort(text, maxWords){ if(!text) return ''; maxWords=maxWords||12; var words=text.trim().split(/\s+/); if(words.length<=maxWords) return text; return words.slice(0,maxWords).join(' ')+' ...'; }
+function getShortPart(text, maxWords){
+  if(!text) return ''; maxWords=maxWords||10;
+  var words=text.trim().split(/\s+/); if(words.length<=maxWords) return text;
+  return words.slice(0,maxWords).join(' ')+' ...';
+}
+function getAyahDisplayText(ayah, mode){
+  var fullAr=ayah.ar||''; var isLong=fullAr.length>LONG_AYAH_THRESHOLD || fullAr.split(/\s+/).length>12;
+  if(mode==='short' && isLong){ return {text:getShortPart(fullAr,10),isShort:true,isLong:true,full:fullAr}; }
+  return {text:fullAr,isShort:false,isLong:isLong,full:fullAr};
+}
+function getTranslationShort(text, maxWords){
+  if(!text) return ''; maxWords=maxWords||12;
+  var words=text.trim().split(/\s+/); if(words.length<=maxWords) return text;
+  return words.slice(0,maxWords).join(' ')+' ...';
+}
 var quranIndex=0; var currentAyah=null;
 function showQuranAyah(idx){
   if(!quranAyahs || quranAyahs.length===0) return;
@@ -1020,19 +1269,32 @@ function showQuranAyah(idx){
     var refEl=document.getElementById('quranRef');
     var arDisplay=getAyahDisplayText(ayah, quranMode);
     if(arEl){
-      if(arDisplay.isShort){ arEl.innerHTML=colorizeMushafArabic(arDisplay.text)+'<br><span style="font-size:0.5em;color:#ff6b6b;opacity:0.9;font-family:sans-serif">📖 Kort del - klicka för hela ('+arDisplay.full.length+' tkn)</span>'; }
-      else { arEl.innerHTML=colorizeMushafArabic(arDisplay.text); }
+      if(arDisplay.isShort){
+        arEl.innerHTML=colorizeMushafArabic(arDisplay.text)+'<br><span style="font-size:0.5em;color:#ff6b6b;opacity:0.9;font-family:sans-serif">📖 Kort del - klicka för hela ('+arDisplay.full.length+' tkn)</span>';
+      } else {
+        arEl.innerHTML=colorizeMushafArabic(arDisplay.text);
+      }
     }
     var soText=ayah.so||''; var enText=ayah.en||'';
-    if(quranMode==='short' && arDisplay.isLong){ soText=getTranslationShort(soText,12); enText=getTranslationShort(enText,15); }
+    if(quranMode==='short' && arDisplay.isLong){
+      soText=getTranslationShort(soText,12); enText=getTranslationShort(enText,15);
+    }
     if(soEl) soEl.innerHTML='<b>سۆرانی - Kurdsat Style</b><br><span style="font-family:\'Amiri\',\'Noto Naskh Arabic\',\'Noto Kufi Arabic\',\'Rudaw\',\'NRT Reg\',\'Unikurd Web\',\'Speda\',Tahoma,sans-serif">'+soText+'</span>';
     if(enEl) enEl.innerHTML='<b>ENGLISH</b><br>'+enText;
-    if(refEl) refEl.innerText=ayah.ref + (arDisplay.isLong ? (quranMode==='short'?' · Kort del':' · Hela') : '') + ' · '+quranAyahs.length+' ayat totalt';
+    if(refEl) refEl.innerText=ayah.ref + (arDisplay.isLong ? (quranMode==='short'?' · Kort del':' · Hela') : '') + ' · '+quranAyahs.length+' ayat totalt - slump från hela Quran';
     if(bar) bar.style.opacity='1';
   },150);
   try{localStorage.setItem('quran_idx',idx.toString());}catch(e){}
 }
-function nextRandomAyah(){ if(quranAyahs.length>0){ var newIdx; do{ newIdx=Math.floor(Math.random()*quranAyahs.length); } while(quranAyahs.length>1 && newIdx===quranIndex); quranIndex=newIdx; showQuranAyah(quranIndex); } }
+function setAyahMode(mode){ quranMode=mode; showQuranAyah(quranIndex); try{localStorage.setItem('quran_mode',mode);}catch(e){} }
+function nextRandomAyah(){
+  if(quranAyahs.length>0){
+    var newIdx;
+    do{ newIdx=Math.floor(Math.random()*quranAyahs.length); } while(quranAyahs.length>1 && newIdx===quranIndex);
+    quranIndex=newIdx;
+    showQuranAyah(quranIndex);
+  }
+}
 function openTranslationModal(type){
   if(!currentAyah) return;
   var overlay=document.getElementById('quranModalOverlay');
@@ -1055,23 +1317,40 @@ function openTranslationModal(type){
   if(clockCorner) clockCorner.classList.add('modal-hidden');
   if(weatherCorner) weatherCorner.classList.add('modal-hidden');
 }
-function closeTranslationModal(){
-  document.getElementById('quranModalOverlay').classList.remove('show');
-  document.body.style.overflow='';
+function closeTranslationModal(){ 
+  document.getElementById('quranModalOverlay').classList.remove('show'); 
+  document.body.style.overflow=''; 
   var clockCorner=document.getElementById('fixedClockCorner'); var weatherCorner=document.getElementById('fixedWeatherCorner');
-  if(clockCorner){ var topWrapper=document.getElementById('topWrapper'); if(topWrapper.classList.contains('curtain-closed')){ clockCorner.classList.remove('modal-hidden'); } }
-  if(weatherCorner){ var topWrapper2=document.getElementById('topWrapper'); if(topWrapper2.classList.contains('curtain-closed')){ weatherCorner.classList.remove('modal-hidden'); } }
+  if(clockCorner){
+    var topWrapper=document.getElementById('topWrapper');
+    if(topWrapper.classList.contains('curtain-closed')){
+      clockCorner.classList.remove('modal-hidden');
+    }
+  }
+  if(weatherCorner){
+    var topWrapper2=document.getElementById('topWrapper');
+    if(topWrapper2.classList.contains('curtain-closed')){
+      weatherCorner.classList.remove('modal-hidden');
+    }
+  }
 }
 function initQuran(){
-  try{ var savedIdx=parseInt(localStorage.getItem('quran_idx')||'0'); quranIndex=savedIdx%quranAyahs.length; var savedMode=localStorage.getItem('quran_mode'); if(savedMode) quranMode=savedMode; }catch(e){ quranIndex=0; }
+  try{
+    var savedIdx=parseInt(localStorage.getItem('quran_idx')||'0'); quranIndex=savedIdx%quranAyahs.length;
+    var savedMode=localStorage.getItem('quran_mode'); if(savedMode) quranMode=savedMode;
+  }catch(e){ quranIndex=0; }
   quranIndex=Math.floor(Math.random()*quranAyahs.length);
   showQuranAyah(quranIndex);
   document.getElementById('quranArabic').addEventListener('click', function(e){
     e.stopPropagation();
     var arDisplay=getAyahDisplayText(currentAyah, quranMode);
-    if(arDisplay.isLong && quranMode==='short'){ quranMode='full'; showQuranAyah(quranIndex); }
-    else if(arDisplay.isLong && quranMode==='full'){ quranMode='short'; showQuranAyah(quranIndex); }
-    else { nextRandomAyah(); }
+    if(arDisplay.isLong && quranMode==='short'){
+      quranMode='full'; showQuranAyah(quranIndex);
+    } else if(arDisplay.isLong && quranMode==='full'){
+      quranMode='short'; showQuranAyah(quranIndex);
+    } else {
+      nextRandomAyah();
+    }
   });
   document.getElementById('quranBar').addEventListener('dblclick', function(e){ e.stopPropagation(); nextRandomAyah(); });
   var soEl=document.getElementById('quranSo'); if(soEl) soEl.addEventListener('click', function(e){ e.stopPropagation(); openTranslationModal('so'); });
@@ -1083,7 +1362,7 @@ function initQuran(){
 async function loadFullQuran(){
   var statusEl=document.getElementById('quranRef');
   try{
-    if(statusEl) statusEl.textContent='⏳ Laddar hela Quran...';
+    if(statusEl) statusEl.textContent='⏳ Laddar hela Quran (6236 ayat) - slumpmässig per tillfälle...';
     var arabicP=fetch('https://api.alquran.cloud/v1/quran/quran-uthmani').then(r=>r.json()).catch(()=>null);
     var englishP=fetch('https://api.alquran.cloud/v1/quran/en.sahih').then(r=>r.json()).catch(()=>null);
     var soraniUrl='https://cdn.jsdelivr.net/gh/alurini/quran-translations@main/data/ku/quran_ku.json';
@@ -1106,17 +1385,17 @@ async function loadFullQuran(){
       }
       if(allAyahs.length>=6000){
         quranAyahs=allAyahs; quranFullLoaded=true;
-        if(statusEl) statusEl.textContent='✅ Hela Quran laddad: '+allAyahs.length+' ayat';
+        if(statusEl) statusEl.textContent='✅ Hela Quran laddad: '+allAyahs.length+' ayat · Slumpmässig per tillfälle · Soranî Kurdsat + Mushaf färg';
         quranIndex=Math.floor(Math.random()*allAyahs.length);
         showQuranAyah(quranIndex);
         return;
       }
     }
-    throw new Error('Primary failed');
+    throw new Error('Primary failed, trying CDN');
   }catch(err){
     console.warn('Primary Quran load failed, trying CDN', err);
     var statusEl2=document.getElementById('quranRef');
-    if(statusEl2) statusEl2.textContent='⏳ Försöker CDN...';
+    if(statusEl2) statusEl2.textContent='⏳ Försöker alternativ källa (CDN)...';
     try{
       var arRes=await fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/ara-quranuthmanihaf.json').then(r=>r.json()).catch(()=>null);
       var enRes=await fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-sahihinternational.json').then(r=>r.json()).catch(()=>null);
@@ -1124,19 +1403,19 @@ async function loadFullQuran(){
         var all=[];
         for(var i=0;i<arRes.quran.length;i++){
           var itemAr=arRes.quran[i]; var itemEn=enRes.quran[i]||{};
-          var soTxt=itemEn.text||'';
+          var soTxt=itemEn.text||''; 
           all.push({ar:itemAr.text||'',so:soTxt||itemEn.text||'',en:itemEn.text||'',ref:(itemAr.chapter||'')+':'+(itemAr.verse||''),surah:itemAr.chapter||0,ayah:itemAr.verse||0});
         }
         if(all.length>6000){
           quranAyahs=all; quranFullLoaded=true;
           quranIndex=Math.floor(Math.random()*all.length);
           showQuranAyah(quranIndex);
-          if(statusEl2) statusEl2.textContent='✅ Hela Quran via CDN: '+all.length+' ayat';
+          if(statusEl2) statusEl2.textContent='✅ Hela Quran via CDN: '+all.length+' ayat · Slumpmässig';
           return;
         }
       }
     }catch(e2){ console.warn('CDN fallback failed', e2); }
-    if(statusEl2) statusEl2.textContent='⚠ Visar '+quranAyahs.length+' ayat';
+    if(statusEl2) statusEl2.textContent='⚠ Kunde inte ladda hela Quran, visar '+quranAyahs.length+' ayat - slump per tillfälle fungerar ändå';
     quranIndex=Math.floor(Math.random()*quranAyahs.length);
     showQuranAyah(quranIndex);
   }
@@ -1212,7 +1491,7 @@ function updateFixedWeather(wData, loc){
     for(var i=0;i<wData.daily.time.length;i++){
       var date=new Date(wData.daily.time[i]); var dayName=i===0?'Idag':days[date.getDay()];
       var code=wData.daily.weathercode[i]; var iconInfo=weatherCodeToIcon(code);
-      var max=Math.round(wData.daily.temperature_2m_max[i]);
+      var max=Math.round(wData.daily.temperature_2m_max[i]); var min=Math.round(wData.daily.temperature_2m_min[i]);
       var isToday=i===0?' today':'';
       weekHtml+='<div class="fw-day'+isToday+'"><div class="fwd-name">'+dayName+'</div><div class="fwd-icon">'+iconInfo.icon+'</div><div class="fwd-temp">'+max+'°</div></div>';
     }
@@ -1248,12 +1527,22 @@ function openHourlyModal(dayIndex){
   if(clockCorner) clockCorner.classList.add('modal-hidden');
   if(weatherCorner) weatherCorner.classList.add('modal-hidden');
 }
-function closeWeatherModal(){
-  document.getElementById('weatherModalOverlay').classList.remove('show');
-  document.body.style.overflow='';
+function closeWeatherModal(){ 
+  document.getElementById('weatherModalOverlay').classList.remove('show'); 
+  document.body.style.overflow=''; 
   var clockCorner=document.getElementById('fixedClockCorner'); var weatherCorner=document.getElementById('fixedWeatherCorner');
-  if(clockCorner){ var topWrapper=document.getElementById('topWrapper'); if(topWrapper.classList.contains('curtain-closed')){ clockCorner.classList.remove('modal-hidden'); } }
-  if(weatherCorner){ var topWrapper2=document.getElementById('topWrapper'); if(topWrapper2.classList.contains('curtain-closed')){ weatherCorner.classList.remove('modal-hidden'); } }
+  if(clockCorner){
+    var topWrapper=document.getElementById('topWrapper');
+    if(topWrapper.classList.contains('curtain-closed')){
+      clockCorner.classList.remove('modal-hidden');
+    }
+  }
+  if(weatherCorner){
+    var topWrapper2=document.getElementById('topWrapper');
+    if(topWrapper2.classList.contains('curtain-closed')){
+      weatherCorner.classList.remove('modal-hidden');
+    }
+  }
 }
 function detectLocationGPS(){
   var btn=document.getElementById('gpsBtn'); var info=document.getElementById('weatherInfo');
@@ -1319,20 +1608,64 @@ function initFixedInfoToggle(){
   var weatherDetails = document.getElementById('fixedWeatherDetails');
   var clockBox = document.getElementById('fixedClockBox');
   var weatherCorner = document.getElementById('fixedWeatherCorner');
-  if(weatherBox){ weatherBox.addEventListener('click', function(e){ e.stopPropagation(); weatherDetails.classList.toggle('show'); }); }
-  if(clockBox){ clockBox.addEventListener('click', function(e){ e.stopPropagation(); var calSelect = document.getElementById('calendarSelect'); if(calSelect){ var curVal = calSelect.value; var nextVal = curVal === 'gregorian' ? 'islamic' : (curVal === 'islamic' ? 'iranian' : 'gregorian'); calSelect.value = nextVal; updateDateByCalendar(); } }); }
-  document.addEventListener('click', function(e){ if(weatherCorner && !weatherCorner.contains(e.target)){ weatherDetails.classList.remove('show'); } });
+  if(weatherBox){
+    weatherBox.addEventListener('click', function(e){
+      e.stopPropagation();
+      weatherDetails.classList.toggle('show');
+    });
+  }
+  if(clockBox){
+    clockBox.addEventListener('click', function(e){
+      e.stopPropagation();
+      var calSelect = document.getElementById('calendarSelect');
+      if(calSelect){
+        var curVal = calSelect.value;
+        var nextVal = curVal === 'gregorian' ? 'islamic' : (curVal === 'islamic' ? 'iranian' : 'gregorian');
+        calSelect.value = nextVal;
+        updateDateByCalendar();
+      }
+    });
+  }
+  document.addEventListener('click', function(e){
+    if(weatherCorner && !weatherCorner.contains(e.target)){
+      weatherDetails.classList.remove('show');
+    }
+  });
 }
 function initWeatherToggle(){
   var hideBtn = document.getElementById('weatherHideBtn');
   var showBtn = document.getElementById('weatherShowBtn');
   var corner = document.getElementById('fixedWeatherCorner');
   var details = document.getElementById('fixedWeatherDetails');
-  if(hideBtn){ hideBtn.addEventListener('click', function(e){ e.stopPropagation(); corner.classList.add('hidden-by-user'); if(details) details.classList.remove('show'); showBtn.classList.add('show'); try{ localStorage.setItem('weather_hidden','true'); }catch(err){} }); }
-  if(showBtn){ showBtn.addEventListener('click', function(e){ e.stopPropagation(); corner.classList.remove('hidden-by-user'); showBtn.classList.remove('show'); try{ localStorage.setItem('weather_hidden','false'); }catch(err){} }); }
-  try{ if(localStorage.getItem('weather_hidden') === 'true'){ corner.classList.add('hidden-by-user'); showBtn.classList.add('show'); } }catch(err){}
+
+  if(hideBtn){
+    hideBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      corner.classList.add('hidden-by-user');
+      if(details) details.classList.remove('show');
+      showBtn.classList.add('show');
+      try{ localStorage.setItem('weather_hidden','true'); }catch(err){}
+    });
+  }
+
+  if(showBtn){
+    showBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      corner.classList.remove('hidden-by-user');
+      showBtn.classList.remove('show');
+      try{ localStorage.setItem('weather_hidden','false'); }catch(err){}
+    });
+  }
+
+  try{
+    if(localStorage.getItem('weather_hidden') === 'true'){
+      corner.classList.add('hidden-by-user');
+      showBtn.classList.add('show');
+    }
+  }catch(err){}
 }
 
+/* ===== GÖM NAV-BUTTONS VID SCROLL UPP ===== */
 (function(){
   var navWrapper = document.getElementById('navWrapper');
   if(!navWrapper) return;
@@ -1342,8 +1675,11 @@ function initWeatherToggle(){
     var y = window.pageYOffset;
     var diff = y - lastY;
     if(Math.abs(diff) < threshold) return;
-    if(diff > 0 && y > 60){ navWrapper.classList.remove('scroll-hidden'); }
-    else if(diff < 0){ navWrapper.classList.add('scroll-hidden'); }
+    if(diff > 0 && y > 60){
+      navWrapper.classList.remove('scroll-hidden');
+    } else if(diff < 0){
+      navWrapper.classList.add('scroll-hidden');
+    }
     lastY = y;
   }, {passive:true});
 })();
