@@ -6,7 +6,6 @@
 <title>Heval · Karwan · Radio - Gardin Edition - Radio + TV/Ljud</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/mpegts.js@latest/dist/mpegts.js"></script>
 <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -551,6 +550,202 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
 .extract-log{font-size:0.7rem;background:#000;padding:8px 12px;border-radius:10px;margin-top:10px;max-width:90%;word-break:break-all;opacity:0.7;border:1px solid #4ecca333}
 .spinner{display:inline-block;width:22px;height:22px;border:3px solid rgba(78,204,163,0.3);border-radius:50%;border-top-color:#4ecca3;animation:spin 0.8s linear infinite;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============================================================
+   ===== TV-LÄGE (fullskärms-spelare + nav + kanal-overlay) =====
+   ============================================================ */
+body.tv-mode{overflow:hidden!important}
+body.tv-mode .container,
+body.tv-mode .nav-buttons-wrapper,
+body.tv-mode .curtain-wrapper,
+body.tv-mode .fixed-clock-corner,
+body.tv-mode .fixed-weather-corner,
+body.tv-mode .weather-show-btn{display:none!important}
+
+#tvStage{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(ellipse at center,#0f2a35 0%,#060f14 100%);
+  z-index:5000;
+  display:none;
+}
+body.tv-mode #tvStage{display:block}
+body.tv-mode #tvStage .video-wrapper{
+  min-height:0;height:100%;width:100%;border-radius:0;background:#000;
+}
+body.tv-mode #tvStage video,
+body.tv-mode #tvStage iframe{object-fit:contain}
+
+#tvStageInfo{
+  position:fixed;
+  top:14px;right:16px;
+  background:rgba(0,0,0,0.72);
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(78,204,163,0.35);
+  border-radius:12px;
+  padding:8px 14px;
+  z-index:5200;
+  max-width:min(420px,60vw);
+  pointer-events:none;
+  transition:opacity .4s;
+}
+#tvStageInfo .tv-name{
+  font-size:15px;font-weight:800;color:#4ecca3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;
+  text-shadow:0 0 10px #4ecca388;
+}
+#tvStageInfo .tv-scope{
+  font-size:10.5px;color:#9fd8c3;font-weight:700;margin-top:2px;display:block;
+}
+#tvStageInfo .tv-idx{
+  font-size:10.5px;color:#7fae9d;font-weight:600;margin-top:2px;display:block;
+}
+
+/* Navigeringsfält nere i mitten */
+#tvNavBar{
+  position:fixed;
+  left:50%;bottom:18px;
+  transform:translateX(-50%);
+  display:flex;gap:10px;
+  padding:10px 14px;
+  background:rgba(6,20,25,.92);
+  border:3px solid #4ecca3;
+  border-radius:999px;
+  box-shadow:0 10px 40px rgba(0,0,0,.8), 0 0 20px rgba(78,204,163,.25);
+  z-index:5300;
+  transition:transform .28s ease, opacity .28s;
+  flex-wrap:wrap;
+  justify-content:center;
+  max-width:96vw;
+}
+.tvNavBtn{
+  display:flex;align-items:center;gap:8px;
+  background:#122c34;color:#e0ffef;
+  border:2px solid #234852;
+  border-radius:999px;
+  padding:10px 16px;
+  font-size:14px;font-weight:800;
+  cursor:pointer;min-height:48px;min-width:48px;
+  transition:background .15s, border-color .15s;
+}
+.tvNavBtn:hover{background:#1e4a55;border-color:#4ecca3}
+.tvNavBtn.primary{
+  background:linear-gradient(90deg,#2a8a68,#4ecca3);
+  border-color:transparent;color:#04120d;
+}
+.tvNavBtn .kbd{
+  font-family:monospace;font-size:11px;color:#7fae9d;
+  background:rgba(0,0,0,.45);border:1px solid #234852;
+  border-radius:6px;padding:2px 6px;
+}
+.tvNavBtn.primary .kbd{color:#04120d;background:rgba(255,255,255,.25);border-color:transparent}
+
+/* Dölj UI efter inaktivitet */
+body.tv-mode.tv-idle #tvNavBar,
+body.tv-mode.tv-idle #tvStageInfo{
+  opacity:0;pointer-events:none;
+  transform:translateX(-50%) translateY(140%);
+}
+body.tv-mode.tv-idle #tvStageInfo{transform:none}
+body.tv-mode.tv-idle video{cursor:none}
+
+/* Kanal-overlay (bottom sheet) */
+#tvOverlay{
+  position:fixed;
+  left:0;right:0;bottom:0;
+  max-height:78vh;
+  background:linear-gradient(180deg, rgba(8,24,30,.97), rgba(4,14,18,.99));
+  border-top:3px solid #4ecca3;
+  box-shadow:0 -12px 40px rgba(0,0,0,.9);
+  z-index:5400;
+  transform:translateY(105%);
+  transition:transform .28s ease;
+  display:flex;
+  flex-direction:column;
+  pointer-events:none;
+}
+body.tv-mode.tv-overlay-open #tvOverlay{
+  transform:translateY(0);
+  pointer-events:auto;
+}
+#tvOverlay .tvOvHead{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:14px 18px;
+  border-bottom:1px solid #1e3a44;
+  flex-shrink:0;flex-wrap:wrap;
+}
+#tvOverlay .tvOvTitle{
+  font-size:18px;font-weight:800;display:flex;align-items:center;gap:10px;color:#4ecca3;
+}
+#tvOverlay .tvOvTitle .cnt{font-size:13px;color:#7fae9d;font-weight:600}
+#tvOverlay .tvOvTabs{
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+}
+.tvOvTab{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#122c34;color:#9fd8c3;
+  border:2px solid #234852;
+  padding:9px 14px;border-radius:12px;
+  cursor:pointer;min-height:48px;
+  font-size:13px;font-weight:800;
+  transition:.15s;max-width:220px;
+}
+.tvOvTab:hover{background:#1e4a55;border-color:#4ecca3;color:#e0ffef}
+.tvOvTab.active{
+  background:linear-gradient(135deg,#2a8a68,#4ecca3);
+  color:#04120d;border-color:#4ecca3;
+  box-shadow:0 0 0 2px rgba(78,204,163,.35), 0 0 20px rgba(78,204,163,.25);
+}
+.tvOvTab .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tvOvTab .cnt{
+  font-size:11px;font-weight:900;
+  background:rgba(0,0,0,.25);color:inherit;
+  border-radius:999px;padding:2px 8px;
+}
+#tvOverlay .tvOvGrid{
+  flex:1 1 auto;overflow-y:auto;
+  padding:12px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:8px;align-content:start;
+  min-height:0;
+}
+.tvOvItem{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;
+  background:#0d2129;
+  border:3px solid transparent;
+  border-radius:12px;cursor:pointer;min-height:60px;
+  transition:background .15s, border-color .15s;
+}
+.tvOvItem:hover{background:#14313a}
+.tvOvItem.active{
+  border-color:#4ecca3;
+  background:rgba(78,204,163,.14);
+}
+.tvOvItem .num{
+  font-size:11px;font-weight:800;color:#7fae9d;
+  background:rgba(0,0,0,.4);border:1px solid #1e3a44;
+  border-radius:8px;padding:4px 8px;flex:0 0 auto;
+}
+.tvOvItem .nm{
+  font-size:14px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  flex:1;min-width:0;
+}
+.tvOvItem .tag{
+  font-size:9.5px;font-weight:800;flex:0 0 auto;
+  background:rgba(78,204,163,.14);color:#4ecca3;
+  border-radius:8px;padding:2px 7px;
+}
+.tvOvEmpty{
+  grid-column:1/-1;text-align:center;padding:40px 16px;
+  color:#7fae9d;font-size:14px;
+}
+@media(max-width:600px){
+  #tvOverlay .tvOvGrid{grid-template-columns:1fr}
+  #tvOverlay .tvOvTitle{font-size:15px}
+  .tvOvTab{padding:8px 10px;font-size:12px;min-height:42px}
+}
 </style>
 </head>
 <body>
@@ -662,9 +857,32 @@ video,iframe{width:100%;height:100%;object-fit:contain;border:none;background:bl
         <button class="btn" id="jsToggleBtn" onclick="toggleJSengine()">JS PA</button>
       </div>
     </div>
-    <div class="video-wrapper" id="vwrap"><div class="error-msg"><h3>Välj en kanal - Gardin + Radio Edition</h3><p>Sepehr FIXED • Video/Audio för ALLA • MPEG-TS • Radio med visualizer • Gardin • Quran EN</p></div></div>
+    <div class="video-wrapper" id="vwrap"><div class="error-msg"><h3>Välj en kanal - Gardin + Radio Edition</h3><p>Sepehr FIXED • Video/Audio för ALLA • Radio med visualizer • Gardin • Quran EN</p></div></div>
   </main>
   <aside class="channel-list" id="channel-list"><button class="close-btn" onclick="toggleList()">Stäng</button><div id="ch-container"></div></aside>
+</div>
+
+<!-- ===== TV-LÄGE: scen + info + nav + kanal-overlay ===== -->
+<div id="tvStage"></div>
+<div id="tvStageInfo">
+  <span class="tv-name" id="tvInfoName">Ingen kanal</span>
+  <span class="tv-scope" id="tvInfoScope"></span>
+  <span class="tv-idx" id="tvInfoIdx"></span>
+</div>
+<div id="tvNavBar" role="toolbar" aria-label="TV navigering">
+  <button class="tvNavBtn" id="tvPrevBtn" title="Föregående kanal">⏮ <span class="kbd">◀</span></button>
+  <button class="tvNavBtn primary" id="tvListBtn" title="Öppna kanallista">📺 <span>Kanaler</span> <span class="kbd">OK</span></button>
+  <button class="tvNavBtn" id="tvNextBtn" title="Nästa kanal">⏭ <span class="kbd">▶</span></button>
+  <button class="tvNavBtn" id="tvReloadBtn2" title="Ladda om kanal">🔄 <span class="kbd">R</span></button>
+  <button class="tvNavBtn" id="tvExitBtn" title="Avsluta TV-läge">✖ <span class="kbd">Esc</span></button>
+</div>
+<div id="tvOverlay" role="dialog" aria-label="Kanaler">
+  <div class="tvOvHead">
+    <div class="tvOvTitle">📺 <span>Kanaler</span> <span class="cnt" id="tvOvCount">0</span></div>
+    <div class="tvOvTabs" id="tvOvTabs"></div>
+    <button class="tvOvTab" id="tvOvClose" title="Stäng">✖</button>
+  </div>
+  <div class="tvOvGrid" id="tvOvGrid"></div>
 </div>
 
 <script>
@@ -745,8 +963,6 @@ var minalRaw = [
   { name: 'Spi Kids', url: 'https://live20.bozztv.com/giatv/giatv-spikids4k2025/spikids4k2025/chunks.m3u8', color:'blue' },
   { name: 'One Kids', url: 'https://lbgo.bozztv.com/ssh101/ssh101/onekids4k/chunks.m3u8', color:'blue' },
   { name: 'Gewher Kids', url: 'https://iptv-link.short.gy/Gewher_Kids.m3u8', color:'blue' },
-  { name: 'Znar Kids TV', url: 'https://karwan.tv/znar-kids/', method:'external', color:'blue' },
-
 ];
 var filmRaw = [
   { name: 'Speda Drama', url: 'https://speda2.site/upload/images/spedadrama.m3u8', method:'external', color: 'purple' },
@@ -762,11 +978,11 @@ var filmRaw = [
   { name: 'RED Tv', url: 'http://avrstream.com:1935/live/REDTV/playlist.m3u8', color:'purple' },
   { name: 'Barin Movies', url: 'https://cdn.karwan.tv/barin-movies/index.m3u8', color:'purple' },
   { name: 'Gewher tv', url: 'https://iptv-link.short.gy/Gewher.m3u8', color:'purple' },
-  { name: 'Gewher tv', url: 'https://karwan.tv/gewher-tv/', method:'iframe', color:'purple' },
   { name: 'New Family TV', url: 'https://cdn.karwan.tv/bnar-family/tracks-v1a1/mono.m3u8', color:'purple' },
   { name: 'Soran Entertainment', url: 'http://avrstream.com:1935/live/SoranEntertainment/playlist.m3u8', color:'purple' },
   { name: 'Iraqia Kurdish', url: 'https://imn-live.esite-lab.com/hls/iraqia-kurdish.m3u8', color:'purple' },
   { name: 'UTV Hewler org', url: 'https://utvhawler.net/index.htm', method:'iframe', color:'purple' },
+  { name: 'Shar TV HD', url: 'http://avrstream.com:1935/live/SHARTV/playlist.m3u8', color: 'purple' },
   { name: 'UTV Hawler', url: 'http://line.trxdnscloud.ru:80/live/1naebx0n1p/en1cy28eqj/324667.ts', method:'ts', color: 'purple' },
   { name: 'Cihan TV', url: 'https://www.cihanhd.com/', method:'iframe', color: 'purple' },
   { name: 'Cihan TV (external)', url: 'https://kurdtvs.net/channels.php?slug=cihan-tv-hd', method:'external', color: 'purple' },
@@ -779,14 +995,13 @@ var filmRaw = [
   { name: 'New Movies', url: 'https://karwan.tv/bnar-movies', method:'iframe', color:'purple' },
   { name: 'New Action TV', url: 'https://karwan.tv/bnar-action/', method:'iframe', color:'purple' },
   { name: 'Soz Movie', url: 'https://live20.bozztv.com/giatv/giatv-sozetv/sozetv/chunks.m3u8', color:'purple' },
-  
+
 ]
-  
+
 var diniRaw = [
   { name: 'Amozhgary', url: 'https://app-live.org/live/3268334b/index.m3u8', color: 'blue' },
   { name: 'Amozhgary academy', url: 'https://app-live.org/live/a267c1b3/index.m3u8', color:'blue' },
   { name: 'Shar Quran', url: 'https://live20.bozztv.com/giatv/giatv-sharqurantv/sharqurantv/chunks.m3u8', color: 'blue' },
-  { name: 'Shar TV HD', url: 'http://avrstream.com:1935/live/SHARTV/playlist.m3u8', color: 'blue' },
   { name: 'Spi Quran', url: 'https://live20.bozztv.com/giatv/giatv-spi_quran_hd/spi_quran_hd/chunks.m3u8', color:'blue' },
   { name: 'MMN Quran', url: 'http://mmn.mypsx.net:1935/live/mmnhdquran/playlist.m3u8', color: 'blue' },
   { name: 'Eman TV', url: 'https://avr.host247.net/live/emantv/tracks-v1a1/mono.m3u8', color: 'blue' },
@@ -797,6 +1012,8 @@ var diniRaw = [
   { name: 'Ashti QuranTV', url: 'http://avrstream.com:1935/live/AshtiTV/playlist.m3u8', color:'blue' },
   { name: 'IMK Quran TV', url: 'http://avrstream.com:1935/live/IMKQURANHD/playlist.m3u8', color:'blue' },
   { name: 'Farmoda TV', url: 'https://avr.host247.net/live/FarmodaTV/playlist.m3u8', color:'blue' },
+  { name: 'Mihrab HLS',    url: 'http://bblserver.ddns.net:1935/live/mihrabfm/playlist.m3u8', method:'hls', color:'blue' },
+
 
  ];
 var sportRaw = [
@@ -808,6 +1025,7 @@ var sportRaw = [
   { name: 'Next TV', url: 'https://karwan.tv/next-tv/', method:'iframe', color:'green' },
 ];
 var karwanRaw = [
+  { name: 'Znar TV', url: 'https://karwan.tv/znar-tv/', method:'iframe', color:'grey' },
   { name: 'Karwan Nalia TV', url: 'https://karwan.tv/nalia-tv', method:'iframe', color:'grey' },
   { name: 'Hormzyar tv', url: 'https://karwan.tv/hormzyar-tv/', method:'iframe', color:'grey' },
   { name: 'Halabja TV', url: 'https://karwan.tv/halabja-tv', method:'iframe', color:'grey' },
@@ -819,7 +1037,6 @@ var RadioRaw = [
   { name: 'Rudaw Radio',   url: 'https://radio.rudaw.net/stream/live', method:'audio', color:'cyan' },
   { name: 'Kurdsat Radio', url: 'http://uk3.internet-radio.com:8011/stream/', method:'audio', color:'cyan' },
   { name: 'Sunnat Radio',  url: 'https://a1.asurahosting.com:9380/radio.mp3', method:'audio', color:'cyan' },
-  { name: 'Mihrab HLS',    url: 'http://bblserver.ddns.net:1935/live/mihrabfm/playlist.m3u8', method:'hls', color:'cyan' },
   { name: 'Kurdland',  url: 'http://radio.kurdland.net/mp3', method:'hls', color:'cyan' },
   { name: 'Mihrab MP3',    url: 'http://siliconvalley.servep2p.com:8000/mihrab', method:'audio', color:'cyan' },
   { name: 'Ava Radio',     url: 'https://ava.holan.it.com/;?type=http&nocache=1', method:'audio', color:'cyan' },
@@ -833,7 +1050,7 @@ var RadioRaw = [
 ];
 
 var channels = {heval: hevalRaw.slice(),musik: musikRaw.slice(),minal: minalRaw.slice(),film: filmRaw.slice(),dini: diniRaw.slice(),sport: sportRaw.slice(),karwan: karwanRaw.slice(),Radio: RadioRaw.slice()};
-var hlsInst=null, mpegtsPlayer=null, cur=null, favs=[], jsEnabled=true, curFilter=null, playMode='tv', currentUA='';
+var hlsInst=null, cur=null, favs=[], jsEnabled=true, curFilter=null, playMode='tv', currentUA='';
 try{ favs=JSON.parse(localStorage.getItem('xomfavs')||'[]'); }catch(e){ favs=[]; }
 try{ currentUA=localStorage.getItem('xom_ua')||''; }catch(e){}
 try{ playMode=localStorage.getItem('xom_playmode')||'tv'; }catch(e){}
@@ -878,14 +1095,12 @@ function initCurtain(){
     try{ document.getElementById('topWrapper').classList.remove('curtain-closed'); }catch(e2){}
   }
 }
-function destroyPlayers(){
-  if(hlsInst){ try{hlsInst.destroy();}catch(e){} hlsInst=null; }
-  if(mpegtsPlayer){ try{mpegtsPlayer.destroy();}catch(e){} mpegtsPlayer=null; }
-}
+function destroyPlayers(){ if(hlsInst){ try{hlsInst.destroy();}catch(e){} hlsInst=null; } }
 function reload(){ if(cur) play(cur.url,cur.name,cur.method,''); }
 function fs(){ var w=document.getElementById('vwrap'); if(document.fullscreenElement){ document.exitFullscreen(); } else if(w.requestFullscreen){ w.requestFullscreen().catch(function(){}); } }
 function pip(){ var vid=document.getElementById('vplayer'); if(!vid) { alert('PiP funkar endast i Video-läge med HLS kanal'); return; } if(document.pictureInPictureElement){ document.exitPictureInPicture().catch(function(){}); } else if(vid.requestPictureInPicture){ vid.requestPictureInPicture().catch(function(){ alert('PiP stöds ej för denna kanal'); }); } else { alert('PiP stöds ej'); } }
-function toggleTV(){ var btn=document.getElementById('tv-btn'); if(document.fullscreenElement){ document.exitFullscreen(); btn.textContent='TV-läge'; } else { document.documentElement.requestFullscreen().catch(function(){}); btn.textContent='Normal'; } }
+/* toggleTV ersätts nedan av riktigt TV-läge */
+function toggleTV(){ enterTvMode(); }
 function toggleJSengine(){ jsEnabled=!jsEnabled; var btn=document.getElementById('jsToggleBtn'); btn.textContent=jsEnabled?'JS PA':'JS AV'; btn.classList.toggle('js-toggle-off', !jsEnabled); if(cur) play(cur.url,cur.name,cur.method,''); }
 function setUA(){ var sel=document.getElementById('ua-select'); currentUA=sel.value; try{ localStorage.setItem('xom_ua',currentUA);}catch(e){} if(cur) play(cur.url,cur.name,cur.method,''); }
 function openCurrentNewTab(){ if(!cur){ alert('Välj kanal först'); return; } window.open(cur.url,'_blank'); }
@@ -969,7 +1184,7 @@ function toggleCategory(catId, headerEl){
 function row(ch,hideSub){
   var m=ch.method||'hls'; var active=(cur&&cur.url===ch.url)?'active':'';
   var isFav=favs.some(function(f){ return f.url===ch.url; }); var star=isFav?'★':'☆';
-  var tag=''; if(!hideSub){ if(ch.proxied) tag=' <span style="font-size:0.6rem;opacity:0.9;background:#4ecca333;color:#4ecca3;padding:1px 5px;border-radius:10px;">proxy</span>'; else if(m==='iframe') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">live</span>'; else if(m==='audio') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">radio</span>'; else if(m==='external') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">extern</span>'; else if(m==='ts') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">mpegts</span>'; }
+  var tag=''; if(!hideSub){ if(ch.proxied) tag=' <span style="font-size:0.6rem;opacity:0.9;background:#4ecca333;color:#4ecca3;padding:1px 5px;border-radius:10px;">proxy</span>'; else if(m==='iframe') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">live</span>'; else if(m==='audio') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">radio</span>'; else if(m==='external') tag=' <span style="font-size:0.6rem;opacity:0.7;background:#0006;padding:1px 5px;border-radius:10px;">extern</span>'; }
   var extra=''; if(ch.name.toLowerCase().includes('sepehr') || ch.name.toLowerCase().includes('kordestan') || ch.name.toLowerCase().includes('mahabad') || ch.name.toLowerCase().includes('sahar')) extra=' ✅';
   return '<div class="channel-item '+ch.color+' '+active+'" data-url="'+escapeHtml(ch.url)+'" data-name="'+escapeHtml(ch.name)+'" data-method="'+m+'" data-proxied="'+(ch.proxied?'1':'0')+'"><span>'+escapeHtml(ch.name)+extra+tag+'</span><button class="fav-btn '+(isFav?'is-fav':'')+'" onclick="event.stopPropagation();fav(\''+escapeHtml(ch.url)+'\',\''+escapeHtml(ch.name)+'\')">'+star+'</button></div>';
 }
@@ -991,7 +1206,7 @@ function renderRadioPlayer(url, name){
       '<div class="radio-status">LIVE · RADIO STREAM · '+escapeHtml(name)+'</div>'+
       '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn" onclick="setPlayMode(\'tv\')">📺 Video</button><button class="btn newtab" onclick="openCurrentNewTab()">↗ Ny flik</button></div>'+
     '</div>';
-  var aud=document.getElementById('vwrap').querySelector('audio'); 
+  var aud=document.getElementById('vwrap').querySelector('audio');
   if(aud){ aud.volume=1.0; aud.play().catch(function(){}); }
 }
 
@@ -1035,6 +1250,7 @@ function play(url,name,method,proxied){
   cur={url:url,name:name,method:method,proxied:!!proxied}; document.getElementById('ch-title').textContent=name; destroyPlayers();
   var wrap=document.getElementById('vwrap');
   updateModeSwitcherUI();
+  updateTvInfo();
 
   var playUrl = proxied ? proxify(url) : url;
 
@@ -1070,49 +1286,6 @@ function play(url,name,method,proxied){
   }
   if(method==='audio'){
     renderRadioPlayer(playUrl,name);
-    render(curFilter); return;
-  }
-  if(method==='ts'){
-    wrap.innerHTML='<video id="vplayer" controls autoplay playsinline muted style="width:100%;height:100%;background:#000;"></video>'+
-      '<div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:800;">📡 MPEG-TS'+(proxied?' · PROXY':'')+'</div>'+
-      '<div id="tsStatus" style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.7);color:#4ecca3;padding:4px 10px;border-radius:12px;font-size:0.7rem;">Startar...</div>';
-    var tsVid=document.getElementById('vplayer');
-    var tsStatus=document.getElementById('tsStatus');
-    var tsUrl = playUrl;
-    tsVid.muted = true;
-
-    if(typeof mpegts !== 'undefined' && mpegts.isSupported() && jsEnabled){
-      try{
-        mpegtsPlayer = mpegts.createPlayer({
-          type:'mpegts', isLive:true, url:tsUrl
-        }, {
-          enableWorker:false,
-          liveBufferLatencyChasing:true,
-          liveBufferLatencyMaxLatency:1.5,
-          liveBufferLatencyMinRemain:0.5
-        });
-        mpegtsPlayer.attachMediaElement(tsVid);
-        mpegtsPlayer.load();
-        mpegtsPlayer.play().then(function(){
-          if(tsStatus) tsStatus.textContent='✅ LIVE · mpegts'+(proxied?' · proxy':'');
-          setTimeout(function(){ tsVid.muted=false; }, 400);
-        }).catch(function(){
-          if(tsStatus) tsStatus.textContent='Klicka ▶ för ljud';
-        });
-        mpegtsPlayer.on(mpegts.Events.ERROR, function(type, details){
-          console.warn('mpegts error:', type, details);
-          if(tsStatus) tsStatus.textContent='⚠ '+details;
-        });
-      }catch(e){
-        console.warn('mpegts init failed', e);
-        tsVid.src = tsUrl;
-        tsVid.play().catch(function(){});
-      }
-    } else {
-      tsVid.src = tsUrl;
-      tsVid.play().catch(function(){});
-      if(tsStatus) tsStatus.textContent='Spelar direkt (ingen mpegts)';
-    }
     render(curFilter); return;
   }
   if(method==='iframe'){
@@ -1319,9 +1492,9 @@ function openTranslationModal(type){
   if(clockCorner) clockCorner.classList.add('modal-hidden');
   if(weatherCorner) weatherCorner.classList.add('modal-hidden');
 }
-function closeTranslationModal(){ 
-  document.getElementById('quranModalOverlay').classList.remove('show'); 
-  document.body.style.overflow=''; 
+function closeTranslationModal(){
+  document.getElementById('quranModalOverlay').classList.remove('show');
+  document.body.style.overflow='';
   var clockCorner=document.getElementById('fixedClockCorner'); var weatherCorner=document.getElementById('fixedWeatherCorner');
   if(clockCorner){
     var topWrapper=document.getElementById('topWrapper');
@@ -1405,7 +1578,7 @@ async function loadFullQuran(){
         var all=[];
         for(var i=0;i<arRes.quran.length;i++){
           var itemAr=arRes.quran[i]; var itemEn=enRes.quran[i]||{};
-          var soTxt=itemEn.text||''; 
+          var soTxt=itemEn.text||'';
           all.push({ar:itemAr.text||'',so:soTxt||itemEn.text||'',en:itemEn.text||'',ref:(itemAr.chapter||'')+':'+(itemAr.verse||''),surah:itemAr.chapter||0,ayah:itemAr.verse||0});
         }
         if(all.length>6000){
@@ -1529,9 +1702,9 @@ function openHourlyModal(dayIndex){
   if(clockCorner) clockCorner.classList.add('modal-hidden');
   if(weatherCorner) weatherCorner.classList.add('modal-hidden');
 }
-function closeWeatherModal(){ 
-  document.getElementById('weatherModalOverlay').classList.remove('show'); 
-  document.body.style.overflow=''; 
+function closeWeatherModal(){
+  document.getElementById('weatherModalOverlay').classList.remove('show');
+  document.body.style.overflow='';
   var clockCorner=document.getElementById('fixedClockCorner'); var weatherCorner=document.getElementById('fixedWeatherCorner');
   if(clockCorner){
     var topWrapper=document.getElementById('topWrapper');
@@ -1707,6 +1880,280 @@ document.addEventListener('DOMContentLoaded',function(){
   initQuran();
 });
 render(null);
+
+/* ============================================================
+   ===== TV-LÄGE: fullskärm + ⏮/⏭ + grupper + kanal-overlay =====
+   ============================================================ */
+var tvGroup = '__all__';   /* '__all__', '__favs__' eller kategorinamn (heval, musik, ...) */
+var tvOvTab  = null;
+var tvOvFocus = 0;
+var tvIdleTimer = null;
+var TV_IDLE_MS = 4000;
+var tvWrapParent = null;
+
+function tvNice(cat){
+  if(cat==='heval') return 'Heval';
+  if(cat==='karwan') return 'Karwan TV';
+  if(cat==='Radio') return 'Radio';
+  return cat.charAt(0).toUpperCase()+cat.slice(1);
+}
+function tvGroupIcon(cat){
+  var icons={heval:'📺',musik:'🎵',minal:'🧒',film:'🎬',dini:'📖',sport:'⚽',karwan:'📡',Radio:'📻'};
+  return icons[cat]||'📁';
+}
+function allChannelsFlat(){
+  var all=[];
+  Object.keys(channels).forEach(function(k){ all=all.concat(channels[k]); });
+  return all;
+}
+function getTvList(){
+  if(tvGroup==='__favs__'){
+    return allChannelsFlat().filter(function(ch){
+      return favs.some(function(f){ return f.url===ch.url; });
+    });
+  }
+  if(tvGroup && tvGroup!=='__all__' && channels[tvGroup]){
+    return channels[tvGroup].slice();
+  }
+  return allChannelsFlat();
+}
+function tvScopeName(){
+  if(tvGroup==='__favs__') return '⭐ Favoriter';
+  if(tvGroup==='__all__')   return '📋 Alla kanaler';
+  return tvGroupIcon(tvGroup)+' '+tvNice(tvGroup);
+}
+
+/* ===== Starta / avsluta TV-läge ===== */
+function enterTvMode(){
+  if(document.body.classList.contains('tv-mode')){ exitTvMode(); return; }
+  var vwrap = document.getElementById('vwrap');
+  var stage = document.getElementById('tvStage');
+  tvWrapParent = vwrap.parentElement;
+  stage.appendChild(vwrap);
+  document.body.classList.add('tv-mode');
+  document.body.classList.remove('tv-idle');
+  var btn=document.getElementById('tv-btn'); if(btn) btn.textContent='Avsluta TV';
+  try{ if(!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function(){}); }catch(e){}
+  tvUiWake();
+  renderTvTabs();
+  updateTvInfo();
+}
+function exitTvMode(){
+  var vwrap = document.getElementById('vwrap');
+  document.body.classList.remove('tv-mode','tv-idle','tv-overlay-open');
+  if(tvWrapParent && vwrap && vwrap.parentElement!==tvWrapParent){
+    tvWrapParent.appendChild(vwrap);
+  }
+  tvWrapParent = null;
+  var btn=document.getElementById('tv-btn'); if(btn) btn.textContent='TV-läge';
+  try{ if(document.fullscreenElement) document.exitFullscreen().catch(function(){}); }catch(e){}
+}
+/* Överskriv gamla toggleTV så "TV-läge"-knappen använder nya läget */
+function toggleTV(){
+  if(document.body.classList.contains('tv-mode')) exitTvMode();
+  else enterTvMode();
+}
+
+/* ===== Info-badge uppe till höger ===== */
+function updateTvInfo(){
+  var nameEl=document.getElementById('tvInfoName');
+  var scopeEl=document.getElementById('tvInfoScope');
+  var idxEl=document.getElementById('tvInfoIdx');
+  if(!nameEl) return;
+  if(!cur){ nameEl.textContent='Ingen kanal'; scopeEl.textContent=''; idxEl.textContent=''; return; }
+  var seq=getTvList();
+  var idx=seq.findIndex(function(c){ return c.url===cur.url; });
+  nameEl.textContent=cur.name;
+  scopeEl.textContent=tvScopeName();
+  idxEl.textContent = idx>=0 ? ('Kanal '+(idx+1)+' av '+seq.length) : 'Ej i aktuell lista';
+}
+
+/* ===== Fram/bak inom vald grupp ===== */
+function tvAdjacent(delta){
+  var seq=getTvList();
+  if(!seq.length){
+    alert('Inga kanaler i "'+tvScopeName()+'"');
+    return;
+  }
+  var idx=seq.findIndex(function(c){ return cur && c.url===cur.url; });
+  if(idx<0) idx=0;
+  else idx=(idx+delta+seq.length)%seq.length;
+  var ch=seq[idx];
+  play(ch.url, ch.name, ch.method||'hls', !!ch.proxied);
+  tvUiWake();
+}
+
+/* ===== Kanal-overlay ===== */
+function renderTvTabs(){
+  var tabsEl=document.getElementById('tvOvTabs');
+  if(!tabsEl) return;
+  var html='<button class="tvOvTab '+(tvGroup==='__all__'?'active':'')+'" data-tvg="__all__"><span class="nm">📋 Alla</span></button>';
+  var favCount=allChannelsFlat().filter(function(ch){ return favs.some(function(f){ return f.url===ch.url; }); }).length;
+  html+='<button class="tvOvTab '+(tvGroup==='__favs__'?'active':'')+'" data-tvg="__favs__"><span class="nm">⭐ Favoriter</span><span class="cnt">'+favCount+'</span></button>';
+  Object.keys(channels).forEach(function(cat){
+    html+='<button class="tvOvTab '+(tvGroup===cat?'active':'')+'" data-tvg="'+cat+'">'+
+      '<span class="nm">'+tvGroupIcon(cat)+' '+tvNice(cat)+'</span><span class="cnt">'+channels[cat].length+'</span></button>';
+  });
+  tabsEl.innerHTML=html;
+  tabsEl.querySelectorAll('[data-tvg]').forEach(function(t){
+    t.onclick=function(){ switchTvGroup(t.dataset.tvg); };
+  });
+}
+function switchTvGroup(g){
+  tvGroup=g;
+  renderTvTabs();
+  updateTvInfo();
+  tvOvFocus=0;
+  renderTvOverlay();
+  setTimeout(tvOvApplyFocus,30);
+}
+function tvTagFor(ch){
+  var m=ch.method||'hls';
+  if(m==='audio') return 'radio';
+  if(m==='iframe') return 'live';
+  if(m==='external') return 'extern';
+  if(ch.proxied) return 'proxy';
+  return '';
+}
+function renderTvOverlay(){
+  var list=getTvList();
+  var grid=document.getElementById('tvOvGrid');
+  if(!grid) return;
+  document.getElementById('tvOvCount').textContent=list.length+' st';
+  if(!list.length){
+    grid.innerHTML='<div class="tvOvEmpty">Inga kanaler i "'+tvScopeName()+'"</div>';
+    return;
+  }
+  var html='';
+  for(var i=0;i<list.length;i++){
+    var ch=list[i];
+    var active=(cur&&cur.url===ch.url)?'active':'';
+    var tag=tvTagFor(ch);
+    html+='<div class="tvOvItem '+active+'" data-i="'+i+'" data-url="'+escapeHtml(ch.url)+'">'+
+      '<span class="num">'+(i+1)+'</span>'+
+      '<span class="nm">'+escapeHtml(ch.name)+'</span>'+
+      (tag?'<span class="tag">'+tag+'</span>':'')+
+    '</div>';
+  }
+  grid.innerHTML=html;
+  grid.querySelectorAll('.tvOvItem').forEach(function(el){
+    el.onclick=function(){
+      var ch=getTvList()[parseInt(el.dataset.i,10)];
+      if(ch){ play(ch.url,ch.name,ch.method||'hls',!!ch.proxied); closeTvOverlay(); }
+    };
+  });
+}
+function openTvOverlay(){
+  document.body.classList.remove('tv-idle');
+  document.body.classList.add('tv-overlay-open');
+  renderTvTabs();
+  renderTvOverlay();
+  var list=getTvList();
+  var idx=list.findIndex(function(c){ return cur && c.url===cur.url; });
+  tvOvFocus = idx>=0 ? idx : 0;
+  setTimeout(tvOvApplyFocus,50);
+}
+function closeTvOverlay(){
+  document.body.classList.remove('tv-overlay-open');
+  tvUiWake();
+}
+function tvOvApplyFocus(){
+  var grid=document.getElementById('tvOvGrid');
+  if(!grid) return;
+  var items=[].slice.call(grid.querySelectorAll('.tvOvItem'));
+  items.forEach(function(el,i){ el.classList.toggle('active', i===tvOvFocus); });
+  var el=items[tvOvFocus];
+  if(el) el.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function tvOvMove(dir){
+  var grid=document.getElementById('tvOvGrid');
+  var items=[].slice.call(grid.querySelectorAll('.tvOvItem'));
+  if(!items.length) return;
+  if(dir==='down') tvOvFocus=Math.min(tvOvFocus+1, items.length-1);
+  else tvOvFocus=Math.max(tvOvFocus-1, 0);
+  tvOvApplyFocus();
+}
+function tvOvActivate(){
+  var grid=document.getElementById('tvOvGrid');
+  var items=[].slice.call(grid.querySelectorAll('.tvOvItem'));
+  var el=items[tvOvFocus];
+  if(el) el.click();
+}
+
+/* ===== Dölj UI efter inaktivitet ===== */
+function tvIdleAllowed(){
+  if(!document.body.classList.contains('tv-mode')) return false;
+  if(document.body.classList.contains('tv-overlay-open')) return false;
+  if(!cur) return false;
+  var vid=document.getElementById('vwrap').querySelector('video');
+  var aud=document.getElementById('vwrap').querySelector('audio');
+  var media=vid||aud;
+  return !!(media && !media.paused && media.readyState>=2);
+}
+function tvUiWake(){
+  document.body.classList.remove('tv-idle');
+  clearTimeout(tvIdleTimer);
+  if(!document.body.classList.contains('tv-mode')) return;
+  tvIdleTimer=setTimeout(function(){
+    if(tvIdleAllowed()) document.body.classList.add('tv-idle');
+    else tvUiWake();
+  }, TV_IDLE_MS);
+}
+['mousemove','mousedown','touchstart','wheel'].forEach(function(ev){
+  document.addEventListener(ev, function(){
+    if(document.body.classList.contains('tv-mode')) tvUiWake();
+  }, {passive:true});
+});
+
+/* ===== Knappar ===== */
+document.getElementById('tvPrevBtn').onclick=function(){ tvAdjacent(-1); };
+document.getElementById('tvNextBtn').onclick=function(){ tvAdjacent(1); };
+document.getElementById('tvListBtn').onclick=openTvOverlay;
+document.getElementById('tvOvClose').onclick=closeTvOverlay;
+document.getElementById('tvReloadBtn2').onclick=function(){ if(cur) reload(); };
+document.getElementById('tvExitBtn').onclick=exitTvMode;
+
+/* ===== Tangentbord / TV-fjärr ===== */
+document.addEventListener('keydown', function(e){
+  if(!document.body.classList.contains('tv-mode')) return;
+  var key=e.key, code=e.keyCode || e.which;
+  var ae=document.activeElement;
+  var typing = ae && (ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'||ae.tagName==='SELECT');
+  if(typing) return;
+
+  /* Overlay öppen: navigera i kanallistan */
+  if(document.body.classList.contains('tv-overlay-open')){
+    if(key==='ArrowDown'){ e.preventDefault(); tvOvMove('down'); return; }
+    if(key==='ArrowUp'){ e.preventDefault(); tvOvMove('up'); return; }
+    if(key==='Enter'||code===13){ e.preventDefault(); tvOvActivate(); return; }
+    if(key==='Escape'||code===8||code===461){ e.preventDefault(); closeTvOverlay(); return; }
+    if(code>=49 && code<=57){
+      e.preventDefault();
+      var n=code-49;
+      var list=getTvList();
+      if(list[n]){ play(list[n].url,list[n].name,list[n].method||'hls',!!list[n].proxied); closeTvOverlay(); }
+      return;
+    }
+    return;
+  }
+
+  if(key==='ArrowRight'){ e.preventDefault(); tvAdjacent(1); return; }
+  if(key==='ArrowLeft'){ e.preventDefault(); tvAdjacent(-1); return; }
+  if(key==='Enter'||code===13){ e.preventDefault(); openTvOverlay(); return; }
+  if(key==='r'||key==='R'){ e.preventDefault(); if(cur) reload(); return; }
+  if(key==='Escape'||code===8||code===461){ e.preventDefault(); exitTvMode(); return; }
+  if(code===415){ e.preventDefault(); if(cur) reload(); return; }
+  if(code===403){ e.preventDefault(); openTvOverlay(); return; }
+  if(code===406){ e.preventDefault(); exitTvMode(); return; }
+  if(code>=49 && code<=57){
+    /* 1-9 = snabbval ur FAVORITER (som IPTV Grid TV) */
+    e.preventDefault();
+    var n=code-49;
+    var favList=allChannelsFlat().filter(function(ch){ return favs.some(function(f){ return f.url===ch.url; }); });
+    if(favList[n]) play(favList[n].url, favList[n].name, favList[n].method||'hls', !!favList[n].proxied);
+    return;
+  }
+});
 </script>
 </body>
 </html>
