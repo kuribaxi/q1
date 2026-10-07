@@ -600,12 +600,17 @@ body.tv-mode #tvStage iframe{object-fit:contain}
   font-size:10.5px;color:#7fae9d;font-weight:600;margin-top:2px;display:block;
 }
 
-/* Navigeringsfält nere i mitten */
+/* ============================================================
+   Navigeringsfält nere i mitten
+   – visas ENDAST i TV-läge
+   – alla knappar på EN rad (flex-wrap:nowrap + horisontell scroll)
+   ============================================================ */
 #tvNavBar{
   position:fixed;
   left:50%;bottom:18px;
   transform:translateX(-50%);
-  display:flex;gap:10px;
+  display:none;                 /* dold utanför TV-läge */
+  gap:10px;
   padding:10px 14px;
   background:rgba(6,20,25,.92);
   border:3px solid #4ecca3;
@@ -613,10 +618,21 @@ body.tv-mode #tvStage iframe{object-fit:contain}
   box-shadow:0 10px 40px rgba(0,0,0,.8), 0 0 20px rgba(78,204,163,.25);
   z-index:5300;
   transition:transform .28s ease, opacity .28s;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;             /* alltid en rad */
   justify-content:center;
   max-width:96vw;
+  overflow-x:auto;              /* scrolla horisontellt om det behövs */
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;         /* Firefox */
 }
+#tvNavBar::-webkit-scrollbar{ display:none; }  /* Chrome/Safari */
+
+/* Toolbaren visas ENDAST i TV-läge */
+body.tv-mode #tvNavBar{
+  display:flex;
+}
+
 .tvNavBtn{
   display:flex;align-items:center;gap:8px;
   background:#122c34;color:#e0ffef;
@@ -626,6 +642,8 @@ body.tv-mode #tvStage iframe{object-fit:contain}
   font-size:14px;font-weight:800;
   cursor:pointer;min-height:48px;min-width:48px;
   transition:background .15s, border-color .15s;
+  flex-shrink:0;                /* krymp inte ihop */
+  white-space:nowrap;           /* radbryt inte text */
 }
 .tvNavBtn:hover{background:#1e4a55;border-color:#4ecca3}
 .tvNavBtn.primary{
@@ -639,7 +657,7 @@ body.tv-mode #tvStage iframe{object-fit:contain}
 }
 .tvNavBtn.primary .kbd{color:#04120d;background:rgba(255,255,255,.25);border-color:transparent}
 
-/* Dölj UI efter inaktivitet */
+/* Dölj UI efter inaktivitet (toolbar + info-badge) */
 body.tv-mode.tv-idle #tvNavBar,
 body.tv-mode.tv-idle #tvStageInfo{
   opacity:0;pointer-events:none;
@@ -680,10 +698,10 @@ body.tv-mode #tvClock{display:flex}
   display:flex;align-items:center;justify-content:center;transition:all 0.2s;
 }
 #tvClockHide:hover{background:#4ecca3;color:#000}
-/* Gömd av användaren */
+/* Gömd av användaren – enda sättet klockan försvinner */
 body.tv-mode.tv-clock-off #tvClock{display:none!important}
-/* Döljs vid inaktivitet, visas igen vid musrörelse (tvUiWake tar bort tv-idle) */
-body.tv-mode.tv-idle #tvClock{opacity:0;pointer-events:none;transform:translateY(-130%)}
+/* OBS: Klockan döljs ALDRIG automatiskt vid inaktivitet.
+   Endast manuellt via tvClockHide / K-knappen. */
 body.tv-mode.tv-idle #tvClockBtn{opacity:.55}
 
 /* Kanal-overlay (bottom sheet) */
