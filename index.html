@@ -230,6 +230,38 @@
       display: flex; align-items: center; gap: 10px; color: #4ecca3;
     }
     #tvOverlay .tvOvTitle .cnt { font-size: 13px; color: #7fae9d; font-weight: 600; }
+
+    /* ===== NYTT: flikar i kanal-overlay ===== */
+    #tvOvTabs {
+      display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto;
+      padding: 10px 16px;
+      border-bottom: 1px solid #1e3a44;
+      flex-shrink: 0;
+      scrollbar-width: thin;
+    }
+    #tvOvTabs::-webkit-scrollbar { height: 5px; }
+    .tvOvTab {
+      background: #122c34; color: #e0ffef;
+      border: 2px solid #234852;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      transition: background .15s, border-color .15s;
+      display: flex; align-items: center; gap: 7px;
+      min-height: 40px;
+    }
+    .tvOvTab:hover { background: #1e4a55; border-color: #4ecca3; }
+    .tvOvTab.active {
+      background: linear-gradient(90deg,#2a8a68,#4ecca3);
+      color: #04120d; border-color: transparent;
+    }
+    .tvOvTab .cnt {
+      font-size: 11px; font-weight: 800;
+      background: rgba(0,0,0,.4); border-radius: 8px; padding: 2px 7px;
+    }
+    .tvOvTab.active .cnt { background: rgba(0,0,0,.2); }
+
     #tvOverlay .tvOvGrid {
       flex: 1 1 auto; overflow-y: auto;
       padding: 12px;
@@ -306,6 +338,7 @@
       </div>
       <div class="video-controls">
         <button class="btn" onclick="toggleList()">📺 Kanaler</button>
+        <button class="btn" onclick="listDialog()">➕ Lista</button>
         <button class="btn" onclick="pip()">⧉ PiP</button>
         <button class="btn" onclick="fs()">⛶ Fullskärm</button>
         <button class="btn" onclick="reload()">↻ Ladda om</button>
@@ -329,6 +362,7 @@
 <div id="tvNavBar" role="toolbar" aria-label="TV navigering">
   <button class="tvNavBtn" id="tvPrevBtn" title="Föregående kanal">⏮ <span class="kbd">◀</span></button>
   <button class="tvNavBtn primary" id="tvListBtn" title="Öppna kanallista">📺 <span>Kanaler</span> <span class="kbd">OK</span></button>
+  <button class="tvNavBtn" id="tvAddBtn" title="Ny lista / lägg kanalen i lista">➕ <span class="kbd">A</span></button>
   <button class="tvNavBtn" id="tvNextBtn" title="Nästa kanal">⏭ <span class="kbd">▶</span></button>
   <button class="tvNavBtn" id="tvReloadBtn2" title="Ladda om kanal">🔄 <span class="kbd">R</span></button>
   <button class="tvNavBtn" id="tvClockBtn" title="Visa/göm klockan">🕐 <span class="kbd">K</span></button>
@@ -343,6 +377,7 @@
     <div class="tvOvTitle">📺 <span>Kanaler</span> <span class="cnt" id="tvOvCount">0</span></div>
     <button class="tvNavBtn" id="tvOvClose" title="Stäng">✖</button>
   </div>
+  <div class="tvOvTabs" id="tvOvTabs"></div>
   <div class="tvOvGrid" id="tvOvGrid"></div>
 </div>
 
@@ -407,11 +442,11 @@
           { name: 'GOLESTAN',   url: 'https://ncdn.telewebion.ir/sabz/live/playlist.m3u8',              icon: '🌳' },
           { name: 'BARAN',      url: 'https://ncdn.telewebion.ir/baran/live/playlist.m3u8',             icon: '☔' },
           { name: 'KORDESTAN',  url: 'https://ncdn.telewebion.ir/kordestan/live/playlist.m3u8',        icon: '🏔️' },
-          { name: 'YAZD',       url: 'https://ncdn.telewebion.ir/taban/live/playlist.m3u8',            icon: '🏜️' },
+          { name: 'YAZD',       url: 'https://ncdn.telewebion.ir/taban/live/playlist.m3u8',             icon: '🏜️' },
           { name: 'TABARESTAN', url: 'https://ncdn.telewebion.ir/tabarestan/live/playlist.m3u8',       icon: '🌳' },
-          { name: 'AFTAB',      url: 'https://ncdn.telewebion.ir/aftab/live/playlist.m3u8',            icon: '☀️' },
+          { name: 'AFTAB',      url: 'https://ncdn.telewebion.ir/aftab/live/playlist.m3u8',             icon: '☀️' },
           { name: 'MAHABAD',    url: 'https://ncdn.telewebion.ir/mahabad/live/playlist.m3u8',          icon: '🏞️' },
-          { name: 'HAMADAN',    url: 'https://ncdn.telewebion.ir/sina/live/playlist.m3u8',             icon: '🏛️' },
+          { name: 'HAMADAN',    url: 'https://ncdn.telewebion.ir/sina/live/playlist.m3u8',               icon: '🏛️' },
           { name: 'KHAVARAN',   url: 'https://ncdn.telewebion.ir/khavaran/live/playlist.m3u8',         icon: '🌅' },
         ]
       },
@@ -682,6 +717,7 @@
     document.getElementById('ch-container').innerHTML = html;
     attachDragListeners();
     attachChannelEvents();
+    renderTvOvTabs();
     renderTvOvGrid();
   }
 
@@ -863,6 +899,74 @@
   function fs() { const w=document.getElementById('vwrap'); document.fullscreenElement ? document.exitFullscreen() : w.requestFullscreen().catch(()=>{}); }
 
   /* ============================================================
+     ===== NYTT: EGNA LISTOR (skapa + lägg till kanal) =====
+     ============================================================ */
+  let lists = [];
+  try { lists = JSON.parse(localStorage.getItem('xom_lists') || '[]'); } catch(e) { lists = []; }
+  function saveLists(){ try{ localStorage.setItem('xom_lists', JSON.stringify(lists)); }catch(e){} }
+
+  function listDialog(){
+    closeListDialog();
+    const c = cur;
+    let html = `<div style="max-width:440px;width:100%;margin:0 auto;text-align:left;background:#0d2129;border:2px solid #234852;border-radius:18px;padding:20px">
+      <h3 style="color:#4ecca3;margin-bottom:10px;font-size:1.15em">➕ Mina listor</h3>`;
+    if (c) html += `<p style="font-size:14px;margin-bottom:12px;opacity:.9">Kanal: <b style="color:#4ecca3">${escHtml(c.name)}</b></p>`;
+    else html += `<p style="font-size:13px;margin-bottom:12px;opacity:.7">Ingen kanal vald – du kan skapa listor men inte lägga till kanaler.</p>`;
+    html += `<button class="btn" style="width:100%;margin-bottom:14px;font-weight:700" onclick="createListPrompt()">➕ Skapa ny lista${c ? ' (med ' + escHtml(c.name) + ')' : ''}</button>`;
+    if (!lists.length) html += `<p style="opacity:.6;font-size:13px;margin:8px 0">Inga listor än.</p>`;
+    lists.forEach((g, i) => {
+      const isIn = c && g.items.some(x => x.url === c.url);
+      html += `<div style="display:flex;gap:8px;align-items:center;margin:6px 0">
+        <button class="btn" style="flex:1;${isIn ? 'background:#4ecca3;color:#0a1c2a;font-weight:700' : ''}" onclick="toggleInList(${i})">${isIn ? '✓ I listan' : '+ Lägg till'} · ${escHtml(g.name)} (${g.items.length})</button>
+        <button class="btn" style="background:#8a2e3a;flex:none" title="Radera listan" onclick="delList(${i})">🗑</button>
+      </div>`;
+    });
+    html += `<button class="btn" style="width:100%;margin-top:16px" onclick="closeListDialog()">✖ Stäng</button></div>`;
+    const div = document.createElement('div');
+    div.id = 'listDialog';
+    div.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:6000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)';
+    div.innerHTML = html;
+    div.addEventListener('click', e => { if (e.target === div) div.remove(); });
+    document.body.appendChild(div);
+  }
+  function closeListDialog(){ const d = document.getElementById('listDialog'); if (d) d.remove(); }
+  function listDialogRefresh(){ const open = !!document.getElementById('listDialog'); if (open){ listDialog(); } }
+  function createListPrompt(){
+    const name = prompt('Namn på nya listan:');
+    if (!name || !name.trim()) return;
+    const g = { id: 'g' + Date.now(), name: name.trim().slice(0,40), items: [] };
+    if (cur) g.items.push({ name: cur.name, url: cur.url, icon: '📺' });
+    lists.push(g);
+    saveLists();
+    renderTvOvTabs();
+    listDialogRefresh();
+  }
+  function toggleInList(i){
+    if (!cur){ alert('Välj en kanal först'); return; }
+    const g = lists[i];
+    if (!g) return;
+    const k = g.items.findIndex(x => x.url === cur.url);
+    if (k > -1) g.items.splice(k, 1);
+    else g.items.push({ name: cur.name, url: cur.url, icon: '📺' });
+    saveLists();
+    renderTvOvTabs();
+    renderTvOvGrid();
+    listDialogRefresh();
+  }
+  function delList(i){
+    if (!lists[i]) return;
+    if (confirm('Radera listan "' + lists[i].name + '"?')){
+      const key = 'list:' + lists[i].id;
+      lists.splice(i, 1);
+      saveLists();
+      if (tvOvTab === key) tvOvTab = 'all';
+      renderTvOvTabs();
+      renderTvOvGrid();
+      listDialogRefresh();
+    }
+  }
+
+  /* ============================================================
      ===== TV-LÄGE =====
      ============================================================ */
   let tvWrapParent = null;
@@ -883,6 +987,7 @@
         document.documentElement.requestFullscreen().catch(()=>{});
     }catch(e){}
     tvUiWake();
+    renderTvOvTabs();
     renderTvOvGrid();
     if (cur) reload();
   }
@@ -900,7 +1005,51 @@
     else enterTvMode();
   }
 
-  /* -------- TV-overlay: kanal-lista -------- */
+  /* -------- TV-overlay: grupp-flikar + kanal-lista -------- */
+  let tvOvTab = 'all';
+
+  const TV_TABS = [
+    { key: 'all',        label: '📋 Alla' },
+    { key: 'sarasari',   label: '🌐 Sarasari' },
+    { key: 'ostani',     label: '🏙️ Ostani' },
+    { key: 'ekhtesasi',  label: '🎯 Ekhtesasi' },
+    { key: 'radio',      label: '📻 Radio' },
+    { key: 'ifilm',      label: '🎬 iFilm' }
+  ];
+
+  function getTabs(){
+    const t = TV_TABS.slice();
+    lists.forEach(g => t.push({ key: 'list:' + g.id, label: '📁 ' + g.name }));
+    return t;
+  }
+  function getTvListFor(key){
+    if (key === 'all') return getTvList();
+    if (key === 'ifilm') return channels.ifilm;
+    if (key.startsWith('list:')){
+      const g = lists.find(l => l.id === key.slice(5));
+      return g ? g.items : [];
+    }
+    return channels.telewebion.filter(c => (c.subgroup || 'sarasari') === key);
+  }
+  function renderTvOvTabs(){
+    const el = document.getElementById('tvOvTabs');
+    if (!el) return;
+    el.innerHTML = getTabs().map(t => {
+      const list = getTvListFor(t.key);
+      return `<button class="tvOvTab ${tvOvTab===t.key?'active':''}" data-tab="${t.key}">${t.label} <span class="cnt">${list.length}</span></button>`;
+    }).join('');
+    el.querySelectorAll('.tvOvTab').forEach(b => {
+      b.onclick = () => { tvOvTab = b.dataset.tab; renderTvOvTabs(); renderTvOvGrid(); };
+    });
+  }
+  function switchTvTab(d){
+    const tabs = getTabs();
+    const i = Math.max(0, tabs.findIndex(t => t.key === tvOvTab));
+    tvOvTab = tabs[(i + d + tabs.length) % tabs.length].key;
+    renderTvOvTabs();
+    renderTvOvGrid();
+  }
+
   function getTvList(){
     let list = [];
     Object.keys(channels).forEach(k => { list = list.concat(channels[k]); });
@@ -909,10 +1058,10 @@
   function renderTvOvGrid(){
     const grid = document.getElementById('tvOvGrid');
     if (!grid) return;
-    const list = getTvList();
+    const list = getTvListFor(tvOvTab);
     document.getElementById('tvOvCount').textContent = list.length + ' st';
     if (!list.length){
-      grid.innerHTML = '<div class="tvOvEmpty">Inga kanaler</div>';
+      grid.innerHTML = '<div class="tvOvEmpty">Inga kanaler i denna grupp.</div>';
       return;
     }
     grid.innerHTML = list.map((c, i) => {
@@ -932,6 +1081,7 @@
   function openTvOverlay(){
     document.body.classList.remove('tv-idle');
     document.body.classList.add('tv-overlay-open');
+    renderTvOvTabs();
     renderTvOvGrid();
   }
   function closeTvOverlay(){
@@ -943,6 +1093,7 @@
   function isTvIdleAllowed(){
     if (!document.body.classList.contains('tv-mode')) return false;
     if (document.body.classList.contains('tv-overlay-open')) return false;
+    if (document.getElementById('listDialog')) return false;
     if (!cur) return false;
     const v = document.getElementById('vplayer');
     return !!(v && !v.paused && v.readyState >= 2);
@@ -1010,6 +1161,7 @@
   document.getElementById('tvPrevBtn').onclick = () => tvAdjacent(-1);
   document.getElementById('tvNextBtn').onclick = () => tvAdjacent(1);
   document.getElementById('tvListBtn').onclick = openTvOverlay;
+  document.getElementById('tvAddBtn').onclick = () => listDialog();
   document.getElementById('tvReloadBtn2').onclick = () => { if (cur) reload(); };
   document.getElementById('tvClockBtn').onclick = toggleTvClock;
   document.getElementById('tvFsBtn').onclick = () => {
@@ -1033,13 +1185,22 @@
     const ae = document.activeElement;
     if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.tagName === 'SELECT')) return;
 
+    if (document.getElementById('listDialog')){
+      if (key === 'Escape' || code === 8 || code === 461){ e.preventDefault(); closeListDialog(); return; }
+      return;
+    }
+
     if (document.body.classList.contains('tv-overlay-open')){
       if (key === 'Escape' || code === 8 || code === 461){ e.preventDefault(); closeTvOverlay(); return; }
+      if (key === 'ArrowRight'){ e.preventDefault(); switchTvTab(1); return; }
+      if (key === 'ArrowLeft'){ e.preventDefault(); switchTvTab(-1); return; }
+      if (key === 'a' || key === 'A'){ e.preventDefault(); listDialog(); return; }
       return;
     }
     if (key === 'ArrowRight'){ e.preventDefault(); tvAdjacent(1); return; }
     if (key === 'ArrowLeft'){ e.preventDefault(); tvAdjacent(-1); return; }
     if (key === 'Enter' || code === 13){ e.preventDefault(); openTvOverlay(); return; }
+    if (key === 'a' || key === 'A'){ e.preventDefault(); listDialog(); return; }
     if (key === 'r' || key === 'R'){ e.preventDefault(); if (cur) reload(); return; }
     if (key === 'k' || key === 'K'){ e.preventDefault(); toggleTvClock(); return; }
     if (key === 'f' || key === 'F'){ e.preventDefault(); document.getElementById('tvFsBtn').click(); return; }
