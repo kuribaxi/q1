@@ -147,7 +147,7 @@ body.tv-mode.tv-overlay-open #tvOverlay{transform:translateY(0);pointer-events:a
 </style>
 </head>
 <body>
-<div class="fix-banner">✅ Speda FIX v2: <b>Speda TV 🎥 YouTube LIVE</b> (spelar alltid från file://) + HLS-backup med auto-fallback: dwasat CDN → speda4 → teradek × 5 proxies</div>
+<div class="fix-banner">✅ Speda FIX v4: <b>Speda.net:s egna player</b> (speda.html + tv2) som iframe • kurdtvs live • YouTube-arkiv • HLS-backup med 5 proxies</div>
 <div class="fixed-clock-corner hidden-by-curtain" id="fixedClockCorner"><div class="fixed-clock-box" id="fixedClockBox"><div class="fixed-clock-display" id="fixedClockDisplay">--:--:--</div><div class="fixed-date-text" id="fixedDateDisplay">Laddar...</div></div></div>
 <div class="fixed-weather-corner hidden-by-curtain" id="fixedWeatherCorner"><div class="fixed-weather-box" id="fixedWeatherBox"><span id="fixedWeatherIcon">🌤</span><span class="fixed-weather-temp" id="fixedWeatherTemp">--°</span><span class="fixed-weather-city" id="fixedWeatherCity">Sök</span><button class="weather-hide-btn" id="weatherHideBtn">✕</button></div><div class="fixed-weather-details" id="fixedWeatherDetails"><div id="fixedWeatherDetailText">Sök väder</div><div class="fw-week" id="fixedWeatherWeek"></div></div></div>
 <button class="weather-show-btn" id="weatherShowBtn">🌤 Visa väder</button>
@@ -202,11 +202,18 @@ function getKarwanDirectCDN(karwanUrl){
 }
 /* ===== Speda: flera källor (alts) testas automatiskt ===== */
 var hevalRaw = [
-  /* ★ BÄSTA VAL: Speda TV:s officiella YouTube-live (spelas som iframe —
-     funkar från file:// utan CORS-problem). Om videon slutar vara live,
-     hämta aktuell live-video-ID från youtube.com/@spedatv9659 och byt ut
-     vuhOQTGu62A mot det nya ID:t i embed-URL:en. */
-  { name: 'Speda TV 🎥 YouTube LIVE', url: 'https://www.youtube.com/embed/vuhOQTGu62A?autoplay=1&playsinline=1&rel=0', method:'iframe', color: 'teal' },
+  /* ★ RIKTIG LIVE: kurdtvs.net visar Speda TV live (uppdaterad 03.11.2026).
+     Spelas som iframe. Om iframen blockeras: välj "Speda (kurdtvs ny flik)". */
+  { name: 'Speda TV 🔴 LIVE (kurdtvs)', url: 'https://kurdtvs.net/speda-tv', method:'iframe', color: 'teal' },
+  { name: 'Speda (kurdtvs ny flik)', url: 'https://kurdtvs.net/speda-tv', method:'external', color: 'teal' },
+  /* Speda.net:s EGET player inbäddat. OBS: speda.net har Cloudflare-
+     kontroll; första öppningen kan visa en kontroll- eller tom sida i
+     iframen. Om iframen inte klarar kontrollen: öppna "Speda (hemsida)"
+     i ny flik först (clearance-cookie sätts), uppdatera sedan sidan. */
+  { name: 'Speda.net player 📺 (iframe)', url: 'https://www.speda.net/speda.html', method:'iframe', color: 'teal' },
+  { name: 'Speda Drama player (iframe)', url: 'https://www.speda.net/tv2/', method:'iframe', color: 'teal' },
+  /* YouTube-videon är INSPELAT arkiv, inte live — men spelar alltid från file:// */
+  { name: 'Speda TV (YouTube inspelat)', url: 'https://www.youtube.com/embed/vuhOQTGu62A?autoplay=1&playsinline=1&rel=0', method:'iframe', color: 'teal' },
   { name: 'Speda TV (HLS)', url: 'https://speda.dwasat.com/upload/images/spedahd.m3u8', alts: ['https://www.speda4.site/upload/images/spedahd.m3u8','http://speda.teradek.live:1935/live/spedahd/playlist.m3u8'], color: 'teal' },
   { name: 'Speda Drama (HLS)', url: 'https://speda.dwasat.com/upload/images/spedadrama.m3u8', alts: ['https://www.speda4.site/upload/images/spedadrama.m3u8','https://speda.dwasat.com/upload/images/spedahd.m3u8'], color: 'teal' },
   { name: 'Speda YouTube-kanal', url: 'https://www.youtube.com/@spedatv9659', method:'external', color: 'teal' },
