@@ -147,7 +147,7 @@ body.tv-mode.tv-overlay-open #tvOverlay{transform:translateY(0);pointer-events:a
 </style>
 </head>
 <body>
-<div class="fix-banner">✅ Speda FIX v5: <b>🔗 URL-knapp</b> — klistra in vilken stream-URL som helst i spelaren • corsproxy borttaget (kräver nu API-nyckel) • se instructions nedan i kanallistan</div>
+<div class="fix-banner">✅ Speda FIX v7: <b>Speda.net Player 📺 (LIVE)</b> — speda.net:s egna player (Tv/Drama/FM) inbäddad + kontrollrad med <b>↗ Popup-fönster</b> som alltid funkar • HLS-backup • 🔗 URL-knapp</div>
 <div class="fixed-clock-corner hidden-by-curtain" id="fixedClockCorner"><div class="fixed-clock-box" id="fixedClockBox"><div class="fixed-clock-display" id="fixedClockDisplay">--:--:--</div><div class="fixed-date-text" id="fixedDateDisplay">Laddar...</div></div></div>
 <div class="fixed-weather-corner hidden-by-curtain" id="fixedWeatherCorner"><div class="fixed-weather-box" id="fixedWeatherBox"><span id="fixedWeatherIcon">🌤</span><span class="fixed-weather-temp" id="fixedWeatherTemp">--°</span><span class="fixed-weather-city" id="fixedWeatherCity">Sök</span><button class="weather-hide-btn" id="weatherHideBtn">✕</button></div><div class="fixed-weather-details" id="fixedWeatherDetails"><div id="fixedWeatherDetailText">Sök väder</div><div class="fw-week" id="fixedWeatherWeek"></div></div></div>
 <button class="weather-show-btn" id="weatherShowBtn">🌤 Visa väder</button>
@@ -202,20 +202,23 @@ function getKarwanDirectCDN(karwanUrl){
 }
 /* ===== Speda: flera källor (alts) testas automatiskt ===== */
 var hevalRaw = [
-  /* ★ RIKTIG LIVE: kurdtvs.net visar Speda TV live (uppdaterad 03.11.2026).
-     Spelas som iframe. Om iframen blockeras: välj "Speda (kurdtvs ny flik)". */
-  { name: 'Speda TV 🔴 LIVE (kurdtvs)', url: 'https://kurdtvs.net/speda-tv', method:'iframe', color: 'teal' },
+  /* ★ HUVUDALTERNATIV: speda.net:s EGNA player (Speda Tv / Speda Drama /
+     Speda FM — menyn du ser på deras sida) inbäddad i HTML-spelaren.
+     1. Besök speda.net en gång i webbläsaren (Cloudflare-cookie sätts)
+     2. I spelaren: välj "Speda.net Player 📺" — iframen laddar playern
+     3. Tom ruta? → tryck "↗ Popup-fönster" i kontrollraden — alltid funkar */
+  { name: 'Speda.net Player 📺 (LIVE)', url: 'https://www.speda.net/speda.html', method:'iframe', color: 'teal' },
+  { name: 'Speda.net Player (alt sida)', url: 'https://www.speda.net/', method:'iframe', color: 'teal' },
+  { name: 'Speda (ny flik)', url: 'https://www.speda.net/speda.html', method:'external', color: 'teal' },
   { name: 'Speda (kurdtvs ny flik)', url: 'https://kurdtvs.net/speda-tv', method:'external', color: 'teal' },
-  /* Speda.net:s EGET player inbäddat. OBS: speda.net har Cloudflare-
-     kontroll; första öppningen kan visa en kontroll- eller tom sida i
-     iframen. Om iframen inte klarar kontrollen: öppna "Speda (hemsida)"
-     i ny flik först (clearance-cookie sätts), uppdatera sedan sidan. */
-  { name: 'Speda.net player 📺 (iframe)', url: 'https://www.speda.net/speda.html', method:'iframe', color: 'teal' },
-  { name: 'Speda Drama player (iframe)', url: 'https://www.speda.net/tv2/', method:'iframe', color: 'teal' },
+  { name: 'Speda Drama sida (iframe)', url: 'https://www.speda.net/tv2/', method:'iframe', color: 'teal' },
   /* YouTube-videon är INSPELAT arkiv, inte live — men spelar alltid från file:// */
   { name: 'Speda TV (YouTube inspelat)', url: 'https://www.youtube.com/embed/vuhOQTGu62A?autoplay=1&playsinline=1&rel=0', method:'iframe', color: 'teal' },
-  { name: 'Speda TV (HLS)', url: 'https://speda.dwasat.com/upload/images/spedahd.m3u8', alts: ['https://www.speda4.site/upload/images/spedahd.m3u8','http://speda.teradek.live:1935/live/spedahd/playlist.m3u8'], color: 'teal' },
-  { name: 'Speda Drama (HLS)', url: 'https://speda.dwasat.com/upload/images/spedadrama.m3u8', alts: ['https://www.speda4.site/upload/images/spedadrama.m3u8','https://speda.dwasat.com/upload/images/spedahd.m3u8'], color: 'teal' },
+  /* ★ AKTUELL STREAM (07.11.2026): spedanet.store är den domän som
+     kurdtvs.net spelar Speda TV live ifrån (hittad i deras Clappr-player).
+     Fallback: dwasat → speda4 → teradek. */
+  { name: 'Speda TV 🔴 (LIVE)', url: 'https://spedanet.store/upload/images/spedahd.m3u8', alts: ['https://speda.dwasat.com/upload/images/spedahd.m3u8','https://www.speda4.site/upload/images/spedahd.m3u8','http://speda.teradek.live:1935/live/spedahd/playlist.m3u8'], color: 'teal' },
+  { name: 'Speda Drama 🔴', url: 'https://spedanet.store/upload/images/spedadrama.m3u8', alts: ['https://speda.dwasat.com/upload/images/spedadrama.m3u8','https://www.speda4.site/upload/images/spedadrama.m3u8','https://spedanet.store/upload/images/spedahd.m3u8'], color: 'teal' },
   { name: 'Speda YouTube-kanal', url: 'https://www.youtube.com/@spedatv9659', method:'external', color: 'teal' },
   { name: 'Speda (hemsida)', url: 'https://www.speda.net/', method:'external', color: 'teal' },
   { name: 'Speda Drama (hemsida)', url: 'https://www.speda.net/tv2/', method:'external', color: 'teal' },
@@ -443,7 +446,12 @@ function play(url,name,method,proxied,proxyIdx,alts,keepCands){
   if(method==='audio'){ renderRadioPlayer(playUrl,name); render(curFilter); return; }
   if(method==='iframe'){
     if(url.indexOf('karwan.tv')!==-1){ var cdn=getKarwanDirectCDN(url); if(cdn){ wrap.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%"><div class="spinner"></div><div style="margin-top:14px;color:#4ecca3">Hämtar direkt länk...</div></div>'; (function(cdn2,orig,nm){ var vidId='vplayer_karwan_'+Date.now(); var tw=document.createElement('div'); tw.style.display='none'; tw.innerHTML='<video id="'+vidId+'"></video>'; document.body.appendChild(tw); var tv=document.getElementById(vidId); var played=false; var to=setTimeout(function(){ if(!played){ if(tw.parentNode) tw.parentNode.removeChild(tw); wrap.innerHTML='<iframe src="'+escapeHtml(orig)+'" allowfullscreen style="width:100%;height:100%;border:none"></iframe>'; render(curFilter);} },5000); if(typeof Hls!=='undefined'&&Hls.isSupported()&&jsEnabled){ var th=new Hls({enableWorker:false}); th.loadSource(cdn2); th.attachMedia(tv); th.on(Hls.Events.MANIFEST_PARSED,function(){ played=true; clearTimeout(to); if(tw.parentNode) tw.parentNode.removeChild(tw); th.destroy(); wrap.innerHTML='<video id="vplayer" controls autoplay playsinline style="width:100%;height:100%"></video>'; var v=document.getElementById('vplayer'); destroyPlayers(); hlsInst=new Hls({enableWorker:false}); hlsInst.loadSource(cdn2); hlsInst.attachMedia(v); hlsInst.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){});}); render(curFilter); }); th.on(Hls.Events.ERROR,function(ev,d){ if(d.fatal){ clearTimeout(to); played=true; if(tw.parentNode) tw.parentNode.removeChild(tw); th.destroy(); wrap.innerHTML='<iframe src="'+escapeHtml(orig)+'" allowfullscreen style="width:100%;height:100%;border:none"></iframe>'; render(curFilter);} }); } })(cdn,url,name); return; } }
-    wrap.innerHTML='<iframe src="'+escapeHtml(url)+'" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" style="width:100%;height:100%;border:none"></iframe>'; render(curFilter); return;
+    /* Inbäddad player (t.ex. speda.net) med kontrollrad.
+       Om sidan nekar inbäddning (X-Frame-Options) eller Cloudflare-
+       kontrollen fastnar i iframen → popup-knappen öppnar samma player
+       i eget fönster, vilket ALWAYS funkar (top-level fönster). */
+    var bar='<div style="position:absolute;top:0;left:0;right:0;display:flex;gap:6px;align-items:center;background:rgba(6,20,25,.94);border-bottom:1px solid #1e3a44;padding:6px 10px;z-index:20;font-size:.8rem;flex-wrap:wrap"><span style="flex:1;font-weight:800;color:#4ecca3">📺 '+escapeHtml(name)+'</span><button class="btn" onclick="var f=document.getElementById(\'vframe\'); var s=f.src; f.src=s;">🔄 Ladda om</button><button class="btn primary" onclick="window.open(\''+escapeHtml(url)+'\',\'spedaplayer\',\'width=1000,height=680\')">↗ Popup-fönster</button><span style="font-size:.68rem;opacity:.6">Tom ruta? → tryck Popup</span></div>';
+    wrap.innerHTML=bar+'<iframe id="vframe" src="'+escapeHtml(url)+'" allowfullscreen allow="autoplay; fullscreen; picture-in-picture; encrypted-media" style="position:absolute;top:38px;left:0;width:100%;height:calc(100% - 38px);border:none;background:#000"></iframe>'; render(curFilter); return;
   }
   // HLS - huvudvägen (inkl Speda)
   wrap.innerHTML='<video id="vplayer" controls autoplay playsinline style="width:100%;height:100%"></video>'+(usePx>0?'<div style="position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#4ecca3,#2a8a68);color:#000;padding:4px 10px;border-radius:20px;font-size:.7rem;font-weight:800">🛰 Via '+spedaProxyName(usePx)+' · '+escapeHtml(name)+'</div>':'');
