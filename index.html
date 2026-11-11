@@ -1,84 +1,165 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>Quran · Böner & Skydd</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishRegular-Regular.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishBold-Bold.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri&family=Scheherazade+New&family=Noto+Naskh+Arabic&family=Vazirmatn&family=Amiri&family=Tahoma&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
 /*--------------------------------------------------------------
-  2‑a: Aktivera/av‑aktivera klass bg‑override när Text‑Mode
-       ändras.  Den kan sparas i localStorage så du behåller
-       inställningen när sidon laddas.
+  NÅR TEXT‑MODE‑COLOR‑SLICKAN *ÄR* TILLGÄNGLIG?  
+  HÄR SPÄTTS DEN GLOBALA BACKGRUNDSFÄRGEN (i de verkliga
+  sidskärmarna) via ett nytt CSS‑variabl et “--tm‑bg”.
 --------------------------------------------------------------*/
-function toggleTextMode(){
-    textModeOn = !textModeOn;
-    const overlay = document.getElementById('textModeOverlay');
-    const textModeBtn = document.getElementById('textModeBtn');
 
-    if(overlay){
-        overlay.classList.toggle('active', textModeOn);
-    }
-    if(textModeBtn){
-        textModeBtn.classList.toggle('active', textModeOn);
-    }
-
-    /* 2‑b: 1) Spätta CSS‑variabeln på hela DOM
-                                    2) Spätta/av‑känna klass bg‑override   */
-    if(textModeOn){
-        document.documentElement.style.setProperty('--bg', null);
-        document.documentElement.style.removeProperty('--bg');
-
-        document.body.classList.add('bg-override');   // bakgrund på hela skiddel
-    } else {
-        document.documentElement.style.removeProperty('--bg');
-        document.body.classList.remove('bg-override');
-        document.body.style.removeProperty('--bg');
-    }
-
-    // resten av din gamla toggle‑logik kan finnas kvar (bl.a. aktualiseringen
-    // av storleken, toast‑meddelanden, wake‑lock, …). 
-    // Såväl över‑till som under‑men kan enklare placeras nedan om du
-    // vill ha en gemensam funktion som skapar hela modalen.
+:root{
+  /* Viktor för bakgrund när Text‑Mode aktiveras.  
+     Ändras av setTextModeBg()   */
+  --tm-bg:#000000;
 }
 
-/*--------------------------------------------------------------
-  2‑c: Infoga input‑handläppare på färg‑väljska.
---------------------------------------------------------------*/
+/* Vanlig bakgrund (lägg till blint) */
+html,
+body{
+  background:var(--bg,var(--bg-override));
+  color:var(--text);
+}
+
+/* Bakgrund som vi tvättar före Text‑Mode‑skimmer blir aktiva. */
+body.bg-override{
+  background:var(--tm-bg);
+  color:var(--text);
+  border-color:var(--tm-bg);
+}
+
+/* Skins som har fast bakgrund (t.ex. sections, footer) */
+.section-bg-1,
+.section-bg-2,
+.bottom-lang-inner,
+.footer,
+.navbar,
+.sidebar,
+.content-wrapper{
+  background:var(--tm-bg) !important;
+}
+
+/* Text‑Mode‑layout‑knapparna & scroll‑scrollbar som får samma
+   bakgrund */
+#textModeOverlay[data-active],
+#textModeOverlay.active,
+#textModeOverlay::-webkit-scrollbar,
+#textModeOverlay::-webkit-scrollbar::-webkit-scrollbar-thumb,
+#textModeOverlay .tm-size-bar,
+#textModeOverlay .tm-close,
+.tm-sider,
+.tm-sider ::before,
+.tm-sider ::after{
+  background:var(--tm-bg);
+}
+
+/*再生*/
+.tm-size-bar,
+.tm-close{
+  background:var(--tm-bg);
+}
+
+/*---------- REST AV ORIGINAL CSS (BARA TILL AT BLIKTERA DEN HÄR -----------*/
+... (den gamla css‑delen som du har.  BLIKTER radera oder addera endast de
+sekter som börjar med `.section-bg-1` m.m. I denna version har
+den nya bakgrundspärmarna ersatt de eviga färgerna. 
+...
+  … (den ändrade css‑delen ändras/linjestjärparte som visas ovan. 
+   det paketet har bytt ut TEXT‑MODE‑COLOR‑SFÄRGEN till DEN GLOBALA
+   INGENGRU HÄR. 
+</style>
+
+<script>
+const APP_REFETCH_PROMISE = new Promise(resolve => {
+  document.addEventListener('DOMContentLoaded',()=>resolve());
+});
+APP_REFETCH_PROMISE.then(()=>{
+
+/*-------------------------------
+    1️⃣ VARIABLES & GLOBALA FUNktioner
+  -------------------------------*/
+let textModeOn = false;
+let textModeBg = '#000000';                 // bakgrundsfärgen du väljer
+
+/*-------------------------------
+    2️⃣ SETTEXTMODEBG (SPARAR & SKICKAR)
+  -------------------------------*/
 function setTextModeBg(color){
     textModeBg = color;
-    try{ localStorage.setItem('quranTextModeBg', color); }catch(e){}
-    changeTextModeBg();   // mellanslag som appliceras till hela sidan
-    toast('🎨 Bakgrundsfärg sparad');
+    try{ localStorage.setItem('quranTextModeBg',color); }catch(e){}
+    toast(
+        textModeBg === '#000000' ? 'Bakgrund inom Text‑Mode skuld.".
+    );
 }
 
-/* 2‑d: Den här funktionerna ska ligga på plats där du har de två
-      input‑boxen (tmColorInput & tmBgColor) i din HTML. */
-document.getElementById('tmColorInput').addEventListener('input', e => setTextModeBg(e.target.value));
-document.getElementById('tmBgColor').addEventListener('input', e => setTextModeBg(e.target.value));
+/*-------------------------------
+    3️⃣ EVENT‑LISTENAR för färg‑väljare
+  -------------------------------*/
+document.getElementById('tmColorInput').addEventListener('input',e=>setTextModeBg(e.target.value));
+document.getElementById('tmBgColor').addEventListener('input',e=>setTextModeBg(e.target.value));
 
-/* 2‑e: (optionell) Aktivera text‑mode‑widgetn automatisk när skärmen
-       blir inaktiv (musen rör sig). */
-function initTmIdleHide(){
-    const ov = document.getElementById('textModeOverlay');
-    if(!ov) return;
-    if(tmIdleTimer){ clearTimeout(tmIdleTimer); }
-    ov.addEventListener('mousemove', () => clearTimeout(tmIdleTimer), {passive:true});
-    ov.addEventListener('touchstart', () => clearTimeout(tmIdleTimer), {passive:true});
-    ov.addEventListener('scroll', () => clearTimeout(tmIdleTimer), {passive:true});
-    showTmChrome();   // zoomerar till riktigt skum
+/*-------------------------------
+    4️⃣ TOGGLE / TEXT‑MODE‑FUNKTIONEN
+  -------------------------------*/
+function toggleTextMode(){
+  textModeOn = !textModeOn;
+  const overlay = document.getElementById('textModeOverlay');
+  const tmbBtn = document.getElementById('textModeBtn');
+
+  // kjänn knap‑kedjorna
+  if(overlay) overlay.classList.toggle('active',textModeOn);
+  if(tmbBtn)   tmbBtn.classList.toggle('active',textModeOn);
+
+  // jätta ihop denna bakgrund‑ändring med en CSS‑klass för specifika element
+  // (så att du kan byta en bakgrund färgen även där du har hårda kvartersuk).
+  if(textModeOn){
+    const body = document.body;
+    const doc  = document.documentElement;
+    body.classList.add('bg-override');         // borde 👉 background: var(--tm-bg)    
+    doc.style.removeProperty('--bg');
+    doc.style.setProperty('--bg', textModeBg);
+  }else{
+    const body = document.body;
+    body.classList.remove('bg-override');
+    const doc  = document.documentElement;
+    doc.style.removeProperty('--bg');           // usar default‑bakgrund i CSS
+  }
+
+  //----------------------------------------------------
+  // REST AV DEN GÖRANTEliga LOGIKEN (wakelocks, timers, toast etc.)
+  //----------------------------------------------------
+  // (Du kan behålla den gamla funktionen som du har för wakelocks,
+  //  ONLY STRIPPEN AV DEN URGENTE toggle‑logiken – den har
+  //  fått sin färgbrytning tillbaka med CSS‑väljaren nedan.)
+
+  /*-------------------*/
+  // /*** TEXT‑MODE OVERLAY – tids‑rader *//**
+  /*-------------------*/
+  toggleTmWidget();
 }
 
-/* 2‑f: När widgeten är aktiv kör du:
-   - applyGlobalBg() (åk. som är **klass‑baserad** men även ger
-     en CSS‑variabel för element som inte har de specifika class‑koderna). */
-function applyGlobalBg(){
-    // brett overlay‑för tv. vi har gjort redan i init‑logiken,
-    // men nedan skickar samma färg till eventuella element
-    // som saknar den specifika class‑pe. (ex. footer‑meny)
-    if(textModeBg !== '#000000'){
-        document.documentElement.style.setProperty('--bg', var(--tm-bg) ?? '#000000');
-    }
-}
+/*** Tala om att du fortfarande har befintlig logik för wakelocks, toast,
+    cycle‑clock, etc.**// Kod du redan har!  SÄLJ RÄYES FÖRSTA SÄT
+// som du har i din gamla script‑fil.  Jag har bara bytt ut
+// de delar som berör bakgrundsfärg.  */
 
-/* Du bör plocka in följande funktioner **någonvara** i den del av
-   skript som redan inleds (vanligtvis i den första raden av
-   det stora <script>‑kedjan). */
-function getAppBg(){
-    // Default‑bakgrund (svart eller mörkning beroende på nattläge)
-    if(night) return var(--bg);   // mörkö
+end of script-section
 
-    return textModeBg !== '#000000' ? textModeBg : var(--bg);
-}
+// ------------------------------------------------------------
+
+/*------------------------------
+ * ANDRA AVDELAR – MAKTIGEN (välj inkallt)
+------------------------------*/
+
+</script>
+</body>
+</html>
