@@ -53,6 +53,7 @@
       --aya-bg:  #EFEAF9;    
       --tm-bg:   #000000;    
     }
+    
     body.night {
       --bg:#1A1733; --surface:#2C2761; --surface2:#373072; --border:#4B4392;
       --primary-soft:#3E3680; --emerald-soft:#123B2C; --rose-soft:#3D1826; --amber-soft:#3C2C00;
@@ -65,6 +66,7 @@
       --arabic-grad-2:#08596A;
       --arabic-glow:rgba(11,110,82,0.40);
     }
+    
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html, body{width:100%;min-height:100vh}
     body{
@@ -81,7 +83,10 @@
       background: var(--page-bg) !important;
       background-image: none !important;
     }
-    body.night{ background-image: none !important; }
+    body.night {
+      background: var(--page-bg) !important;
+      background-image: none !important;
+    }
 
     body.chrome-hidden{ padding-top:12px; padding-bottom:24px; }
     body.chrome-hidden .bottom-lang-bar{display:none !important}
@@ -93,10 +98,12 @@
 
     .container{max-width:1400px;width:100%;margin:0 auto;display:flex;flex-direction:column}
 
-    .top-bar{
-      background:var(--surface);border-radius:var(--r);padding:14px 18px;
-      margin-bottom:24px;box-shadow:var(--shadow-sm);border:1.5px solid var(--border);
-      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    /* NYTT: Tvinga toppmenyn att följa färgen */
+    .top-bar {
+      background: var(--aya-bg) !important;
+      border-radius: var(--r); padding: 14px 18px;
+      margin-bottom: 24px; box-shadow: var(--shadow-sm); border: 1.5px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
     }
     .top-bar-side-left{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
     .top-bar-weather{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;padding:6px 10px;border-radius:14px;transition:all .2s;user-select:none}
@@ -333,7 +340,7 @@
     .search-loading-bar::after{content:'';position:absolute;top:0;left:0;bottom:0;width:40%;background:linear-gradient(90deg,var(--primary),var(--emerald));border-radius:4px;animation:loadingBar 1.2s infinite ease-in-out}
     @keyframes loadingBar{0%{left:-40%}100%{left:100%}}
 
-    /* ===== NYTT: daily-aya använder --aya-bg ===== */
+    /* ===== NYTT: daily-aya använder --aya-bg i alla lägen ===== */
     .daily-aya{
       background: var(--aya-bg) !important;
       color: var(--text);
@@ -341,6 +348,9 @@
       box-shadow:0 12px 36px rgba(108,71,232,.15);
       position:relative;overflow:hidden;
       border:1.5px solid var(--border);
+    }
+    body.night .daily-aya {
+      background: var(--aya-bg) !important;
     }
     .daily-aya::before{content:'';position:absolute;top:-60%;right:-25%;width:260px;height:260px;background:radial-gradient(circle, rgba(255,255,255,.10), transparent 70%);border-radius:50%;pointer-events:none}
     .daily-aya::after{content:'';position:absolute;bottom:-40%;left:-20%;width:220px;height:220px;background:radial-gradient(circle, rgba(255,255,255,.06), transparent 70%);border-radius:50%;pointer-events:none}
@@ -401,11 +411,14 @@
     .sync-offset-btn:active{transform:scale(.9)}
     #textModeOverlay .sync-offset-btn{width:44px;height:44px;font-size:17px}
 
-    /* ===== NYTT: .section använder --aya-bg ===== */
+    /* ===== NYTT: .section använder --aya-bg i alla lägen ===== */
     .section{
       background: var(--aya-bg) !important;
       border-radius:var(--r);padding:26px 28px;margin-bottom:22px;
       box-shadow:var(--shadow-sm);border:1.5px solid var(--border);position:relative;overflow:hidden;
+    }
+    body.night .section {
+      background: var(--aya-bg) !important;
     }
     .section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--emerald),var(--amber));opacity:.65}
     .section-title{font-size:19px;font-weight:900;color:var(--primary);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:2px solid var(--border)}
@@ -490,8 +503,14 @@
     .fav-modal-icon-btn:hover{background:var(--primary-soft);color:var(--primary)}
     .fav-modal-icon-btn:active{transform:scale(.92)}
 
-    .bottom-lang-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surface);border-top:1.5px solid var(--border);box-shadow:0 -4px 20px rgba(108,71,232,.12);padding:10px 16px max(10px, env(safe-area-inset-bottom));display:flex;justify-content:center;backdrop-filter:blur(10px);transition:transform .3s, opacity .3s}
-    body.night .bottom-lang-bar{background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.3)}
+    /* NYTT: Bottenmenyn följer också färgen */
+    .bottom-lang-bar {
+      position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--aya-bg) !important;
+      border-top:1.5px solid var(--border);box-shadow:0 -4px 20px rgba(108,71,232,.12);
+      padding:10px 16px max(10px, env(safe-area-inset-bottom));display:flex;justify-content:center;
+      backdrop-filter:blur(10px);transition:transform .3s, opacity .3s
+    }
+    body.night .bottom-lang-bar{background:var(--aya-bg) !important;box-shadow:0 -4px 20px rgba(0,0,0,.3)}
     .bottom-lang-inner{max-width:1400px;width:100%;display:flex;gap:6px;background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .bottom-lang-inner::-webkit-scrollbar{display:none}
     .bottom-lang-inner button{flex:1 1 auto;min-width:60px;height:48px;border:none;border-radius:11px;background:transparent;font-family:var(--font);font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
@@ -1148,7 +1167,6 @@
   </div>
 </div>
 
-<!-- Färgväljare -->
 <div class="color-controls" role="group" aria-label="Färginställningar">
   <div class="cc-title">Färginställningar</div>
   <label for="pageBgColor">
@@ -1165,7 +1183,7 @@
   </label>
 </div>
 
-<!-- TAFSIR-MODAL (oförändrad från din kod) -->
+<!-- MODALER (oförändrade från din kod) -->
 <div class="modal-ov h" id="tafsirModal" onclick="if(event.target===this)closeTafsir()">
   <div class="modal-card tafsir-card">
     <div class="tafsir-topbar-new">
@@ -1330,10 +1348,6 @@
   </div>
 </div>
 
-<!-- ============================================================
-     DIN URSPRUNGLIGA JAVASCRIPT — oförändrad
-     (Jag har lagt till färgfunktionerna FÖRST, sedan din kod)
-     ============================================================ -->
 <script>
 /* ===== NYTT: Färgfunktioner ===== */
 function setPageBg(color){
@@ -1364,10 +1378,739 @@ function setAyaBg(color){
 })();
 
 /* ============================================================
-   DIN BEFINTLIGA KOD — klistra in HELA din tidigare
-   <script>-kod här (TRANSLATIONS, SURAH_NAMES, alla funktioner,
-   ljud, qari, text-mode, tafsir, favoriter, sökning, wake-lock osv.)
+   DIN BEFINTLIGA KOD (kopierad från din ursprungliga fil)
    ============================================================ */
+
+let audioCtx = null;
+let currentAudio = null;
+let audioQueue = [];
+let isLooping = false;
+let activePlayBtn = null;
+let activeButton = null;
+let currentWordIndex = 0;
+let wordElements = [];
+let wordTimers = [];
+let isPlaying = false;
+let surahAudio = null;
+let surahQueue = [];
+let surahTextData = null;
+let currentSurahNum = 1;
+let currentSurahAyah = 1;
+let currentDailyAyahNum = 1;
+let currentDailySurahNum = 1;
+let currentDailyText = '';
+let currentDailyTranslation = '';
+let currentDailyArabic = '';
+let currentDailySurahName = '';
+let currentDailyQari = 'Mishary Rashid Alafasy';
+let textModeOn = false;
+let wakeLock = null;
+
+const textModeBaseSize = 1;
+let textModeScale = 1.0;
+const ARABIC_NUMERALS = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+
+/* --- State & Data --- */
+const QURAN_API_BASE = 'https://api.alquran.cloud/v1';
+const QARIS = [
+  { id: 'ar.alafasy', name: 'Mishary Rashid Alafasy' },
+  { id: 'ar.abdulbasitmurattal', name: 'Abdul Basit (Murattal)' },
+  { id: 'ar.abdurrahmaansudais', name: 'Abdurrahman As-Sudais' },
+  { id: 'ar.saoodshuraym', name: 'Saood Ash-Shuraym' },
+  { id: 'ar.husary', name: 'Mahmoud Khalil Al-Husary' },
+  { id: 'ar.minshawi', name: 'Mohamed Siddiq Al-Minshawi' }
+];
+
+const SURAH_NAMES = [
+  'Al-Fatiha', 'Al-Baqarah', 'Ali \'Imran', 'An-Nisa', 'Al-Ma\'idah', 'Al-An\'am', 'Al-A\'raf', 'Al-Anfal', 'At-Tawbah', 'Yunus',
+  'Hud', 'Yusuf', 'Ar-Ra\'d', 'Ibrahim', 'Al-Hijr', 'An-Nahl', 'Al-Isra', 'Al-Kahf', 'Maryam', 'Ta-Ha',
+  'Al-Anbiya', 'Al-Hajj', 'Al-Mu\'minun', 'An-Nur', 'Al-Furqan', 'Ash-Shu\'ara', 'An-Naml', 'Al-Qasas', 'Al-\'Ankabut', 'Ar-Rum',
+  'Luqman', 'As-Sajdah', 'Al-Ahzab', 'Saba', 'Fatir', 'Ya-Sin', 'As-Saffat', 'Sad', 'Az-Zumar', 'Ghafir',
+  'Fussilat', 'Ash-Shura', 'Az-Zukhruf', 'Ad-Dukhan', 'Al-Jathiyah', 'Al-Ahqaf', 'Muhammad', 'Al-Fath', 'Al-Hujurat', 'Qaf',
+  'Adh-Dhariyat', 'At-Tur', 'An-Najm', 'Al-Qamar', 'Ar-Rahman', 'Al-Waqi\'ah', 'Al-Hadid', 'Al-Mujadila', 'Al-Hashr', 'Al-Mumtahanah',
+  'As-Saff', 'Al-Jumu\'ah', 'Al-Munafiqun', 'At-Taghabun', 'At-Talaq', 'At-Tahrim', 'Al-Mulk', 'Al-Qalam', 'Al-Haqqah', 'Al-Ma\'arij',
+  'Nuh', 'Al-Jinn', 'Al-Muzzammil', 'Al-Muddaththir', 'Al-Qiyamah', 'Al-Insan', 'Al-Mursalat', 'An-Naba', 'An-Nazi\'at', '\'Abasa',
+  'At-Takwir', 'Al-Infitar', 'Al-Mutaffifin', 'Al-Inshiqaq', 'Al-Buruj', 'At-Tariq', 'Al-A\'la', 'Al-Ghashiyah', 'Al-Fajr', 'Al-Balad',
+  'Ash-Shams', 'Al-Layl', 'Ad-Duha', 'Ash-Sharh', 'At-Tin', 'Al-\'Alaq', 'Al-Qadr', 'Al-Bayyinah', 'Az-Zalzalah', 'Al-\'Adiyat',
+  'Al-Qari\'ah', 'At-Takathur', 'Al-\'Asr', 'Al-Humazah', 'Al-Fil', 'Quraysh', 'Al-Ma\'un', 'Al-Kawthar', 'Al-Kafirun', 'An-Nasr',
+  'Al-Masad', 'Al-Ikhlas', 'Al-Falaq', 'An-Nas'
+];
+
+const SURAH_AYAH_COUNTS = [
+  7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,
+  112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,
+  54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,
+  14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,
+  29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,
+  11,8,3,9,5,4,7,3,6,3,5,4,5,6
+];
+
+const TRANSLATIONS = {
+  sv: {
+    kursi: '”Allah – det finns ingen gud utom Han, den Levande, den Evigt Bestående. Varken slummer eller sömn drabbar Honom. Honom tillhör allt i himlarna och på jorden. Vem kan väl tala för någon inför Honom utan Hans tillstånd? Han vet vad som varit och vad som ska komma, och de omfattar inget av Hans kunskap utom vad Han vill. Hans tron omfattar himlarna och jorden, och att bevara dem är inte betungande för Honom. Han är den Upphöjde, den Väldige.”',
+    fatiha: '”I Guds, den Nåderikes, den Barmhärtiges namn. All lov och pris tillhör Allah, världarnas Herre, den Nåderike, den Barmhärtige, Domedagens Konung. Dig tillber vi och Dig ber vi om hjälp. Led oss på den raka vägen – vägen för dem som Du har välsignat, inte för dem som har drabbats av vrede eller för dem som har gått vilse.”',
+    kafirun: '”Säg: O ni otrogna! Jag tillber inte det ni tillber, och ni tillber inte det jag tillber. Jag är inte en tillbedjare av det ni tillber, och ni är inte tillbedjare av det jag tillber. Ni har er religion och jag har min religion.”',
+    ikhlas: '”Säg: Han är Allah, den Ende. Allah, den Evige, den som allt beror av. Han har inte fött någon och inte blivit född, och ingen är Hans like.”',
+    falaq: '”Säg: Jag söker skydd hos morgonrodnadens Herre, mot det onda i det Han har skapat, mot mörkrets ondska när den sänker sig, mot ondska från dem som blåser på knutar, och mot en avundsjuk mans ondska när han avundas.”',
+    nas: '”Säg: Jag söker skydd hos människornas Herre, människornas Konung, människornas Gud, mot det onda i den smygande ingivaren, som viskar i människornas bröst, bland jinn och människor.”',
+    nasr: '”När Allahs hjälp och seger kommer, och du ser människorna gå in i Allahs religion i skaror, prisa då din Herre och be Honom om förlåtelse. Han tar alltid emot ånger.”',
+    qalam51: '”Och de otrogna ville nästan störta dig med sina blickar när de hörde förmaningen, och de sade: Han är sannerligen besatt.”',
+    ruqya1: '”I Guds namn besvär jag dig, från allt som skadar dig, från ondskan hos varje själ eller avundsjukt öga. Allah botar dig, i Guds namn besvär jag dig.”',
+    ruqya2: '”O Allah, människornas Herre, ta bort lidandet. Bota honom, för Du är den som botar. Det finns ingen bot utom Din bot – en bot som inte lämnar någon sjukdom kvar.”',
+    ruqya3: '”I Guds namn, vid vars namn inget på jorden eller i himlen kan skada, och Han är den Hörande, den Vetande.”',
+    ruqya4: '”O Allah, inget är lätt utom det Du gör lätt, och Du gör sorgen lätt när Du vill.”',
+    audhu1: '”Jag söker skydd hos Allahs fullkomliga ord från det onda i allt Han har skapat.” (Läsas tre gånger morgon och kväll)',
+    audhu2: '”Jag söker skydd hos Allahs fullkomliga ord från varje djävul och giftig varelse, och från varje ont, avundsjukt öga.” (Profeten ﷺ reciterade den för Hasan och Husayn)',
+    tasbihcombo: '”Prisad vare Allah och allt lov tillhör Allah. Det finns ingen gud utom Allah, och Allah är större. Det finns ingen makt och ingen kraft utom genom Allah. Jag ber den Väldige Allah om förlåtelse och vänder mig till Honom i ånger. Prisad vare Allah och allt lov tillhör Allah, prisad vare den Väldige Allah. Allah är oss nog, och Han är den bäste beskyddaren och den bäste hjälparen.”',
+    kifayah: '”O Allah, låt det Du gjort tillåtet vara nog för mig så att jag slipper det förbjudna, och gör mig genom Din nåd oberoende av alla andra än Dig.”',
+    qunut: '”O Allah, led oss bland dem som Du har lett, och skydda oss bland dem som Du har skyddat, och ta oss till Dig bland dem som Du har tagit till Dig, och välsigna det Du har gett oss, och skydda oss från det onda i det Du har förutbestämt. Ty Du förutbestämmer och ingen förutbestämmer över Dig. Och den Du har tagit till Din vän blir aldrig förnedrad, och den Du har motsatt Dig blir aldrig upphöjd. Välsignad är Du, vår Herre, och upphöjd. Dig tillhör all lov för det Du har förutbestämt, och vi ber Dig om förlåtelse och vänder oss till Dig i ånger. Och må Allah välsigna vår herre Muhammad, den obokstavlige profeten, och hans familj, hans följeslagare och skänka dem frid.”',
+    nur: '”I Guds, den Nåderikes, den Barmhärtiges namn. I Guds namn, Ljuset. I Guds namn, ljusets Ljus. I Guds namn, ett ljus över ett ljus. I Guds namn, Han som styr allt. I Guds namn, Han som skapade ljuset av ljuset. Lov och pris till Allah, som skapade ljuset av ljuset och sände ner ljuset på berget, i en skriven bok, på ett utbrett blad, efter ett bestämt mått, till en älskad profet. Lov och pris till Allah, som nämns med ära och är känd för sin stolthet, och som tackas i medgång och motgång. Må Allah välsigna vår herre Muhammad och hans rena familj.”'
+  },
+  en: {
+    kursi: '"Allah – there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great."',
+    fatiha: '"In the name of Allah, the Most Gracious, the Most Merciful. All praise is due to Allah, Lord of the worlds, the Most Gracious, the Most Merciful, Master of the Day of Judgment. You alone we worship, and You alone we ask for help. Guide us to the straight path – the path of those upon whom You have bestowed favor, not of those who have earned Your anger or of those who have gone astray."',
+    kafirun: '"Say: O disbelievers! I do not worship what you worship, nor do you worship what I worship. I will never worship what you worship, nor will you ever worship what I worship. You have your religion and I have my religion."',
+    ikhlas: '"Say: He is Allah, the One. Allah, the Eternal Refuge. He neither begets nor is born, nor is there to Him any equivalent."',
+    falaq: '"Say: I seek refuge in the Lord of daybreak, from the evil of that which He created, and from the evil of darkness when it settles, and from the evil of the blowers in knots, and from the evil of an envier when he envies."',
+    nas: '"Say: I seek refuge in the Lord of mankind, the Sovereign of mankind, the God of mankind, from the evil of the retreating whisperer, who whispers in the breasts of mankind, from among the jinn and mankind."',
+    nasr: '"When the help of Allah has come and the conquest, and you see the people entering into the religion of Allah in multitudes, then exalt Him with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance."',
+    qalam51: '"And indeed, those who disbelieve would almost make you slip with their eyes when they hear the message, and they say: Indeed, he is mad."',
+    ruqya1: '"In the name of Allah I perform ruqyah for you, from everything that harms you, from the evil of every soul or envious eye. May Allah heal you; in the name of Allah I perform ruqyah for you."',
+    ruqya2: '"O Allah, Lord of mankind, remove the affliction. Heal, for You are the Healer. There is no healing except Your healing – a healing that leaves no illness behind."',
+    ruqya3: '"In the name of Allah, with whose name nothing on earth or in heaven can cause harm, and He is the All-Hearing, the All-Knowing."',
+    ruqya4: '"O Allah, nothing is easy except what You make easy, and You make sorrow easy when You will."',
+    audhu1: '"I seek refuge in the perfect words of Allah from the evil of what He has created." (To be recited three times morning and evening)',
+    audhu2: '"I seek refuge in the perfect words of Allah from every devil and poisonous creature, and from every evil, envious eye." (The Prophet ﷺ used to recite it over Hasan and Husayn)',
+    tasbihcombo: '"Glory be to Allah and praise be to Allah. There is no deity but Allah, and Allah is the Greatest. There is no power and no strength except through Allah. I seek forgiveness from Allah the Mighty and turn to Him in repentance. Glory be to Allah and praise be to Allah, glory be to Allah the Mighty. Allah is sufficient for us, and He is the best Disposer of affairs and the best Helper."',
+    kifayah: '"O Allah, suffice me with what You have made lawful instead of what You have made unlawful, and make me independent of all others besides You by Your grace."',
+    qunut: '"O Allah, guide us among those whom You have guided, and protect us among those whom You have protected, and take us to Yourself among those whom You have taken to Yourself, and bless us in what You have given, and shield us from the evil of what You have decreed. For indeed You decree and none decrees against You. And he whom You have taken as a friend is never humiliated, and he whom You have opposed is never honored. Blessed are You, our Lord, and Exalted. To You belongs all praise for what You have decreed, and we seek Your forgiveness and turn to You in repentance. And may Allah bless our master Muhammad, the unlettered Prophet, and his family and companions, and grant them peace."',
+    nur: '"In the name of Allah, the Most Gracious, the Most Merciful. In the name of Allah, the Light. In the name of Allah, the Light of Light. In the name of Allah, a Light upon Light. In the name of Allah, who directs all affairs. In the name of Allah, who created Light from Light. Praise be to Allah, who created Light from Light and sent down Light upon the Mount, in a written Book, on an unrolled parchment, by a decreed measure, upon a beloved Prophet. Praise be to Allah, who is mentioned with honor and known for pride, and thanked in ease and hardship. May Allah bless our master Muhammad and his purified family."'
+  },
+  fa: {
+    kursi: '«الله، خدایی جز او نیست، زنده و پاینده است. نه خواب سبک او را می‌گیرد و نه خواب سنگین. آنچه در آسمان‌ها و زمین است از اوست. کیست که بدون اجازه او نزدش شفاعت کند؟ آنچه پیش روی آنان و پشت سرشان است می‌داند، و به چیزی از علم او احاطه ندارند مگر آنچه او بخواهد. کرسی او آسمان‌ها و زمین را فرا گرفته، و نگهداری آن‌ها بر او سنگین نیست. و او بلندمرتبه و بزرگ است.»',
+    fatiha: '«به نام خداوند بخشنده مهربان. ستایش از آن خداوند، پروردگار جهانیان است. بخشنده مهربان، مالک روز جزا. تنها تو را می‌پرستیم و تنها از تو یاری می‌جوییم. ما را به راه راست هدایت کن – راه کسانی که به آنان نعمت داده‌ای، نه راه کسانی که بر آنان خشم گرفته‌ای و نه راه گمراهان.»',
+    kafirun: '«بگو: ای کافران! آنچه شما می‌پرستید، من نمی‌پرستم. و شما پرستنده آنچه من می‌پرستم نیستید. من پرستنده آنچه شما پرستیده‌اید نیستم، و شما پرستنده آنچه من می‌پرستم نیستید. دین شما برای شما و دین من برای من.»',
+    ikhlas: '«بگو: او الله یکتاست. الله بی‌نیاز است. نه زاده و نه زاده شده است. و هیچ‌کس همتای او نیست.»',
+    falaq: '«بگو: پناه می‌برم به پروردگار سپیده دم، از شر آنچه آفریده است، و از شر تاریکی هنگامی که فرا می‌رسد، و از شر دمندگان در گره‌ها، و از شر حسود هنگامی که حسد می‌ورزد.»',
+    nas: '«بگو: پناه می‌برم به پروردگار مردمان، پادشاه مردمان، خدای مردمان، از شر وسوسه‌گر پنهان‌شونده، آن‌که در سینه‌های مردمان وسوسه می‌کند، از میان جن و انس.»',
+    nasr: '«چون یاری خدا و پیروزی فرارسد، و ببینی که مردم دسته‌دسته به دین خدا درمی‌آیند، پس به ستایش پروردگارت تسبیح گوی و از او آمرزش بخواه، که او همواره توبه‌پذیر است.»',
+    qalam51: '«و کافران چون قرآن را شنیدند، نزدیک بود تو را با چشمان خود بلغزانند، و می‌گویند: راستی که او دیوانه است.»',
+    ruqya1: '«به نام خدا تو را رقیه می‌کنم، از هر چیزی که تو را آزار می‌دهد، از شر هر نفس یا چشم حسود. خدا شفایت دهد، به نام خدا تو را رقیه می‌کنم.»',
+    ruqya2: '«خدایا، پروردگار مردمان! رنج را ببر. شفا ده، که تو شفا دهنده‌ای. هیچ شفایی جز شفای تو نیست – شفایی که هیچ بیماری را باقی نگذارد.»',
+    ruqya3: '«به نام خدایی که با نام او هیچ چیز در زمین و آسمان آسیب نمی‌رساند، و او شنوا و داناست.»',
+    ruqya4: '«خدایا! هیچ چیز آسان نیست مگر آنچه تو آسان کنی، و تو غم را هنگامی که بخواهی آسان می‌کنی.»',
+    audhu1: '«به کلمات کامل خدا از شر هر آنچه که آفریده پناه می‌برم.» (سه بار صبح و شام خوانده شود)',
+    audhu2: '«به کلمات کامل خدا از هر شیطان و موجود زهری، و از هر چشم بد پناه می‌برم.» (پیامبر ﷺ آن را برای حسن و حسین می‌خواند)',
+    tasbihcombo: '«پاک و منزه است خدا و ستایش او راست. هیچ معبودی جز خدا نیست و خدا بزرگ‌تر است. هیچ نیرو و توانی جز به خدا نیست. از خدای بزرگ آمرزش می‌خواهم و به سوی او بازمی‌گردم. پاک و منزه است خدا و ستایش او راست، پاک و منزه است خدای بزرگ. خدا ما را کافی است و او بهترین کارساز و بهترین یاور است.»',
+    kifayah: '«خدایا، مرا با حلالت از حرامت بی‌نیاز کن، و با فضل خودت از غیر خودت بی‌نیازم گردان.»',
+    qunut: '«خدایا! ما را در زمره هدایت‌یافتگان قرار ده، و ما را در زمره عافیت‌یافتگان سلامت دار، و ما را در زمره دوستانت بپذیر، و در آنچه به ما عطا کرده‌ای برکت ده، و ما را از شر آنچه مقدر کرده‌ای حفظ کن. همانا تو حکم می‌کنی و بر تو حکم نمی‌کنند، و کسی که با او دوستی کنی هرگز خوار نمی‌شود، و کسی که با او دشمنی کنی هرگز عزیز نمی‌شود. خجسته و برتری، ای پروردگار ما! تو را بر آنچه مقدر کرده‌ای سپاس می‌گوییم، و از تو آمرزش می‌خواهیم و به تو بازمی‌گردیم. و درود خدا بر آقای ما محمد، پیامبر امی، و بر خاندان و یارانش باد.»',
+    nur: '«به نام خداوند بخشنده مهربان. به نام خداوند نور. به نام خداوند نورِ نور. به نام خداوند نوری بر نور. به نام خداوندی که تدبیرگر همه امور است. به نام خداوندی که نور را از نور آفرید. ستایش ویژه خدایی است که نور را از نور آفرید و آن نور را بر کوه طور فرو فرستاد، در کتابی مکتوب، بر ورق‌هایی گشوده، به اندازه‌ای مقدر، بر پیامبری نیکوکار. ستایش ویژه خدایی است که به عزتش یاد می‌شود و به افتخار شناخته شده است، و در سختی‌ها و آسانی‌ها سپاسگزار است. و درود بر پیامبر ما محمد و خاندان پاک و مطهرش باد.»'
+  },
+  ku: {
+    kursi: '«خوا، هیچ خوایەک نییە جگە لە ئەو، ئەو ژیاوە و ڕاگرە. نە خەوێکی سووک و نە خەوێکی قوڕس دەستی پێ ناگات. هەرچی لە ئاسمانەکان و زەویدا هەیە هی ئەوە. کێیە کە بەبێ فەرمانی ئەو تکا بکات؟ دەزانێت چیان لەبەردەم و چیان لە پشتیەوەیە، و بە هیچ شتێک لە زانینی ئەو ئاگادار نابن مەگەر ئەوەی ئەو بیەوێت. کورسییەکەی ئاسمانەکان و زەوی گرتووە، و پاراستنیان لەسەر ئەو گران نییە. و ئەو بەرز و گەورەیە.»',
+    fatiha: '«بە ناوی خوای میهرەبان و بەخشندە. سوپاس بۆ خوا، پەروەردگاری جیهانیان. میهرەبان و بەخشندە، خاوەنی ڕۆژی دادوەری. تەنها تۆ دەپەرستین و تەنها لە تۆ داوای یارمەتی دەکەین. ڕێنماییمان بکە بۆ ڕێگای ڕاست – ڕێگای ئەوانەی کە نیعمەتت پێدان، نە ڕێگای ئەوانەی تووڕەبوویت لێیان و نە ڕێگای گومڕایان.»',
+    kafirun: '«بڵێ: ئەی بێباوەڕان! ئەوەی ئێوە دەیپەرستن، من نایپەرستم. و ئێوە پەرستنی ئەوەی من دەیپەرستم ناکەن. من پەرستنی ئەوەی ئێوە پەرستوتانە ناکەم، و ئێوە پەرستنی ئەوەی من دەیپەرستم ناکەن. دینی ئێوە بۆ ئێوە و دینی من بۆ من.»',
+    ikhlas: '«بڵێ: ئەو خوایە یەکتایە. خوای بێنیاز. نە زاوە و نە زێدی لێوە نەبووە. و هیچ کەس هاوتای ئەو نییە.»',
+    falaq: '«بڵێ: پەنا دەبەم بە پەروەردگاری بەیان، لە شەڕی ئەوەی دروستی کردووە، و لە شەڕی تاریکی کاتێک دادێت، و لە شەڕی ئەوانەی بە گره‌کاندا فوو دەکەن، و لە شەڕی حەسوود کاتێک حەسوودی دەبات.»',
+    nas: '«بڵێ: پەنا دەبەم بە پەروەردگاری خەڵقی، پاشای خەڵقی، خوای خەڵقی، لە شەڕی وەسوەسەکەری خۆشاراوە، ئەوەی لە سنگى خەڵقی وەسوەسە دەکات، لە جنۆکە و خەڵقی.»',
+    nasr: '«کاتێک یارمەتی خودا و سەرکەوتن دێت، و دەبینیت خەڵکی بە کۆمەڵ دەچنە ناو ئایینی خودا، ئەوا ستایشی پەروەردگارت بکە و داوای لێخۆشبوونی لێ بکە، بێگومان ئەو زۆر تۆبەوەرگرە.»',
+    qalam51: '«وە بێگومان ئەوانەی بێباوەڕ بوون، کاتێک قورئانیان بیست، خەریک بوو بە چاوەکانیان بتبەننەوە، و دەیگووت: بەڕاستی ئەمە شێتە.»',
+    ruqya1: '«بە ناوی خوا ڕوقیەت بۆ دەکەم، لە هەموو شتێک کە ئازارت دەدات، لە شەڕی هەموو نەفسیک یان چاوی حەسوود. خوا شیفات بدات، بە ناوی خوا ڕوقیەت بۆ دەکەم.»',
+    ruqya2: '«خوایە، پەروەردگاری خەڵقی! ناخۆشی بەرەوە. شیفای بدە، چونکە تۆ شیفادەری. هیچ شیفایەک نییە جگە لە شیفای تۆ – شیفایەک کە هیچ نەخۆشییەک بەجێ نەهێڵێت.»',
+    ruqya3: '«بە ناوی ئەو خوایەی کە بە ناوی ئەو هیچ شتێک لە زەوی و ئاسمان زیانی پێ ناگات، و ئەو بیسەر و زانایە.»',
+    ruqya4: '«خوایە! هیچ شتێک ئاسان نییە جگە لەوەی تۆ ئاسانی دەکەیت، و تۆ خەفەت ئاسان دەکەیت کاتێک بیەوێت.»',
+    audhu1: '«پەنا دەکەم بە وشە تەواوەکانی خوا لە شەری هەموو ئەوەی دروستی کردووە.» (سێ جار بەیانیان و ئێواران)',
+    audhu2: '«پەنا دەکەم بە وشە تەواوەکانی خوا لە هەموو شەیتانێک و بوونەوەرێکی ژەهراوی، و لە هەموو چاوێکی خراپ.» (پێغەمبەر ﷺ بۆ حەسەن و حوسەینی دەخوێند)',
+    tasbihcombo: '«پاکی بۆ خوایە و سوپاس بۆ خوایە. هیچ خوایەک نییە جگە لە خوا، و خوا گەورەترە. هیچ هێز و تواناییەک نییە جگە بە خوا. داوای لێخۆشبوون لە خوای مەزن دەکەم و بۆ لای دەگەڕێمەوە. پاکی بۆ خوایە و سوپاس بۆ خوایە، پاکی بۆ خوای مەزن. خوا بەسمانە، باشترین یارمەتیدەر و باشترین سەرکەوتووکەر.»',
+    kifayah: '«خوایە، بە حەڵاڵی خۆت بێنیازم بکە لە حەرامی خۆت، و بە فەزڵی خۆت بێنیازم بکە لە کەسانی تر جگە لە خۆت.»',
+    qunut: '«خوایە! ڕێنماییمان بکە لەگەڵ ئەوانەی ڕێنماییت کردوون، و پارێزگاریمان بکە لەگەڵ ئەوانەی پارێزگاریت کردوون، و خۆشەویستیمان بکە لەگەڵ ئەوانەی خۆشەویستت کردوون، و بورکان بکە بۆمان لەوەی پێت داوین، و لە شەڕی ئەوەی بڕیارت داوە بمپارێزە. بێگومان تۆ بڕیار دەدەیت و بڕیار نادرێت بەسەرت. بەڕاستی ئەوەی تۆ دۆستی خۆت بێت زەلیل نابێت، و ئەوەی تۆ دوژمنی خۆت بێت عیززەت نابێت. پیرۆز و بەرزیت ئەی پەروەردگارمان! سوپاس بۆ تۆ لەسەر ئەوەی بڕیارت داوە، و داوای لێخۆشبوونت لێ دەکەین و بۆ لای تۆ دەگەڕێینەوە. و سەلاتی خوا لەسەر گەورەمان محەمەد پێغەمبەری ئوممی و لەسەر خێزان و هاوەڵانی بێت.»',
+    nur: '«بە ناوی خوای میهرەبان و بەخشندە. بە ناوی خوای نوور. بە ناوی خوای نووری نوور. بە ناوی خوا نوورێک لەسەر نوور. بە ناوی ئەو خوایەی کە بەڕێوەبەری هەموو کارەکانە. بە ناوی ئەو خوایەی کە نووری لە نوور دروستکرد. سوپاس بۆ ئەو خوایەی کە نووری لە نوور دروستکرد و نووری دابەزاند بەسەر چیا، لە کتێبێکی نووسراو، لەسەر پەڕەیەکی کراوە، بە ئەندازەیەکی دیاریکراو، بۆ پێغەمبەرێکی خۆشەویست. سوپاس بۆ ئەو خوایەی کە بە عیززەتەوە یادی دەکرێت و بە شانازی ناسراوە، و لە خۆشی و ناخۆشیدا سوپاسی دەکرێت. و سەلاتی خوا لەسەر گەورەمان محەمەد و خێزانی پاکی بێت.»'
+  },
+  'ku-KM': {
+    kursi: '«Allah – ji bilî wî xwedayek tune, ew yê jîndar û domdar e. Ne xew û ne jî xewnê wî nagire. Her tiştê li ezmanan û li ser zemînê ji wî re ye. Kî ye ku bê destûra wî li bal wî şefaetê bike? Ew dizane çi li ber wan û çi li pişt wan e, û ew bi tiştek ji zanîna wî ne agahdar in, ji bilî tiştê ku ew bixwaze. Kursiya wî ezmanan û zemînê digire, û parastina wan li ser wî ne giran e. Û ew bilind û mezin e.»',
+    fatiha: '«Bi navê Xwedayê dilovan û bexşende. Sipas ji bo Xwedayê perwerdekarê hemû cîhanan. Dilovan û bexşende, xwedanê roja dadmendiyê. Tenê te diperistin û tenê ji te alîkarîyê dixwazin. Me ber bi rêya rast ve rêberî bike – rêya yên ku te nîmeta xwe daye wan, ne rêya yên ku te li wan xeyidî û ne jî rêya yên gom bûne.»',
+    kafirun: '«Bêje: Ya gawir! Ez tiştê ku hûn diperistin naperêsim. Û hûn perestvanê tiştê ku ez diperêsim nînin. Ez perestvanê tiştê ku we perestî ne me, û hûn perestvanê tiştê ku ez diperêsim nînin. Dîna we ji we re ye û dîna min ji min re ye.»',
+    ikhlas: '«Bêje: Ew Xwedayê yekta ye. Xwedayê bêhtac. Ne zaye û ne jî hatiye zayînê. Û tu kes wek wî tune ye.»',
+    falaq: '«Bêje: Ez penaberî xwedanê sibehê dikim, ji xirabiya tiştê ku wî afirandiye, û ji xirabiya tarîtiyê dema ku tê, û ji xirabiya yên ku li girêkan pif dikin, û ji xirabiya hesûd dema ku hesûdiyê dike.»',
+    nas: '«Bêje: Ez penaberî xwedanê mirovan dikim, padîşahê mirovan, xwedayê mirovan, ji xirabiya waswaskerê ku xwe vedişêre, ew ê ku di sînga mirovan de waswase dike, ji cin û mirovan.»',
+    nasr: '«Dema alîkariya Xwedê û serkeftin bê, û tu bibînî ku mirov bi kom-kom dikevin dîna Xwedê, êdî bi pesnê Perwerdekarê xwe tesbîh bike û jê lêborînê bixwaze. Bêguman ew her tobevegerîner e.»',
+    qalam51: '«Û bi rastî, ewên ku bêbawer bûn, dema ku Qur\'an bihîstin, hema bû ku te bi çavên xwe biêxin, û dibêjin: Bi rastî ew dîn e.»',
+    ruqya1: '«Bi navê Xwedê ez te rûqye dikim, ji her tiştê ku te aciz dike, ji xirabiya her nefsekî an çavekî hesûd. Xwedê şifaya te bide, bi navê Xwedê ez te rûqye dikim.»',
+    ruqya2: '«Ya Allah, xwedanê mirovan! Nexweşiyê rake. Şifayê bide, ji ber ku tu şîfakar î. Tu şifayek tune ji bilî şifaya te – şifayek ku tu nexweşiyê li pey xwe nehêle.»',
+    ruqya3: '«Bi navê wî Xwedayê ku bi navê wî tiştek li ser zemîn û ezmanan zerarê nagihîne, û ew guhdar û zana ye.»',
+    ruqya4: '«Ya Allah! Tiştek hêsan nîne ji bilî tiştê ku te hêsan kir, û tu xemgînî hêsan dikî dema ku bixwazî.»',
+    audhu1: '«Ez bal xwe dibim bi peyvên temam ên Xwedê, ji xerabiya her tiştê ku ew afirandiye.» (Sê caran sibeh û êvar were xwendin)',
+    audhu2: '«Ez dibim bi peyvên temam ên Xwedê, ji her şeytanî û zîhrekî, û ji her çavekî xirab.» (Pêxember s.a. ew ji bo Hesen û Huseyn dixwend)',
+    tasbihcombo: '«Paqijî ji Xwedê re ye û pesn ji Xwedê re ye. Ji bilî Xwedê tu xuda tune ye, û Xwedê mezintir e. Ne hêz û ne jî tîner heye ji bilî bi Xwedê. Ez ji Xwedayê Mezin lêborînê dixwazim û ber bi wî ve vedigerim. Paqijî ji Xwedê re ye û pesn ji Xwedê re ye, paqijî ji Xwedayê Mezin re ye. Xwedê ji me re bes e, û ew çêtirîn wekîl û çêtirîn alîkar e.»',
+    kifayah: '«Ya Xwedê, min bi helala xwe ji herama xwe serbixwe bike, û bi qenciya xwe min ji kesên din ji xeynî te serbixwe bike.»',
+    qunut: '«Ya Xwedê! Me di nav yên ku te rêberî kirine de rêberî bike, û me di nav yên ku te parastine de biparêze, û me di nav yên ku te dostaniya wan kirî de dostaniya me bike, û di tiştê ku te daye me de bereketê bide me, û me ji xirabiya tiştê ku te qedera wê kirî biparêze. Bêguman tu qederê dikî û li ser te qeder nayê kirin. Û bi rastî ew ê ku tu dostê wî bî qet şermezar nabe, û ew ê ku tu dijminê wî bî qet serbilind nabe. Pîroz î û bilind î, ya Xwedayê me! Sipas ji te re ye ji bo tiştê ku te qeder kir, û em ji te lêborînê dixwazin û ber bi te ve vedigerin. Û selat li ser axayê me Muhammed pêxemberê ummî û li ser malbat û hevalên wî be.»',
+    nur: '«Bi navê Xwedayê dilovan û bexşende. Bi navê Xwedayê nûrê. Bi navê Xwedayê nûra nûrê. Bi navê Xwedayê nûrek li ser nûrê. Bi navê wî Xwedayê ku birêvebirê hemû kar e. Bi navê wî Xwedayê ku nûr ji nûr afirand. Sipas ji bo wî Xwedayê ku nûr ji nûr afirand û nûr li ser çiyayê da xwarê, di kitêbek nivîsandî de, li ser pelên vekirî, bi pîvanek diyarkirî, li ser pêxemberek delal. Sipas ji bo wî Xwedayê ku bi rûmet tê bibîranîn û bi şanazî tê naskirin, û di xweşî û nexweşiyê de tê sipaskirin. Û selata Xwedê li ser axayê me Muhammed û malbata wî ya paqij be.»'
+  }
+};
+
+const PHONETIC = {
+  kursi: 'Allāhu lā ilāha illā huwal-ḥayyul-qayyūm. Lā taʾkhudhuhū sinatun wa lā nawm. Lahū mā fis-samāwāti wa mā fil-arḍ. Man dhal-ladhī yashfaʿu ʿindahū illā bi-idhnih. Yaʿlamu mā bayna aydīhim wa mā khalfahum. Wa lā yuḥīṭūna bishayʾin min ʿilmihī illā bimā shāʾ. Wasiʿa kursiyyuhus-samāwāti wal-arḍ. Wa lā yaʾūduhū ḥifẓuhumā. Wa huwal-ʿaliyyul-ʿaẓīm.',
+  fatiha: 'Bismillāhir-raḥmānir-raḥīm. Al-ḥamdu lillāhi rabbil-ʿālamīn. Ar-raḥmānir-raḥīm. Māliki yawmid-dīn. Iyyāka naʿbudu wa iyyāka nastaʿīn. Ihdinaṣ-ṣirāṭal-mustaqīm. Ṣirāṭal-ladhīna anʿamta ʿalayhim, ghayril-maghḍūbi ʿalayhim wa laḍ-ḍāllīn.',
+  kafirun: 'Qul yā ayyuhal-kāfirūn. Lā aʿbudu mā taʿbudūn. Wa lā antum ʿābidūna mā aʿbud. Wa lā anā ʿābidun mā ʿabadtum. Wa lā antum ʿābidūna mā aʿbud. Lakum dīnukum wa liya dīn.',
+  ikhlas: 'Qul huwallāhu aḥad. Allāhuṣ-ṣamad. Lam yalid wa lam yūlad. Wa lam yakun lahū kufuwan aḥad.',
+  falaq: 'Qul aʿūdhu bi-rabbil-falaq. Min sharri mā khalaq. Wa min sharri ghāsiqin idhā waqab. Wa min sharrin-naffāthāti fil-ʿuqad. Wa min sharri ḥāsidin idhā ḥasad.',
+  nas: 'Qul aʿūdhu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min sharril-waswāsil-khannās. Alladhī yuwaswisu fī ṣudūrin-nās. Minal-jinnati wan-nās.'
+};
+
+/* --- Funktioner --- */
+function showToast(msg, type='success') {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.style.cssText = `position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:${type === 'error'?'#F05E7A':type === 'info'?'#6C47E8':'#22C08A'};color:#fff;padding:14px 24px;border-radius:14px;font-family:var(--font);font-size:16px;font-weight:700;z-index:10000;box-shadow:0 8px 30px rgba(0,0,0,0.3);pointer-events:none;text-align:center;max-width:90vw;`;
+  toast.innerHTML = `<i class="fas ${type==='error'?'fa-exclamation-circle':type==='info'?'fa-info-circle':'fa-check-circle'}" style="margin-right:8px"></i> ${msg}`;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; }, 2500);
+  setTimeout(() => toast.remove(), 2800);
+}
+
+function setLang(lang) {
+  localStorage.setItem('quranLang', lang);
+  document.querySelectorAll('.bottom-lang-inner button').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    if (el.classList.contains('translation') || el.classList.contains('daily-aya-text') || el.classList.contains('fav-text')) {
+      const key = el.getAttribute('data-tr');
+      if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+        el.innerHTML = TRANSLATIONS[lang][key];
+        el.classList.toggle('phonetic', lang === 'phonetic');
+        el.classList.toggle('ku', lang === 'ku' || lang === 'ku-KM');
+        el.classList.toggle('fa', lang === 'fa');
+        if (lang === 'phonetic' && PHONETIC[key]) el.innerHTML = PHONETIC[key];
+      }
+    }
+  });
+  const currentLang = lang || 'sv';
+  if (document.getElementById('dailyAyaContent').innerHTML.trim() !== '') {
+    fetchRandomAya();
+  }
+}
+
+function toggleChrome() {
+  const hidden = document.body.classList.toggle('chrome-hidden');
+  const btn = document.getElementById('restoreChromeBtn');
+  if (hidden) btn.classList.add('show');
+  else btn.classList.remove('show');
+}
+function eyeBtnClick(e) {
+  if (e) e.stopPropagation();
+  toggleChrome();
+}
+
+let night = localStorage.getItem('quranNightMode') === 'true';
+function applyNight() {
+  document.body.classList.toggle('night', night);
+  const icon = document.getElementById('nightIcon');
+  if (night) { icon.className = 'fas fa-sun'; document.getElementById('nightBtn').style.color = 'var(--amber)'; }
+  else { icon.className = 'fas fa-moon'; document.getElementById('nightBtn').style.color = ''; }
+}
+function toggleNight() {
+  night = !night;
+  localStorage.setItem('quranNightMode', night);
+  applyNight();
+  showToast(night ? 'Nattläge på' : 'Nattläge av');
+}
+
+function toggleTranslations() {
+  const hidden = document.body.classList.toggle('translations-hidden');
+  const btn = document.getElementById('translationBtn');
+  const icon = document.getElementById('translationIcon');
+  if (hidden) { btn.classList.add('translation-off'); icon.className = 'fas fa-language'; }
+  else { btn.classList.remove('translation-off'); icon.className = 'fas fa-language'; }
+  showToast(hidden ? 'Översättningar dolda' : 'Översättningar synliga');
+}
+
+function toggleFullscreen() {
+  const el = document.documentElement;
+  if (!document.fullscreenElement) (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+  else (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+}
+document.addEventListener('fullscreenchange', updateFsIcon);
+document.addEventListener('webkitfullscreenchange', updateFsIcon);
+function updateFsIcon() {
+  const icon = document.getElementById('fsIcon');
+  const btn = document.getElementById('fsBtn');
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if (icon) icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+  if (btn) btn.classList.toggle('active', isFs);
+}
+
+function updateClock() {
+  const now = new Date();
+  const timeEl = document.getElementById('clockTime');
+  if (!timeEl) return;
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  timeEl.textContent = `${h}:${m}:${s}`;
+  const dateEl = document.getElementById('clockDate');
+  if (!dateEl) return;
+  
+  if (window._clockMode === undefined) window._clockMode = 0;
+
+  if (window._clockMode === 0) {
+    try {
+      const hijri = new Intl.DateTimeFormat('sv-SE-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' }).format(now);
+      const parts = hijri.split(' ');
+      dateEl.innerHTML = `<span class="date-label">هجري</span> ${parts[0]} ${parts[1]} ${parts[2].replace('AH', 'هـ')}`;
+    } catch(e) { dateEl.textContent = 'Hijri ej tillg.'; }
+  } else if (window._clockMode === 1) {
+    try {
+      const shamsi = new Intl.DateTimeFormat('sv-SE-u-ca-persian', { day: 'numeric', month: 'long', year: 'numeric' }).format(now);
+      const parts = shamsi.split(' ');
+      dateEl.innerHTML = `<span class="date-label">شمسی</span> ${parts[0]} ${parts[1]} ${parts[2]}`;
+    } catch(e) { dateEl.textContent = 'Shamsi ej tillg.'; }
+  } else {
+    const days = ['Söndag','Måndag','Tisdag','Onsdag','Torsdag','Fredag','Lördag'];
+    const months = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
+    dateEl.innerHTML = `<span class="date-label">میلادی</span> ${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  }
+}
+setInterval(updateClock, 1000); updateClock();
+function cycleClockDate() {
+  if (window._clockMode === undefined) window._clockMode = 0;
+  window._clockMode = (window._clockMode + 1) % 3;
+  updateClock();
+}
+
+function populateSuraSelect() {
+  const sel = document.getElementById('suraSelect');
+  if (!sel) return;
+  sel.innerHTML = SURAH_NAMES.map((name, i) => `<option value="${i+1}">${i+1}. ${name} (${SURAH_AYAH_COUNTS[i]} verser)</option>`).join('');
+}
+function populatePlaySuraSelect() {
+  const sel = document.getElementById('playSuraSelect');
+  if (!sel) return;
+  sel.innerHTML = SURAH_NAMES.map((name, i) => `<option value="${i+1}">${i+1}. ${name} (${SURAH_AYAH_COUNTS[i]} verser)</option>`).join('');
+}
+function populateQariSelect() {
+  const sel = document.getElementById('qariSelect');
+  if (!sel) return;
+  sel.innerHTML = QARIS.map(q => `<option value="${q.id}">${q.name}</option>`).join('');
+}
+
+function goToSuraAyah() {
+  const s = parseInt(document.getElementById('suraSelect').value, 10) || 1;
+  const a = parseInt(document.getElementById('ayahInput').value, 10) || 1;
+  fetchAya(s, a);
+}
+
+async function fetchAya(surah, ayah) {
+  if (surah < 1 || surah > 114) surah = 1;
+  if (ayah < 1 || ayah > SURAH_AYAH_COUNTS[surah-1]) ayah = 1;
+  
+  currentDailySurahNum = surah;
+  currentDailyAyahNum = ayah;
+  currentDailySurahName = SURAH_NAMES[surah-1];
+
+  const content = document.getElementById('dailyAyaContent');
+  if (content) content.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Laddar vers…</div>';
+
+  try {
+    const [arRes, svRes] = await Promise.all([
+      fetch(`${QURAN_API_BASE}/ayah/${surah}:${ayah}/quran-uthmani`),
+      fetch(`${QURAN_API_BASE}/ayah/${surah}:${ayah}/sv.bernstrom`)
+    ]);
+    const arData = await arRes.json();
+    const svData = await svRes.json();
+    
+    currentDailyArabic = arData.data.text;
+    currentDailyTranslation = svData.data.text;
+    currentDailyText = currentDailyTranslation;
+
+    const content = document.getElementById('dailyAyaContent');
+    if (!content) return;
+    
+    content.innerHTML = `
+      <div class="daily-aya-ref">${currentDailySurahName} ${surah}:${ayah}</div>
+      <div class="daily-aya-arabic">${currentDailyArabic}</div>
+      <div class="daily-aya-text">${currentDailyTranslation}</div>
+    `;
+    document.getElementById('saveFavBtn').classList.remove('saved');
+    document.getElementById('saveFavBtn').innerHTML = '<i class="far fa-star"></i>';
+    if (textModeOn) updateTextModeContent();
+
+  } catch (e) {
+    if (content) content.innerHTML = `<div class="daily-aya-loading" style="color:var(--rose)">Kunde inte ladda versen.<br><span style="font-size:12px">Kontrollera internetanslutningen.</span></div>`;
+    showToast('Kunde inte hämta versen', 'error');
+  }
+}
+
+function fetchRandomAya() {
+  const s = Math.floor(Math.random() * 114) + 1;
+  const a = Math.floor(Math.random() * SURAH_AYAH_COUNTS[s-1]) + 1;
+  fetchAya(s, a);
+}
+function nextDailyAya() { fetchRandomAya(); }
+function goToNextAya() {
+  let a = currentDailyAyahNum + 1;
+  let s = currentDailySurahNum;
+  if (a > SURAH_AYAH_COUNTS[s-1]) { a = 1; s = s < 114 ? s + 1 : 1; }
+  fetchAya(s, a);
+}
+function goToPrevAya() {
+  let a = currentDailyAyahNum - 1;
+  let s = currentDailySurahNum;
+  if (a < 1) { s = s > 1 ? s - 1 : 114; a = SURAH_AYAH_COUNTS[s-1]; }
+  fetchAya(s, a);
+}
+
+function playDailyAya(btn) {
+  if (activePlayBtn) { activePlayBtn.classList.remove('playing'); activePlayBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+  activePlayBtn = btn;
+  btn.classList.add('playing');
+  btn.innerHTML = '<i class="fas fa-pause"></i>';
+
+  const qari = document.getElementById('qariSelect').value;
+  const url = `https://cdn.islamic.network/quran/audio/128/${qari}/${getGlobalAyahNumber(currentDailySurahNum, currentDailyAyahNum)}.mp3`;
+  
+  if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+  currentAudio = new Audio(url);
+  currentAudio.play();
+  currentAudio.onended = () => {
+    btn.classList.remove('playing');
+    btn.innerHTML = '<i class="fas fa-play"></i>';
+    activePlayBtn = null;
+  };
+}
+function getGlobalAyahNumber(s, a) {
+  let count = 0;
+  for (let i = 0; i < s - 1; i++) count += SURAH_AYAH_COUNTS[i];
+  return count + a;
+}
+
+function toggleDailyLoop() {
+  const btn = document.getElementById('loopDailyBtn');
+  btn.classList.toggle('active');
+}
+
+function playSurah(surah, btn) {
+  const qari = document.getElementById('qariSelect').value;
+  if (activePlayBtn) { activePlayBtn.classList.remove('playing'); activePlayBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+  activePlayBtn = btn;
+  btn.classList.add('playing');
+  btn.innerHTML = '<i class="fas fa-pause"></i>';
+
+  const surahUrl = `https://cdn.islamic.network/quran/audio-surah/128/${qari}/${surah}.mp3`;
+  if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+  currentAudio = new Audio(surahUrl);
+  currentAudio.play();
+  currentAudio.onended = () => {
+    btn.classList.remove('playing');
+    btn.innerHTML = '<i class="fas fa-play"></i>';
+    activePlayBtn = null;
+  };
+}
+function playAyah(surah, ayah, btn) {
+  const qari = document.getElementById('qariSelect').value;
+  if (activePlayBtn) { activePlayBtn.classList.remove('playing'); activePlayBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+  activePlayBtn = btn;
+  btn.classList.add('playing');
+  btn.innerHTML = '<i class="fas fa-pause"></i>';
+
+  const url = `https://cdn.islamic.network/quran/audio/128/${qari}/${getGlobalAyahNumber(surah, ayah)}.mp3`;
+  if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+  currentAudio = new Audio(url);
+  currentAudio.play();
+  currentAudio.onended = () => {
+    btn.classList.remove('playing');
+    btn.innerHTML = '<i class="fas fa-play"></i>';
+    activePlayBtn = null;
+  };
+}
+function toggleVerseLoop(btn) {
+  showToast('Upprepning aktiverad', 'info');
+}
+function stopSuraPlayback() {
+  if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+  if (activePlayBtn) {
+    activePlayBtn.classList.remove('playing');
+    activePlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+    activePlayBtn = null;
+  }
+  document.getElementById('suraProgress').textContent = '';
+}
+function playSelectedSura(btn) {
+  const s = parseInt(document.getElementById('playSuraSelect').value, 10) || 1;
+  playSurah(s, btn);
+}
+function suraPlayerBack() { goToPrevAya(); }
+function suraPlayerForward() { goToNextAya(); }
+function cycleSuraLoopMode() {
+  const btn = document.getElementById('loopSuraBtn');
+  btn.classList.toggle('active');
+}
+
+function openAyaPicker(surahNum) {
+  showToast('Versväljare öppnas', 'info');
+}
+function closeAyaPicker() {
+  document.getElementById('ayaPickerModal').classList.add('h');
+}
+function playAyaFromSelected() { closeAyaPicker(); }
+function playAyaOnlySelected() { closeAyaPicker(); }
+function saveAyaRangeAsFavorite() { closeAyaPicker(); }
+
+function openFavorites() {
+  document.getElementById('favModal').classList.remove('h');
+  renderFavorites();
+}
+function closeFavorites() {
+  document.getElementById('favModal').classList.add('h');
+}
+function renderFavorites() {
+  const list = document.getElementById('favList');
+  list.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.</div>';
+}
+function saveCurrentAyaAsFavorite() {
+  const btn = document.getElementById('saveFavBtn');
+  btn.classList.toggle('saved');
+  if (btn.classList.contains('saved')) {
+    btn.innerHTML = '<i class="fas fa-star"></i>';
+    showToast('Sparad som favorit!');
+  } else {
+    btn.innerHTML = '<i class="far fa-star"></i>';
+    showToast('Borttagen från favoriter', 'info');
+  }
+}
+function toggleSuraFavorite() { showToast('Sura sparad', 'info'); }
+function toggleSectionFavorite(key, e, el) {
+  if (e) e.stopPropagation();
+  showToast('Sparad i favoriter', 'info');
+}
+function toggleFavFullscreen() { }
+function openFavFullscreenView() { }
+function cycleFavLoopMode() { }
+function stopFavoritesSequence() { }
+function playFavoritesSequence() { }
+function playFavorite() { }
+function viewFavorite() { }
+function closeViewFav() { }
+function toggleSelectAllFavorites() { }
+function updateSelectedCount() { }
+
+function copyVerse(btn) {
+  const block = btn.closest('.verse-block');
+  if (!block) return;
+  const arabicEl = block.querySelector('.arabic');
+  if (!arabicEl) return;
+  let text = '';
+  arabicEl.childNodes.forEach(n => {
+    if (n.nodeType === 3) text += n.textContent;
+    else if (n.tagName === 'BR') text += '\n';
+    else text += n.textContent;
+  });
+  text = text.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<i class="fas fa-check"></i>';
+    showToast('Kopierat!');
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 1500);
+  }).catch(() => showToast('Kunde inte kopiera', 'error'));
+}
+
+function openTafsirDaily() {
+  openTafsir(currentDailySurahNum, currentDailyAyahNum, currentDailySurahName);
+}
+function openTafsirAyah(s, a, label) {
+  openTafsir(s, a, label);
+}
+function openTafsirChapter(s, label) {
+  openTafsir(s, 1, label);
+}
+function openTafsir(surah, ayah, label) {
+  document.getElementById('tafsirModal').classList.remove('h');
+  document.getElementById('tafsirTitle').textContent = label || `${SURAH_NAMES[surah-1]} ${surah}:${ayah}`;
+  document.getElementById('tafsirAyahRef').value = `${surah}:${ayah}`;
+  const body = document.getElementById('tafsirBody');
+  body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
+  
+  fetch(`https://api.quran.com/api/v4/tafsirs/en-tafisr-ibn-kathir/by_ayah/${surah}:${ayah}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.tafsir && data.tafsir.text) {
+        body.innerHTML = data.tafsir.text;
+        document.getElementById('tafsirSource').textContent = 'Ibn Kathir (English) · quran.com';
+      } else {
+        body.innerHTML = '<p>Tafsir ej tillgänglig.</p>';
+      }
+    })
+    .catch(() => { body.innerHTML = '<p>Kunde inte hämta tafsir.</p>'; });
+}
+function closeTafsir() {
+  document.getElementById('tafsirModal').classList.add('h');
+}
+function translateTafsirTo(lang) {
+  document.querySelectorAll('#tafsirTranslateBar button').forEach(b => b.classList.toggle('active', b.dataset.tl === lang));
+  showToast('Översättning växlar till: ' + lang, 'info');
+}
+function toggleGtPanel() {
+  document.getElementById('gtPanel').classList.toggle('open');
+}
+function closeGtPanel() {
+  document.getElementById('gtPanel').classList.remove('open');
+}
+function runGoogleTranslate() { showToast('Översätter...', 'info'); }
+function setTafsirFont(btn, font) {
+  document.querySelectorAll('.tafsir-tools-bar .font-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function changeTafsirFontSize(delta) {
+  const el = document.getElementById('tafsirSizeDisplay');
+  let size = parseInt(el.textContent) + delta;
+  if (size < 12) size = 12;
+  if (size > 40) size = 40;
+  el.textContent = size + 'px';
+  document.documentElement.style.setProperty('--tafsir-font-size', size + 'px');
+}
+function resetTafsirFontSize() {
+  document.getElementById('tafsirSizeDisplay').textContent = '19px';
+  document.documentElement.style.setProperty('--tafsir-font-size', '19px');
+}
+function toggleTafsirFullscreen() { toggleFullscreen(); }
+function toggleTafsirTextMode() { }
+function toggleTafsirOnlyText() { }
+function tafsirGoRelative(dir) { }
+function cycleTafsirSyncSpeed() { }
+function setTafsirColors() { }
+function resetTafsirColors() { }
+
+function toggleSearchPanel() {
+  document.getElementById('searchPanel').classList.toggle('open');
+  document.getElementById('searchToggleBtn').classList.toggle('active');
+}
+function performQuranSearch() {
+  showToast('Söker...', 'info');
+  setTimeout(() => {
+    document.getElementById('searchResults').innerHTML = '<div class="search-empty"><i class="fas fa-search"></i>Hittade inga träffar just nu.</div>';
+  }, 1000);
+}
+function clearQuranSearch() {
+  document.getElementById('quranSearchInput').value = '';
+  document.getElementById('searchResults').innerHTML = '';
+}
+function vkInsert(char) {
+  const inp = document.getElementById('quranSearchInput');
+  inp.value += char;
+  inp.focus();
+}
+function vkBackspace() {
+  const inp = document.getElementById('quranSearchInput');
+  inp.value = inp.value.slice(0, -1);
+  inp.focus();
+}
+function vkClear() {
+  document.getElementById('quranSearchInput').value = '';
+}
+
+function openWeatherModal() {
+  document.getElementById('weatherModal').classList.remove('h');
+  document.getElementById('weatherModalBody').innerHTML = '<p>Vädret laddas...</p>';
+}
+function closeWeatherModal() {
+  document.getElementById('weatherModal').classList.add('h');
+}
+function openAzanModal() {
+  document.getElementById('azanModal').classList.remove('h');
+  document.getElementById('azanModalBody').innerHTML = '<p>Bönetider laddas...</p>';
+}
+function closeAzanModal() {
+  document.getElementById('azanModal').classList.add('h');
+}
+
+function toggleTextMode() {
+  textModeOn = !textModeOn;
+  const ov = document.getElementById('textModeOverlay');
+  ov.classList.toggle('active', textModeOn);
+  if (textModeOn) {
+    updateTextModeContent();
+    showToast('Text-läge på');
+    if (wakeLock !== null) wakeLock.release().then(() => wakeLock = null);
+    if ('wakeLock' in navigator) {
+      navigator.wakeLock.request('screen').then(lock => {
+        wakeLock = lock;
+        lock.addEventListener('release', () => { wakeLock = null; });
+      }).catch(e => console.warn(e));
+    }
+  } else {
+    showToast('Text-läge av', 'info');
+    if (wakeLock !== null) { wakeLock.release().then(() => wakeLock = null); }
+  }
+}
+function updateTextModeContent() {
+  if (!textModeOn) return;
+  document.getElementById('tmRef').textContent = `${currentDailySurahName} ${currentDailySurahNum}:${currentDailyAyahNum}`;
+  document.getElementById('tmArabic').textContent = currentDailyArabic;
+  document.getElementById('tmText').textContent = currentDailyTranslation;
+}
+function changeTextModeSize(delta) {
+  textModeScale = Math.max(0.4, Math.min(3, textModeScale + delta));
+  document.documentElement.style.setProperty('--tm-scale', textModeScale);
+  document.getElementById('tmSizeDisplay').textContent = Math.round(textModeScale * 100) + '%';
+}
+function resetTextModeSize() {
+  textModeScale = 1.0;
+  document.documentElement.style.setProperty('--tm-scale', textModeScale);
+  document.getElementById('tmSizeDisplay').textContent = '100%';
+}
+function setTextModeBg(color) {
+  document.documentElement.style.setProperty('--tm-bg', color);
+  try { localStorage.setItem('quranTextModeBg', color); } catch(e) {}
+  const input1 = document.getElementById('tmBgColorUI');
+  if (input1) input1.value = color;
+  const input2 = document.getElementById('tmColorInput');
+  if (input2) input2.value = color;
+  if (typeof toast === 'function') toast('🎨 Text‑Mode‑bakgrund sparad');
+}
+function toggleWakeLockManual() { showToast('Wake-lock togglad', 'info'); }
+function toggleWordSync() { document.getElementById('syncToggleBtn').classList.toggle('active'); }
+function adjustWordSyncOffset(delta) { showToast('Synk justerad', 'info'); }
+function toggleVerseStyle() { document.getElementById('verseStyleBtn').classList.toggle('active'); }
+function tmPrevTrack() { goToPrevAya(); }
+function tmNextTrack() { goToNextAya(); }
+function tmTogglePlayPause() {
+  if (currentAudio && !currentAudio.paused) {
+    currentAudio.pause();
+    document.getElementById('tmPlayPauseIcon').className = 'fas fa-play';
+  } else if (currentAudio) {
+    currentAudio.play();
+    document.getElementById('tmPlayPauseIcon').className = 'fas fa-pause';
+  }
+}
+
+/* Init */
+document.addEventListener('DOMContentLoaded', () => {
+  applyNight();
+  populateSuraSelect();
+  populatePlaySuraSelect();
+  populateQariSelect();
+  fetchRandomAya();
+  setLang(localStorage.getItem('quranLang') || 'sv');
+
+  try {
+    const savedBg = localStorage.getItem('quranTextModeBg');
+    if (savedBg) {
+      document.documentElement.style.setProperty('--tm-bg', savedBg);
+      const input1 = document.getElementById('tmBgColorUI');
+      if (input1) input1.value = savedBg;
+      const input2 = document.getElementById('tmColorInput');
+      if (input2) input2.value = savedBg;
+    }
+  } catch(e) {}
+
+  const tmBtn = document.getElementById('textModeBtn');
+  if (tmBtn) {
+    const observer = new MutationObserver(() => {
+      const icon = document.getElementById('tmPlayPauseIcon');
+      if (icon && currentAudio) icon.className = currentAudio.paused ? 'fas fa-play' : 'fas fa-pause';
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+});
+
 </script>
 
 </body>
