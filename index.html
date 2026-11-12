@@ -48,12 +48,10 @@
       --tafsir-text-color: #ffffff;
       --tafsir-bg-color: transparent;
       
-      /* Färger för bakgrunder */
+      /* Färger för bakgrunder och knappar */
       --page-bg:#EFEAF9;
       --page-bg-night:#1A1733;
       --aya-bg:#EFEAF9;
-      
-      /* NY FÄRG FÖR KNAPPAR */
       --btn-bg: var(--surface2);
     }
     
@@ -70,8 +68,6 @@
       --arabic-glow:rgba(11,110,82,0.40);
       --page-bg: var(--page-bg-night);
       --aya-bg: var(--page-bg-night);
-      
-      /* Nattvariant av knappfärgen om man inte valt egen */
       --btn-bg: var(--surface2);
     }
     
@@ -809,7 +805,7 @@
         <button class="icon-btn" onclick="toggleFullscreen()" title="Helskärm" id="fsBtn">
           <i class="fas fa-expand" id="fsIcon"></i>
         </button>
-        <!-- HÄR ÄR KNAPPEN DU VILLE HA (färgändring) -->
+        <!-- HÄR ÄR KNAPPEN DU VILLE HA -->
         <button class="icon-btn" onclick="openColorModal()" title="Byt färg på paneler och knappar" id="colorSettingsBtn">
           <i class="fas fa-palette" id="colorSettingsIcon"></i>
         </button>
@@ -1171,7 +1167,7 @@
       <div class="fav-modal-title"><i class="fas fa-palette" style="color:var(--primary)"></i><span>Färginställningar</span></div>
       <button class="fav-modal-icon-btn" onclick="closeColorModal()" title="Stäng"><i class="fas fa-times"></i></button>
     </div>
-    <div class="pagebg-note">Välj färg för hela sidan, aya-fönstren och alla knappar. I nattläge anpassas färgerna automatiskt för att behålla läsbarheten.</div>
+    <div class="pagebg-note">Välj färg för hela sidan och alla knappar. I nattläge anpassas färgerna automatiskt för att behålla läsbarheten.</div>
     
     <!-- Helskärm -->
     <div style="margin-bottom:20px">
@@ -1381,89 +1377,6 @@
 
 <script>
 /* Din befintliga JS-kod här... */
-
-/* ============================================================
-   NYA FÄRGFUNKTIONER FÖR KNAPPAR
-   ============================================================ */
-const BTN_BG_PRESETS = [
-  {c:'#F7F5FC', n:'Standard'},
-  {c:'#FFFFFF', n:'Vit'},
-  {c:'#E4DEFC', n:'Ljuslila'},
-  {c:'#DCFDF2', n:'Ljusgrön'},
-  {c:'#FEF3C7', n:'Ljusgul'},
-  {c:'#FDEDF0', n:'Ljusrosa'},
-  {c:'#EEF1F5', n:'Ljusgrå'},
-  {c:'#373072', n:'Mörk (natt)'}
-];
-const BTN_BG_DEFAULT = '#F7F5FC';
-
-let btnBg = null;
-try{ btnBg = localStorage.getItem('quranBtnBg') || null; }catch(e){ btnBg = null; }
-
-function buildBtnBgGrid(){
-  const grid = document.getElementById('btnBgGrid');
-  if(!grid) return;
-  grid.innerHTML = BTN_BG_PRESETS.map(p =>
-    '<button type="button" class="pagebg-swatch" data-color="' + p.c + '" title="' + p.n +
-    '" style="background:' + p.c + '" onclick="setBtnBg(\'' + p.c + '\')"></button>'
-  ).join('');
-}
-
-function applyBtnBg(){
-  const root = document.documentElement;
-  const valid = pageBgHexToRgb(btnBg) ? btnBg : null;
-  if(valid){
-    root.style.setProperty('--btn-bg', valid);
-  } else {
-    root.style.removeProperty('--btn-bg');
-  }
-  
-  const inp = document.getElementById('btnBgInput');
-  if(inp) inp.value = valid || BTN_BG_DEFAULT;
-  
-  const lbl = document.getElementById('btnBgCurrent');
-  if(lbl){
-    const preset = valid ? BTN_BG_PRESETS.find(p => p.c.toLowerCase() === valid.toLowerCase()) : null;
-    lbl.textContent = preset ? preset.n : (valid ? valid.toUpperCase() : 'Standard');
-  }
-  
-  document.querySelectorAll('#btnBgGrid .pagebg-swatch').forEach(sw => {
-    sw.classList.toggle('active', !!valid && sw.dataset.color.toLowerCase() === valid.toLowerCase());
-  });
-}
-
-function setBtnBg(color){
-  let c = String(color || '').trim();
-  if(c && c[0] !== '#') c = '#' + c;
-  btnBg = pageBgHexToRgb(c) ? c : null;
-  try{
-    if(btnBg) localStorage.setItem('quranBtnBg', btnBg);
-    else localStorage.removeItem('quranBtnBg');
-  }catch(e){}
-  applyBtnBg();
-}
-
-function resetAllColors(){
-  setPageBg(null);
-  setBtnBg(null);
-  toast('↩️ Alla färger återställda');
-}
-
-function openColorModal(){
-  buildPageBgGrid();
-  buildBtnBgGrid();
-  applyPageBg();
-  applyBtnBg();
-  const m = document.getElementById('colorSettingsModal');
-  if(m) m.classList.remove('h');
-}
-function closeColorModal(){
-  const m = document.getElementById('colorSettingsModal');
-  if(m) m.classList.add('h');
-}
-
-/* KÖR DETTA VID START */
-applyBtnBg();
 </script>
 
 </body>
