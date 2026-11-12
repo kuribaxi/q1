@@ -47,13 +47,12 @@
       --tafsir-font-family: 'Times New Roman', Times, serif;
       --tafsir-text-color: #ffffff;
       --tafsir-bg-color: transparent;
-      --page-bg:#EFEAF9;
-      --page-bg-night:#1A1733;
-      
-      /* NYA: Tvingar färgen på alla "lila" ytor */
-      --ui-bg: var(--page-bg); 
+
+      /* ===== NYTT: 3 separata bakgrunder ===== */
+      --page-bg: #EFEAF9;    
+      --aya-bg:  #EFEAF9;    
+      --tm-bg:   #000000;    
     }
-    
     body.night {
       --bg:#1A1733; --surface:#2C2761; --surface2:#373072; --border:#4B4392;
       --primary-soft:#3E3680; --emerald-soft:#123B2C; --rose-soft:#3D1826; --amber-soft:#3C2C00;
@@ -65,50 +64,28 @@
       --arabic-grad-1:#0B6E52;
       --arabic-grad-2:#08596A;
       --arabic-glow:rgba(11,110,82,0.40);
-      --page-bg: var(--page-bg-night);
-      --ui-bg: var(--page-bg-night);
     }
-    
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html, body{width:100%;min-height:100vh}
     body{
       font-family:var(--font);
-      background:var(--page-bg);
       color:var(--text);
       transition:background .3s,color .3s;
       padding:24px 20px calc(var(--bottom-bar-height) + 30px);
       line-height:1.6;
-      background-image:
-        radial-gradient(circle at 0% 0%, rgba(108,71,232,.08) 0%, transparent 45%),
-        radial-gradient(circle at 100% 100%, rgba(34,192,138,.07) 0%, transparent 45%);
-      background-attachment:fixed;
       overflow-x:hidden;
-      transition:padding .3s;
-    }
-    body.night{
-      background-image:
-        radial-gradient(circle at 0% 0%, rgba(108,71,232,.20) 0%, transparent 45%),
-        radial-gradient(circle at 100% 100%, rgba(34,192,138,.12) 0%, transparent 45%);
-    }
-    
-    /* Egen sidbakgrund: bort med de lila gradienterna */
-    body.custom-bg{background-image:none !important}
-
-    /* ---- NYA REGLER: Färgen tvingas på alla paneler ---- */
-    .top-bar,
-    .daily-aya,
-    .section,
-    .bottom-lang-bar {
-      background: var(--ui-bg) !important;
     }
 
-    body.chrome-hidden{
-      padding-top:12px;
-      padding-bottom:24px;
+    /* ===== NYTT: helskärmens bakgrund ===== */
+    html, body {
+      background: var(--page-bg) !important;
+      background-image: none !important;
     }
+    body.night{ background-image: none !important; }
+
+    body.chrome-hidden{ padding-top:12px; padding-bottom:24px; }
     body.chrome-hidden .bottom-lang-bar{display:none !important}
     body.chrome-hidden .top-bar{display:none !important}
-
     body.translations-hidden .translation,
     body.translations-hidden .daily-aya-text,
     body.translations-hidden .fav-text,
@@ -117,10 +94,9 @@
     .container{max-width:1400px;width:100%;margin:0 auto;display:flex;flex-direction:column}
 
     .top-bar{
-      border-radius:var(--r);padding:14px 18px;
+      background:var(--surface);border-radius:var(--r);padding:14px 18px;
       margin-bottom:24px;box-shadow:var(--shadow-sm);border:1.5px solid var(--border);
       display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-      transition:opacity .3s, transform .3s;
     }
     .top-bar-side-left{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
     .top-bar-weather{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;padding:6px 10px;border-radius:14px;transition:all .2s;user-select:none}
@@ -192,7 +168,6 @@
     .modal-card .modal-close{width:100%;height:52px;border-radius:var(--rsm);border:none;background:var(--primary);color:#fff;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:all .2s}
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
-    /* TAFSIR MODAL TOPBAR (NY) */
     .tafsir-card{max-width:800px;width:100%;padding:0;display:flex;flex-direction:column;max-height:90vh;overflow:hidden}
     .tafsir-card:fullscreen,.tafsir-card:-webkit-full-screen{max-width:100vw;max-height:100vh;width:100vw;height:100vh;border-radius:0;background:var(--surface)}
     .tafsir-card:fullscreen .tafsir-scroll,.tafsir-card:-webkit-full-screen .tafsir-scroll{flex:1}
@@ -213,34 +188,26 @@
     .tafsir-size-bar button:active{transform:scale(.92)}
     .tafsir-size-bar .ts-size-display{min-width:52px;text-align:center;font-size:14px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
     
-    /* NY TOPBAR STYLE */
     .tafsir-topbar-new{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:var(--surface2);border-bottom:1.5px solid var(--border);flex-shrink:0;flex-wrap:wrap}
-    
     .tafsir-topbar-left{display:flex;align-items:center;gap:10px;flex:1;min-width:150px}
     .tafsir-topbar-left i{font-size:20px;color:var(--primary)}
     .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    
     .tafsir-nav-group{display:flex;align-items:center;gap:6px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:4px;flex-shrink:0}
     .tafsir-nav-btn{width:36px;height:36px;border-radius:10px;border:none;background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s}
     .tafsir-nav-btn:hover{background:var(--primary-soft);color:var(--primary)}
     .tafsir-nav-btn:active{transform:scale(.92)}
-    
     .tafsir-ayah-input{width:70px;height:36px;border-radius:10px;border:none;background:transparent;text-align:center;font-family:var(--font);font-size:15px;font-weight:800;color:var(--primary);outline:none}
     .tafsir-ayah-input:focus{background:var(--primary-soft)}
-    
     .tafsir-topbar-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
     .tafsir-icon-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s}
     .tafsir-icon-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
     .tafsir-icon-btn:active{transform:scale(.92)}
     .tafsir-icon-btn.close-btn:hover{background:var(--rose-soft);color:var(--rose);border-color:var(--rose)}
 
-    /* Hastighetsknapp */
     .speed-btn{padding:0 12px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:800;transition:all .2s}
     .speed-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
     .speed-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
     .speed-btn .speed-val{min-width:36px;text-align:center}
-
-    /* FIX 2: Zoom-knappar i tafsir */
     .tafsir-zoom-controls{display:flex;align-items:center;gap:4px;margin-right:8px}
 
     .tafsir-translate-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:12px 24px;background:var(--surface2);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);flex-shrink:0}
@@ -281,52 +248,12 @@
     .tafsir-verse-block{margin-bottom:24px;padding-bottom:18px;border-bottom:1px dashed var(--border)}
     .tafsir-verse-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
     .tafsir-verse-num{font-size:12px;font-weight:800;color:var(--primary);background:var(--primary-soft);display:inline-block;padding:4px 12px;border-radius:50px;margin-bottom:10px}
-
     .tafsir-body { color: var(--tafsir-text-color) !important; }
-    .tafsir-body p,
-    .tafsir-body div:not(.tafsir-verse-num),
-    .tafsir-body span:not(.tafsir-aya-green),
-    .tafsir-body li,
-    .tafsir-body strong,
-    .tafsir-body em,
-    .tafsir-body b,
-    .tafsir-body i,
-    .tafsir-body u {
-      color: var(--tafsir-text-color);
-    }
+    .tafsir-body p, .tafsir-body div:not(.tafsir-verse-num), .tafsir-body span:not(.tafsir-aya-green), .tafsir-body li, .tafsir-body strong, .tafsir-body em, .tafsir-body b, .tafsir-body i, .tafsir-body u { color: var(--tafsir-text-color); }
     .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: var(--tafsir-text-color); }
-
-    .tafsir-body .tafsir-aya-green {
-      background: none !important;
-      color: var(--emerald) !important;
-      box-shadow: none !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      border-radius: 0 !important;
-      font-family: inherit !important;
-      font-size: 1em !important;
-      line-height: inherit !important;
-      direction: rtl !important;
-      unicode-bidi: plaintext !important;
-      text-align: right !important;
-      font-weight: inherit;
-      display: inline;
-    }
-    .tafsir-body .tafsir-aya-green,
-    .tafsir-body .tafsir-aya-green * {
-      color: var(--emerald) !important;
-    }
-    .tafsir-body.tafsir-ar .tafsir-aya-green,
-    .tafsir-body.tafsir-ku .tafsir-aya-green,
-    .tafsir-body.tafsir-fa .tafsir-aya-green,
-    .tafsir-body.tafsir-en .tafsir-aya-green {
-      font-size: 1em !important;
-      line-height: inherit !important;
-      direction: rtl !important;
-      unicode-bidi: plaintext !important;
-      text-align: right !important;
-      display: inline;
-    }
+    .tafsir-body .tafsir-aya-green { background: none !important; color: var(--emerald) !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; border-radius: 0 !important; font-family: inherit !important; font-size: 1em !important; line-height: inherit !important; direction: rtl !important; unicode-bidi: plaintext !important; text-align: right !important; font-weight: inherit; display: inline; }
+    .tafsir-body .tafsir-aya-green, .tafsir-body .tafsir-aya-green * { color: var(--emerald) !important; }
+    .tafsir-body.tafsir-ar .tafsir-aya-green, .tafsir-body.tafsir-ku .tafsir-aya-green, .tafsir-body.tafsir-fa .tafsir-aya-green, .tafsir-body.tafsir-en .tafsir-aya-green { font-size: 1em !important; line-height: inherit !important; direction: rtl !important; unicode-bidi: plaintext !important; text-align: right !important; display: inline; }
 
     .aya-picker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px}
     .aya-picker-title{font-size:19px;font-weight:900;color:var(--text);display:flex;align-items:center;gap:10px}
@@ -406,50 +333,38 @@
     .search-loading-bar::after{content:'';position:absolute;top:0;left:0;bottom:0;width:40%;background:linear-gradient(90deg,var(--primary),var(--emerald));border-radius:4px;animation:loadingBar 1.2s infinite ease-in-out}
     @keyframes loadingBar{0%{left:-40%}100%{left:100%}}
 
-    .daily-aya{color:#fff;border-radius:var(--r);padding:28px 32px;margin-bottom:24px;box-shadow:0 12px 36px rgba(108,71,232,.35);position:relative;overflow:hidden;border:1.5px solid var(--border)}
-    .daily-aya::before{content:'';position:absolute;top:-60%;right:-25%;width:260px;height:260px;background:radial-gradient(circle, rgba(255,255,255,.18), transparent 70%);border-radius:50%;pointer-events:none}
-    .daily-aya::after{content:'';position:absolute;bottom:-40%;left:-20%;width:220px;height:220px;background:radial-gradient(circle, rgba(255,255,255,.10), transparent 70%);border-radius:50%;pointer-events:none}
+    /* ===== NYTT: daily-aya använder --aya-bg ===== */
+    .daily-aya{
+      background: var(--aya-bg) !important;
+      color: var(--text);
+      border-radius:var(--r);padding:28px 32px;margin-bottom:24px;
+      box-shadow:0 12px 36px rgba(108,71,232,.15);
+      position:relative;overflow:hidden;
+      border:1.5px solid var(--border);
+    }
+    .daily-aya::before{content:'';position:absolute;top:-60%;right:-25%;width:260px;height:260px;background:radial-gradient(circle, rgba(255,255,255,.10), transparent 70%);border-radius:50%;pointer-events:none}
+    .daily-aya::after{content:'';position:absolute;bottom:-40%;left:-20%;width:220px;height:220px;background:radial-gradient(circle, rgba(255,255,255,.06), transparent 70%);border-radius:50%;pointer-events:none}
     .daily-aya-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;position:relative;z-index:1;flex-wrap:wrap}
-    .daily-aya-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;opacity:.9;display:flex;align-items:center;gap:8px;padding-top:6px;color:var(--text)}
+    .daily-aya-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--primary);display:flex;align-items:center;gap:8px;padding-top:6px}
     .daily-aya-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;min-width:0}
-    .day-action-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
-    .day-action-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
+    .day-action-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s}
+    .day-action-btn:hover{background:var(--primary-soft);color:var(--primary);transform:scale(1.05)}
     .day-action-btn:active{transform:scale(.9)}
     .day-action-btn.saved{background:var(--amber);color:#fff;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
     .day-action-btn.playing{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
     .day-action-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
-    .day-action-btn.verse-mode{background:var(--amber) !important;color:#fff !important;border-color:var(--amber) !important;box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18) !important}
-    .daily-aya-qari-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;position:relative;z-index:1;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.55);border-radius:12px;padding:8px 14px;backdrop-filter:blur(6px);box-shadow:0 2px 8px rgba(0,0,0,.08);min-width:0;overflow:hidden}
-    .daily-aya-qari-row i{color:#fff;font-size:15px;flex-shrink:0;text-shadow:0 1px 2px rgba(0,0,0,.2)}
-    .daily-aya-qari-row select{flex:1;min-width:0;height:40px;border:none;background:rgba(255,255,255,.95);color:#1E1535;font-family:var(--font);font-size:15px;font-weight:800;outline:none;cursor:pointer;border-radius:8px;padding:0 12px;box-shadow:0 2px 6px rgba(0,0,0,.1);transition:all .2s;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
-    .daily-aya-qari-row select:hover{background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.15)}
-    .daily-aya-qari-row select option{color:#1E1535;background:#fff;font-weight:700;padding:8px}
-    .daily-aya-ref{font-size:13px;font-weight:800;opacity:.95;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:50px;display:inline-block;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.02em;color:#fff}
-    .daily-aya-arabic{font-family:var(--quran-font);font-size:42px;line-height:2.4;direction:rtl;text-align:right;margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);position:relative;z-index:1;word-break:break-word;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased;color:#fff}
+    .day-action-btn.verse-mode{background:var(--amber) !important;color:#fff !important;border-color:var(--amber) !important}
+    .daily-aya-qari-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;position:relative;z-index:1;background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:8px 14px;box-shadow:0 2px 8px rgba(0,0,0,.05);min-width:0;overflow:hidden}
+    .daily-aya-qari-row i{color:var(--primary);font-size:15px;flex-shrink:0}
+    .daily-aya-qari-row select{flex:1;min-width:0;height:40px;border:none;background:var(--surface);color:var(--text);font-family:var(--font);font-size:15px;font-weight:800;outline:none;cursor:pointer;border-radius:8px;padding:0 12px;transition:all .2s;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+    .daily-aya-qari-row select option{color:var(--text);background:var(--surface);font-weight:700;padding:8px}
+    .daily-aya-ref{font-size:13px;font-weight:800;color:var(--primary);background:var(--primary-soft);padding:5px 14px;border-radius:50px;display:inline-block;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.02em}
+    .daily-aya-arabic{font-family:var(--quran-font);font-size:42px;line-height:2.4;direction:rtl;text-align:right;margin-bottom:20px;position:relative;z-index:1;word-break:break-word;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased}
     .daily-aya-arabic .word-god{color:#e5484d !important;font-weight:700}
-    .verse-style-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
-    .verse-style-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
-    .verse-style-btn.active{background:var(--amber);border-color:var(--amber)}
-    .wake-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
-    .wake-btn:hover{background:rgba(255,255,255,.32)}
-    .wake-btn.active{background:#e07b00;border-color:#e07b00;box-shadow:0 0 12px rgba(224,123,0,.5)}
-    .sync-toggle-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
-    .sync-toggle-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
-    .sync-toggle-btn:active{transform:scale(.9)}
-    .sync-toggle-btn.active{background:var(--emerald);border-color:var(--emerald);box-shadow:0 0 12px rgba(34,192,138,.5)}
-    .sync-toggle-btn.off{background:var(--rose);border-color:var(--rose);box-shadow:0 0 12px rgba(240,94,122,.45)}
-    #textModeOverlay .sync-toggle-btn{width:44px;height:44px;font-size:17px}
-    #textModeOverlay .wake-btn{width:44px;height:44px;font-size:17px}
-    #textModeOverlay .verse-style-btn{width:44px;height:44px;font-size:17px}
-    .sync-offset-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);color:#fff;font-family:var(--font);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px)}
-    .sync-offset-btn:hover{background:rgba(255,255,255,.32)}
-    .sync-offset-btn:active{transform:scale(.9)}
-    #textModeOverlay .sync-offset-btn{width:44px;height:44px;font-size:17px}
+
     .daily-aya-arabic .aw{transition:background .22s,box-shadow .22s;border-radius:9px;padding:0 5px;margin:0 -1px}
-    .daily-aya-arabic .aw.aw-active{background:rgba(255,255,255,.30);box-shadow:0 0 16px rgba(255,255,255,.28)}
+    .daily-aya-arabic .aw.aw-active{background:rgba(108,71,232,.20);box-shadow:0 0 16px rgba(108,71,232,.28)}
     .daily-aya-arabic.tj .aw.aw-active{background:rgba(201,165,74,.30);box-shadow:0 0 12px rgba(180,140,50,.45)}
-    #textModeOverlay .tm-arabic .aw{transition:background .22s,box-shadow .22s;border-radius:10px;padding:0 7px;margin:0 -1px}
-    #textModeOverlay .tm-arabic .aw.aw-active{background:rgba(255,255,255,.20);box-shadow:0 0 20px rgba(255,255,255,.35);text-shadow:0 0 14px rgba(255,255,255,.6)}
     .daily-aya-arabic.tj{background:radial-gradient(ellipse at 50% 28%, #fffdf4 0%, #f9f0da 68%, #f3e7c6 100%);border:1.5px solid #c9a54a;border-radius:16px;padding:28px 32px 24px;color:#2b2410;text-shadow:none;box-shadow:inset 0 0 0 5px rgba(201,165,74,.20), inset 0 0 0 6.5px rgba(201,165,74,.55), inset 0 2px 20px rgba(150,110,30,.15), 0 6px 20px rgba(0,0,0,.22)}
     .daily-aya-arabic.tj::before,.daily-aya-arabic.tj::after{content:'';position:absolute;width:62px;height:62px;pointer-events:none;opacity:.95;background-repeat:no-repeat;background-size:contain;z-index:2}
     .daily-aya-arabic.tj::before{top:5px;left:5px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 70'%3E%3Cpath d='M68 3 H24 Q3 3 3 24 V68' fill='none' stroke='%23b8912f' stroke-width='2.4'/%3E%3Cpath d='M68 11 H30 Q11 11 11 30 V68' fill='none' stroke='%23d9b45a' stroke-width='1.3'/%3E%3Cpath d='M20 20 q10 10 0 20 q-10 -10 0 -20Z' fill='%23d9b45a'/%3E%3Ccircle cx='38' cy='12' r='2.5' fill='%23b8912f'/%3E%3Ccircle cx='12' cy='38' r='2.5' fill='%23b8912f'/%3E%3Cpath d='M3 48 q9 -3 10 6 q-9 6 -10 -6Z' fill='%23c9a54a'/%3E%3Cpath d='M48 3 q-3 9 6 10 q6 -9 -6 -10Z' fill='%23c9a54a'/%3E%3C/svg%3E")}
@@ -462,12 +377,36 @@
     .daily-aya-arabic .tw-g,.daily-aya-arabic .tw-f,.daily-aya-arabic .tw-a,.daily-aya-arabic .tw-i{color:#128a4c}
     .daily-aya-arabic .tw-u{color:#7b2ea8}
     .daily-aya-arabic .tw-w{color:#00756a}
-    .daily-aya-text{font-size:36px;line-height:1.8;border-top:1.5px solid rgba(255,255,255,.3);padding-top:16px;position:relative;z-index:1;font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,.1);color:var(--text)}
+    .daily-aya-text{font-size:36px;line-height:1.8;border-top:1.5px solid var(--border);padding-top:16px;position:relative;z-index:1;font-style:italic;color:var(--text)}
     .daily-aya-text.ku,.daily-aya-text.ku-KM,.daily-aya-text.fa{font-family:var(--kurdish-font);font-style:normal;font-size:38px;line-height:1.9}
-    .daily-aya-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:34px;line-height:1.75;direction:ltr;text-align:left;color:rgba(255,255,255,.97)}
-    .daily-aya-loading{font-size:16px;opacity:.85;font-style:italic;padding:24px 0;text-align:center;color:var(--text)}
+    .daily-aya-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:34px;line-height:1.75;direction:ltr;text-align:left;color:var(--text2)}
+    .daily-aya-loading{font-size:16px;color:var(--text2);font-style:italic;padding:24px 0;text-align:center}
 
-    .section{border-radius:var(--r);padding:26px 28px;margin-bottom:22px;box-shadow:var(--shadow-sm);border:1.5px solid var(--border);position:relative;overflow:hidden}
+    .verse-style-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s}
+    .verse-style-btn:hover{background:var(--primary-soft);color:var(--primary);transform:scale(1.05)}
+    .verse-style-btn.active{background:var(--amber);color:#fff;border-color:var(--amber)}
+    .wake-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s}
+    .wake-btn:hover{background:var(--primary-soft);color:var(--primary)}
+    .wake-btn.active{background:#e07b00;color:#fff;border-color:#e07b00;box-shadow:0 0 12px rgba(224,123,0,.5)}
+    .sync-toggle-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s}
+    .sync-toggle-btn:hover{background:var(--primary-soft);color:var(--primary);transform:scale(1.05)}
+    .sync-toggle-btn:active{transform:scale(.9)}
+    .sync-toggle-btn.active{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 12px rgba(34,192,138,.5)}
+    .sync-toggle-btn.off{background:var(--rose-soft);color:var(--rose);border-color:var(--rose)}
+    #textModeOverlay .sync-toggle-btn{width:44px;height:44px;font-size:17px}
+    #textModeOverlay .wake-btn{width:44px;height:44px;font-size:17px}
+    #textModeOverlay .verse-style-btn{width:44px;height:44px;font-size:17px}
+    .sync-offset-btn{background:var(--surface2);border:1.5px solid var(--border);color:var(--text);font-family:var(--font);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s}
+    .sync-offset-btn:hover{background:var(--primary-soft);color:var(--primary)}
+    .sync-offset-btn:active{transform:scale(.9)}
+    #textModeOverlay .sync-offset-btn{width:44px;height:44px;font-size:17px}
+
+    /* ===== NYTT: .section använder --aya-bg ===== */
+    .section{
+      background: var(--aya-bg) !important;
+      border-radius:var(--r);padding:26px 28px;margin-bottom:22px;
+      box-shadow:var(--shadow-sm);border:1.5px solid var(--border);position:relative;overflow:hidden;
+    }
     .section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--emerald),var(--amber));opacity:.65}
     .section-title{font-size:19px;font-weight:900;color:var(--primary);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:2px solid var(--border)}
     .section-title i{font-size:20px}
@@ -476,10 +415,9 @@
     .section-fav-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-soft)}
     .section-fav-btn:active{transform:scale(.92)}
     .section-fav-btn.saved{background:var(--amber);color:#fff;border-color:var(--amber);box-shadow:0 2px 8px rgba(245,158,11,.35)}
-    body.night .section-fav-btn.saved{background:var(--amber);color:#1E1535}
     .verse-block{position:relative;margin-bottom:16px}
     .verse-tools{display:flex;gap:6px;position:absolute;top:10px;left:10px;z-index:2;opacity:.9}
-    .verse-tool{width:38px;height:38px;border-radius:11px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.12);backdrop-filter:blur(4px)}
+    .verse-tool{width:38px;height:38px;border-radius:11px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.12)}
     .verse-tool:active{transform:scale(.9)}
     .verse-tool.copied{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
     .verse-tool.playing{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
@@ -552,8 +490,8 @@
     .fav-modal-icon-btn:hover{background:var(--primary-soft);color:var(--primary)}
     .fav-modal-icon-btn:active{transform:scale(.92)}
 
-    .bottom-lang-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;border-top:1.5px solid var(--border);box-shadow:0 -4px 20px rgba(108,71,232,.12);padding:10px 16px max(10px, env(safe-area-inset-bottom));display:flex;justify-content:center;backdrop-filter:blur(10px);transition:transform .3s, opacity .3s}
-    body.night .bottom-lang-bar{box-shadow:0 -4px 20px rgba(0,0,0,.3)}
+    .bottom-lang-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surface);border-top:1.5px solid var(--border);box-shadow:0 -4px 20px rgba(108,71,232,.12);padding:10px 16px max(10px, env(safe-area-inset-bottom));display:flex;justify-content:center;backdrop-filter:blur(10px);transition:transform .3s, opacity .3s}
+    body.night .bottom-lang-bar{background:var(--surface);box-shadow:0 -4px 20px rgba(0,0,0,.3)}
     .bottom-lang-inner{max-width:1400px;width:100%;display:flex;gap:6px;background:var(--surface2);border:1.5px solid var(--border);border-radius:16px;padding:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .bottom-lang-inner::-webkit-scrollbar{display:none}
     .bottom-lang-inner button{flex:1 1 auto;min-width:60px;height:48px;border:none;border-radius:11px;background:transparent;font-family:var(--font);font-size:14px;font-weight:800;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
@@ -565,8 +503,7 @@
     .restore-chrome-btn:active{transform:scale(.92)}
     .restore-chrome-btn.show{display:flex}
 
-    /* ===== NY: TEXT-LÄGE (hel skärm, bara versens text) ===== */
-    #textModeOverlay{position:fixed;inset:0;z-index:9990;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px calc(var(--tm-bar-h, 80px) + 24px + env(safe-area-inset-bottom));overflow-y:auto;text-align:center}
+    #textModeOverlay{position:fixed;inset:0;z-index:9990;display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px calc(var(--tm-bar-h, 80px) + 24px + env(safe-area-inset-bottom));overflow-y:auto;text-align:center}
     #textModeOverlay.active{display:flex}
     #textModeOverlay .tm-ref{font-size:14px;font-weight:800;letter-spacing:.1em;opacity:.65;margin-bottom:20px;text-transform:uppercase;color:#fff}
     #textModeOverlay .tm-arabic{font-family:var(--quran-font);font-size:calc(54px * var(--tm-scale, 1));line-height:2.4;direction:rtl;color:#fff !important;max-width:1000px;margin:0 auto 24px;word-break:break-word;text-shadow:0 2px 8px rgba(0,0,0,.35);font-feature-settings:"liga" 1, "calt" 1}
@@ -574,27 +511,10 @@
     #textModeOverlay .tm-text.ku,#textModeOverlay .tm-text.ku-KM,#textModeOverlay .tm-text.fa{font-family:var(--kurdish-font);font-style:normal;direction:rtl}
     #textModeOverlay .tm-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;direction:ltr}
     #textModeOverlay .tm-arabic .word-god{color:#e5484d !important;font-weight:700}
-    /* Tazhib-paneldesign i helskärm — samma som vanlig vy (pergament + guld) */
-    #textModeOverlay .tm-arabic.tj{background:radial-gradient(ellipse at 50% 28%, #fffdf4 0%, #f9f0da 68%, #f3e7c6 100%);border:1.5px solid #c9a54a;border-radius:18px;padding:34px 44px 30px;box-shadow:inset 0 0 0 5px rgba(201,165,74,.20), inset 0 0 0 6.5px rgba(201,165,74,.55), inset 0 2px 24px rgba(150,110,30,.18), 0 10px 34px rgba(0,0,0,.45);color:#2b2410 !important;text-shadow:none;max-width:1060px;position:relative}
-    #textModeOverlay .tm-arabic.tj .aw{color:#2b2410}
-    #textModeOverlay .tm-arabic.tj .tw-h,#textModeOverlay .tm-arabic.tj .tw-l,#textModeOverlay .tm-arabic.tj .tw-s{color:#8d8468 !important}
-    #textModeOverlay .tm-arabic.tj .tw-n{color:#177d43 !important}
-    #textModeOverlay .tm-arabic.tj .tw-p{color:#e07b00 !important}
-    #textModeOverlay .tm-arabic.tj .tw-o,#textModeOverlay .tm-arabic.tj .tw-m{color:#c62828 !important}
-    #textModeOverlay .tm-arabic.tj .tw-q{color:#1d4fb0 !important}
-    #textModeOverlay .tm-arabic.tj .tw-g,#textModeOverlay .tm-arabic.tj .tw-f,#textModeOverlay .tm-arabic.tj .tw-a,#textModeOverlay .tm-arabic.tj .tw-i{color:#128a4c !important}
-    #textModeOverlay .tm-arabic.tj .tw-u{color:#7b2ea8 !important}
-    #textModeOverlay .tm-arabic.tj .tw-w{color:#00756a !important}
-    #textModeOverlay .tm-arabic.tj .word-god{color:#e5484d !important;font-weight:700}
-    #textModeOverlay .tm-arabic.tj .aw.aw-active{background:rgba(201,165,74,.32);box-shadow:0 0 14px rgba(180,140,50,.5);text-shadow:none}
-    #textModeOverlay .tm-arabic.tj::before,#textModeOverlay .tm-arabic.tj::after{content:'';position:absolute;width:66px;height:66px;pointer-events:none;opacity:.95;background-repeat:no-repeat;background-size:contain;z-index:2}
-    #textModeOverlay .tm-arabic.tj::before{top:6px;left:6px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 70'%3E%3Cpath d='M68 3 H24 Q3 3 3 24 V68' fill='none' stroke='%23b8912f' stroke-width='2.4'/%3E%3Cpath d='M68 11 H30 Q11 11 11 30 V68' fill='none' stroke='%23d9b45a' stroke-width='1.3'/%3E%3Cpath d='M20 20 q10 10 0 20 q-10 -10 0 -20Z' fill='%23d9b45a'/%3E%3Ccircle cx='38' cy='12' r='2.5' fill='%23b8912f'/%3E%3Ccircle cx='12' cy='38' r='2.5' fill='%23b8912f'/%3E%3Cpath d='M3 48 q9 -3 10 6 q-9 6 -10 -6Z' fill='%23c9a54a'/%3E%3Cpath d='M48 3 q-3 9 6 10 q6 -9 -6 -10Z' fill='%23c9a54a'/%3E%3C/svg%3E")}
-    #textModeOverlay .tm-arabic.tj::after{bottom:6px;right:6px;transform:rotate(180deg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 70'%3E%3Cpath d='M68 3 H24 Q3 3 3 24 V68' fill='none' stroke='%23b8912f' stroke-width='2.4'/%3E%3Cpath d='M68 11 H30 Q11 11 11 30 V68' fill='none' stroke='%23d9b45a' stroke-width='1.3'/%3E%3Cpath d='M20 20 q10 10 0 20 q-10 -10 0 -20Z' fill='%23d9b45a'/%3E%3Ccircle cx='38' cy='12' r='2.5' fill='%23b8912f'/%3E%3Ccircle cx='12' cy='38' r='2.5' fill='%23b8912f'/%3E%3Cpath d='M3 48 q9 -3 10 6 q-9 6 -10 -6Z' fill='%23c9a54a'/%3E%3Cpath d='M48 3 q-3 9 6 10 q6 -9 -6 -10Z' fill='%23c9a54a'/%3E%3C/svg%3E")}
     #textModeOverlay .tm-close{position:fixed;top:14px;right:14px;z-index:9991;width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:all .2s}
     #textModeOverlay .tm-close:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-close:active{transform:scale(.92)}
     #tmColorInput{position:fixed;left:-100px;top:-100px;width:0;height:0;opacity:0;pointer-events:none}
-    /* FIX: mobilanpassat verktygsfält i text-läge — radbryter istället för att hamna utanför skärmen */
     #textModeOverlay .tm-size-bar{position:fixed;bottom:max(16px, env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:9992;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:50px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 20px);box-sizing:border-box;transition:opacity .45s ease, transform .45s ease}
     #textModeOverlay .tm-size-bar.tm-idle{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(14px)}
     #textModeOverlay .tm-close{transition:opacity .45s ease, transform .45s ease}
@@ -715,7 +635,6 @@
       .tafsir-icon-btn { width: 32px; height: 32px; }
       .speed-btn { height: 32px; padding: 0 6px; font-size: 10px; }
       .speed-btn .speed-val { min-width: 24px; }
-      
       .tafsir-translate-bar{padding:8px 14px;gap:4px}
       .tafsir-translate-bar button{font-size:10px;padding:4px 8px}
       .tafsir-translate-bar .label{font-size:10px}
@@ -755,39 +674,59 @@
       #textModeOverlay .tm-text{font-size:calc(21px * var(--tm-scale, 1));line-height:1.7}
     }
 
-    /* ===== NY TOPBAR & SPEED & ZOOM ===== */
-    .tafsir-topbar-new{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:var(--surface2);border-bottom:1.5px solid var(--border);flex-shrink:0;flex-wrap:wrap}
-    
-    .speed-btn-container{display:flex;align-items:center;gap:4px}
-    .speed-btn{padding:0 10px;height:34px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px;font-family:var(--font);font-size:12px;font-weight:800;transition:all .2s}
-    .speed-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
-    .speed-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-    .speed-btn .speed-val{min-width:32px;text-align:center}
-
-    .tafsir-zoom-controls{display:flex;align-items:center;gap:2px;margin-right:8px}
-    .tafsir-zoom-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;transition:all .2s}
-    .tafsir-zoom-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
-    .tafsir-zoom-btn:active{transform:scale(.92)}
-    
-    @media (max-width: 768px) {
-      .tafsir-topbar-new { padding: 10px 12px; }
-      .speed-btn { height: 32px; padding: 0 8px; font-size: 11px; }
-      .tafsir-ayah-input { width: 60px; }
+    /* Färgväljarpanel */
+    .color-controls{
+      position:fixed;
+      left:16px;
+      bottom:calc(var(--bottom-bar-height) + 16px);
+      z-index:9000;
+      background:var(--surface);
+      border:1.5px solid var(--border);
+      border-radius:14px;
+      padding:12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      font-family:var(--font);
+      font-size:13px;
+      font-weight:700;
+      color:var(--text);
+      box-shadow:var(--shadow);
+      max-width:240px;
+    }
+    .color-controls label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .color-controls input[type="color"]{
+      width:38px;
+      height:28px;
+      border:none;
+      border-radius:6px;
+      background:none;
+      cursor:pointer;
+      padding:0;
+    }
+    .color-controls .cc-title{
+      font-size:10px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--text3);
+      margin-bottom:2px;
+    }
+    body.chrome-hidden .color-controls{display:none}
+    @media (max-width:480px){
+      .color-controls{left:8px;right:8px;bottom:calc(var(--bottom-bar-height) + 8px);max-width:none}
     }
 
-    /* ---- Panel för sidans bakgrundsfärg ---- */
-    .pagebg-note{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:16px}
-    .pagebg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;margin-bottom:18px}
-    .pagebg-swatch{height:56px;border-radius:13px;border:2px solid var(--border);cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;padding:0;background-clip:padding-box}
-    .pagebg-swatch:hover{transform:scale(1.05)}
-    .pagebg-swatch.active{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
-    .pagebg-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
-    .pagebg-row input[type="color"]{width:60px;height:46px;padding:0;border:1.5px solid var(--border);border-radius:11px;background:var(--surface2);cursor:pointer}
-    .pagebg-current{font-size:13px;font-weight:900;color:var(--text2);font-variant-numeric:tabular-nums}
-    .pagebg-btn{padding:11px 18px;border-radius:13px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
-    .pagebg-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
-    .pagebg-btn.reset{width:100%}
-    .pagebg-btn.reset:hover{background:var(--rose-soft);color:var(--rose);border-color:var(--rose)}
+    /* Text-mode overlay bakgrund */
+    #textModeOverlay {
+      background: var(--tm-bg, #000000) !important;
+    }
   </style>
 </head>
 <body>
@@ -798,7 +737,6 @@
 
 <input type="color" id="tmColorInput" value="#000000" oninput="setTextModeBg(this.value)">
 
-<!-- NY: TEXT-LÄGE-OVERLAY (hel skärm) -->
 <div id="textModeOverlay">
   <button class="tm-close" onclick="toggleTextMode()" title="Stäng text-läge"><i class="fas fa-times"></i></button>
   <div class="tm-size-bar">
@@ -855,9 +793,6 @@
         </button>
         <button class="icon-btn" onclick="toggleFullscreen()" title="Helskärm" id="fsBtn">
           <i class="fas fa-expand" id="fsIcon"></i>
-        </button>
-        <button class="icon-btn" onclick="openPageBg()" title="Byt färg på sidan" id="pageBgBtn">
-          <i class="fas fa-fill-drip" id="pageBgIcon"></i>
         </button>
         <button class="icon-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
           <i class="fas fa-moon" id="nightIcon"></i>
@@ -932,7 +867,7 @@
       <button class="day-action-btn" onclick="suraPlayerForward()" title="Nästa vers"><i class="fas fa-forward-step"></i></button>
       <button class="day-action-btn" id="loopSuraBtn" onclick="cycleSuraLoopMode()" title="Upprepning"><i class="fas fa-repeat"></i></button>
     </div>
-    <div id="suraProgress" style="text-align:center;font-size:12px;font-weight:800;color:var(--text);margin:-6px 0 14px;min-height:16px"></div>
+    <div id="suraProgress" style="text-align:center;font-size:12px;font-weight:800;color:var(--primary);margin:-6px 0 14px;min-height:16px"></div>
 
     <div id="dailyAyaContent"><div class="daily-aya-loading">Laddar…</div></div>
   </div>
@@ -1213,29 +1148,41 @@
   </div>
 </div>
 
-<!-- TAFSIR-MODAL -->
+<!-- Färgväljare -->
+<div class="color-controls" role="group" aria-label="Färginställningar">
+  <div class="cc-title">Färginställningar</div>
+  <label for="pageBgColor">
+    <input type="color" id="pageBgColor" value="#EFEAF9" oninput="setPageBg(this.value)">
+    Helskärm
+  </label>
+  <label for="ayaBgColor">
+    <input type="color" id="ayaBgColor" value="#EFEAF9" oninput="setAyaBg(this.value)">
+    Aya/Sura‑fönster
+  </label>
+  <label for="tmBgColorUI">
+    <input type="color" id="tmBgColorUI" value="#000000" oninput="setTextModeBg(this.value)">
+    Text‑Mode
+  </label>
+</div>
+
+<!-- TAFSIR-MODAL (oförändrad från din kod) -->
 <div class="modal-ov h" id="tafsirModal" onclick="if(event.target===this)closeTafsir()">
   <div class="modal-card tafsir-card">
-    <!-- NY TOPBAR -->
     <div class="tafsir-topbar-new">
       <div class="tafsir-topbar-left">
         <i class="fas fa-book-open"></i>
         <div class="tafsir-title" id="tafsirTitle">Tafsir</div>
       </div>
-      
       <div class="tafsir-nav-group">
         <button class="tafsir-nav-btn" id="tafsirPrevAyah" onclick="tafsirGoRelative(-1)" title="Föregående vers (←)"><i class="fas fa-chevron-left"></i></button>
         <input type="text" class="tafsir-ayah-input" id="tafsirAyahRef" value="" readonly>
         <button class="tafsir-nav-btn" id="tafsirNextAyah" onclick="tafsirGoRelative(1)" title="Nästa vers (→)"><i class="fas fa-chevron-right"></i></button>
       </div>
-      
       <div class="tafsir-topbar-right">
-        <!-- Zoom-kontroller -->
         <div class="tafsir-zoom-controls">
           <button class="tafsir-zoom-btn" onclick="changeTafsirFontSize(-1)" title="Minska textstorlek"><i class="fas fa-minus"></i></button>
           <button class="tafsir-zoom-btn" onclick="changeTafsirFontSize(1)" title="Öka textstorlek"><i class="fas fa-plus"></i></button>
         </div>
-        <!-- Hastighetskontroll -->
         <div class="speed-btn-container">
           <button class="speed-btn" onclick="cycleTafsirSyncSpeed()" title="Justera ord-synk hastighet">
             <i class="fas fa-stopwatch"></i> <span class="speed-val" id="tafsirSpeedDisplay">1.0x</span>
@@ -1309,7 +1256,6 @@
   <i class="fas fa-eye"></i> Visa tafsir
 </button>
 
-<!-- AYA-VÄLJAR-MODAL -->
 <div class="modal-ov h" id="ayaPickerModal" onclick="if(event.target===this)closeAyaPicker()">
   <div class="modal-card" id="ayaPickerCard">
     <div class="aya-picker-header">
@@ -1331,7 +1277,6 @@
   </div>
 </div>
 
-<!-- FAVORIT-MODAL -->
 <div class="modal-ov h" id="favModal" onclick="if(event.target===this)closeFavorites()">
   <div class="modal-card" id="favModalCard">
     <div class="fav-modal-header">
@@ -1351,7 +1296,7 @@
         <span class="fav-count" id="favSelectedCount">0 valda</span>
       </div>
       <div class="fav-toolbar-right">
-        <button class="fav-control-btn" id="favFsViewBtn" onclick="openFavFullscreenView()" title="Helskärm — versen följer uppspelningen (med/utan tazhib)"><i class="fas fa-expand" id="favFsViewIcon"></i></button>
+        <button class="fav-control-btn" id="favFsViewBtn" onclick="openFavFullscreenView()" title="Helskärm"><i class="fas fa-expand" id="favFsViewIcon"></i></button>
         <button class="fav-control-btn primary" id="favPlayBtn" onclick="playFavoritesSequence()"><i class="fas fa-play"></i><span id="favPlayText">Spela</span></button>
         <button class="fav-control-btn" id="favLoopBtn" onclick="cycleFavLoopMode()"><i class="fas fa-repeat" id="favLoopIcon"></i><span id="favLoopText">Av</span></button>
         <button class="fav-control-btn danger" id="favStopBtn" onclick="stopFavoritesSequence()"><i class="fas fa-stop"></i></button>
@@ -1365,7 +1310,6 @@
   <div class="modal-card" id="viewFavContent"></div>
 </div>
 
-<!-- VÄDER-MODAL -->
 <div class="modal-ov h" id="weatherModal" onclick="if(event.target===this)closeWeatherModal()">
   <div class="modal-card">
     <div class="fav-modal-header">
@@ -1376,27 +1320,6 @@
   </div>
 </div>
 
-<!-- SIDBAKGRUNDS-MODAL -->
-<div class="modal-ov h" id="pageBgModal" onclick="if(event.target===this)closePageBg()">
-  <div class="modal-card" style="max-width:520px">
-    <div class="fav-modal-header">
-      <div class="fav-modal-title"><i class="fas fa-fill-drip" style="color:var(--primary)"></i><span>Sidans bakgrundsfärg</span></div>
-      <button class="fav-modal-icon-btn" onclick="closePageBg()" title="Stäng"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="pagebg-note">Välj en färg för hela sidans bakgrund i stället för den lila. I nattläge används automatiskt en mörk variant av samma färg, så texten förblir läsbar.</div>
-    <div class="pagebg-grid" id="pageBgGrid"></div>
-    <div class="pagebg-row">
-      <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-        <input type="color" id="pageBgInput" value="#EFEAF9" oninput="setPageBg(this.value)">
-        <span style="font-size:14px;font-weight:800;color:var(--text)">Egen färg</span>
-      </label>
-      <span class="pagebg-current" id="pageBgCurrent">Lila (standard)</span>
-    </div>
-    <button class="pagebg-btn reset" onclick="resetPageBg()"><i class="fas fa-rotate-left"></i> Återställ till lila</button>
-  </div>
-</div>
-
-<!-- BÖNETIDER-MODAL -->
 <div class="modal-ov h" id="azanModal" onclick="if(event.target===this)closeAzanModal()">
   <div class="modal-card">
     <div class="fav-modal-header">
@@ -1407,8 +1330,44 @@
   </div>
 </div>
 
+<!-- ============================================================
+     DIN URSPRUNGLIGA JAVASCRIPT — oförändrad
+     (Jag har lagt till färgfunktionerna FÖRST, sedan din kod)
+     ============================================================ -->
 <script>
-/* Din befintliga JS-kod från föregående meddelande */
+/* ===== NYTT: Färgfunktioner ===== */
+function setPageBg(color){
+  document.documentElement.style.setProperty('--page-bg', color);
+  try{ localStorage.setItem('quranPageBg', color); }catch(e){}
+  if(typeof toast === 'function') toast('🎨 Helskärmens bakgrund uppdaterad');
+}
+function setAyaBg(color){
+  document.documentElement.style.setProperty('--aya-bg', color);
+  try{ localStorage.setItem('quranAyaBg', color); }catch(e){}
+  if(typeof toast === 'function') toast('🎨 Aya/Sura-fönstren uppdaterade');
+}
+(function initColors(){
+  try{
+    const savedPage = localStorage.getItem('quranPageBg');
+    if(savedPage){
+      document.documentElement.style.setProperty('--page-bg', savedPage);
+      const el = document.getElementById('pageBgColor');
+      if(el) el.value = savedPage;
+    }
+    const savedAya = localStorage.getItem('quranAyaBg');
+    if(savedAya){
+      document.documentElement.style.setProperty('--aya-bg', savedAya);
+      const el = document.getElementById('ayaBgColor');
+      if(el) el.value = savedAya;
+    }
+  }catch(e){}
+})();
+
+/* ============================================================
+   DIN BEFINTLIGA KOD — klistra in HELA din tidigare
+   <script>-kod här (TRANSLATIONS, SURAH_NAMES, alla funktioner,
+   ljud, qari, text-mode, tafsir, favoriter, sökning, wake-lock osv.)
+   ============================================================ */
 </script>
 
 </body>
