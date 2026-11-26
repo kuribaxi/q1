@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kliniskt Beslutsstöd: Klimakteriet & Bildarkiv</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter & Playfair Display -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Inter, Playfair Display & Vazirmatn (Persian) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
@@ -17,6 +17,7 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         serif: ['Playfair Display', 'serif'],
+                        persian: ['Vazirmatn', 'sans-serif'],
                     },
                     colors: {
                         plum: {
@@ -42,6 +43,11 @@
             background-color: #fdf4f8;
             color: #1f2937;
         }
+        [dir="rtl"] body,
+        [dir="rtl"] .font-serif,
+        [dir="rtl"] .font-sans {
+            font-family: 'Vazirmatn', sans-serif !important;
+        }
         .fade-in {
             animation: fadeIn 0.25s ease-in-out;
         }
@@ -49,7 +55,6 @@
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -71,43 +76,62 @@
     <!-- Top Header -->
     <header class="bg-gradient-to-r from-plum-950 via-plum-900 to-plum-800 text-white shadow-lg sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="bg-white/15 p-2.5 rounded-xl backdrop-blur-sm border border-white/20">
-                        <i data-lucide="stethoscope" class="w-7 h-7 text-plum-200"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white">
-                            Menopaus & Klimakteriet
-                        </h1>
-                        <p class="text-xs sm:text-sm text-plum-200">
-                            Kliniskt beslutsstöd, behandlingsalgoritm & molnsparat bildarkiv
-                        </p>
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <!-- Branding -->
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white/15 p-2.5 rounded-xl backdrop-blur-sm border border-white/20 shrink-0">
+                            <i data-lucide="stethoscope" class="w-7 h-7 text-plum-200"></i>
+                        </div>
+                        <div>
+                            <h1 id="hdr-title" class="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white">
+                                Menopaus & Klimakteriet
+                            </h1>
+                            <p id="hdr-subtitle" class="text-xs sm:text-sm text-plum-200">
+                                Kliniskt beslutsstöd, behandlingsalgoritm & molnsparat bildarkiv
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Navigation Tabs -->
-                <nav class="flex flex-wrap gap-2 bg-plum-950/50 p-1.5 rounded-xl border border-white/10">
-                    <button onclick="switchTab('algorithm')" id="tab-algorithm" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all bg-white text-plum-900 shadow-sm">
-                        <i data-lucide="git-branch" class="w-4 h-4"></i>
-                        <span>Interaktiv Algoritm</span>
-                    </button>
-                    <button onclick="switchTab('gallery')" id="tab-gallery" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all text-plum-100 hover:bg-white/10">
-                        <i data-lucide="images" class="w-4 h-4"></i>
-                        <span>Mina Sparade Bilder</span>
-                        <span id="image-count-badge" class="bg-plum-700 text-white text-xs px-2 py-0.5 rounded-full">0</span>
-                    </button>
-                    <button onclick="switchTab('reference')" id="tab-reference" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all text-plum-100 hover:bg-white/10">
-                        <i data-lucide="book-open" class="w-4 h-4"></i>
-                        <span>Lathund & Ekvipotens</span>
-                    </button>
-                </nav>
+                <!-- Right Controls: Language Switcher + Navigation Tabs -->
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <!-- Language Switcher -->
+                    <div class="inline-flex items-center bg-plum-950/70 p-1 rounded-xl border border-white/15 self-start sm:self-auto" role="group" aria-label="Language switcher">
+                        <button onclick="setLanguage('sv')" id="lang-btn-sv" class="lang-btn px-2.5 py-1 rounded-lg text-xs font-semibold transition-all bg-white text-plum-950 shadow-xs">
+                            Svenska
+                        </button>
+                        <button onclick="setLanguage('en')" id="lang-btn-en" class="lang-btn px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-plum-200 hover:text-white">
+                            English
+                        </button>
+                        <button onclick="setLanguage('fa')" id="lang-btn-fa" class="lang-btn px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-plum-200 hover:text-white" style="font-family: 'Vazirmatn', sans-serif;">
+                            فارسی
+                        </button>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <nav class="flex flex-wrap gap-1.5 bg-plum-950/50 p-1.5 rounded-xl border border-white/10">
+                        <button onclick="switchTab('algorithm')" id="tab-algorithm" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all bg-white text-plum-900 shadow-sm">
+                            <i data-lucide="git-branch" class="w-4 h-4"></i>
+                            <span data-i18n="tabAlgorithm">Interaktiv Algoritm</span>
+                        </button>
+                        <button onclick="switchTab('gallery')" id="tab-gallery" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all text-plum-100 hover:bg-white/10">
+                            <i data-lucide="images" class="w-4 h-4"></i>
+                            <span data-i18n="tabGallery">Mina Sparade Bilder</span>
+                            <span id="image-count-badge" class="bg-plum-700 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+                        </button>
+                        <button onclick="switchTab('reference')" id="tab-reference" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all text-plum-100 hover:bg-white/10">
+                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                            <span data-i18n="tabReference">Lathund & Ekvipotens</span>
+                        </button>
+                    </nav>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Status Notification Banner -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+    <div id="toast-container" class="fixed bottom-5 end-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
     <!-- Main Content Area -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -120,17 +144,17 @@
             <!-- Progress & Reset Bar -->
             <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-plum-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-plum-100 text-plum-900 font-bold text-sm">
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-plum-100 text-plum-900 font-bold text-sm shrink-0">
                         <i data-lucide="compass" class="w-4 h-4"></i>
                     </span>
                     <div>
-                        <h2 class="font-semibold text-gray-900 text-base">Klinisk vägledning steg-för-steg</h2>
-                        <p class="text-xs text-gray-500">Klicka i patientens uppgifter nedan för skräddarsydda rekommendationer enligt Socialstyrelsen & Kloka listan.</p>
+                        <h2 data-i18n="algIntroTitle" class="font-semibold text-gray-900 text-base">Klinisk vägledning steg-för-steg</h2>
+                        <p data-i18n="algIntroDesc" class="text-xs text-gray-500">Klicka i patientens uppgifter nedan för skräddarsydda rekommendationer enligt Socialstyrelsen & Kloka listan.</p>
                     </div>
                 </div>
-                <button onclick="resetAlgorithm()" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-plum-800 bg-plum-50 hover:bg-plum-100 border border-plum-200 transition-colors">
+                <button onclick="resetAlgorithm()" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-plum-800 bg-plum-50 hover:bg-plum-100 border border-plum-200 transition-colors shrink-0">
                     <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                    <span>Börja om bedömning</span>
+                    <span data-i18n="resetBtn">Börja om bedömning</span>
                 </button>
             </div>
 
@@ -142,19 +166,19 @@
                     <!-- STEG 1: Ålder & Diagnostik -->
                     <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100">
                         <div class="flex items-center gap-2.5 mb-4">
-                            <span class="bg-plum-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Steg 1</span>
-                            <h3 class="font-serif text-lg font-bold text-plum-950">Patientens ålder & provtagning</h3>
+                            <span data-i18n="step1Badge" class="bg-plum-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Steg 1</span>
+                            <h3 data-i18n="step1Title" class="font-serif text-lg font-bold text-plum-950">Patientens ålder & provtagning</h3>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">Hur gammal är patienten som söker med misstänkta klimakteriebesvär?</p>
+                        <p data-i18n="step1Desc" class="text-sm text-gray-600 mb-4">Hur gammal är patienten som söker med misstänkta klimakteriebesvär?</p>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <button onclick="selectAge('under45')" id="btn-age-under45" class="age-btn text-left p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
-                                <div class="font-bold text-plum-900 text-base mb-1">Ålder &lt; 45 år</div>
-                                <div class="text-xs text-gray-600">Tidig menopaus / Prematur ovariell insufficiens (POI)</div>
+                            <button onclick="selectAge('under45')" id="btn-age-under45" class="age-btn text-start p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
+                                <div data-i18n="ageUnder45Title" class="font-bold text-plum-900 text-base mb-1">Ålder &lt; 45 år</div>
+                                <div data-i18n="ageUnder45Sub" class="text-xs text-gray-600">Tidig menopaus / Prematur ovariell insufficiens (POI)</div>
                             </button>
-                            <button onclick="selectAge('over45')" id="btn-age-over45" class="age-btn text-left p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
-                                <div class="font-bold text-plum-900 text-base mb-1">Ålder ≥ 45 år</div>
-                                <div class="text-xs text-gray-600">Normal klimakterieålder</div>
+                            <button onclick="selectAge('over45')" id="btn-age-over45" class="age-btn text-start p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
+                                <div data-i18n="ageOver45Title" class="font-bold text-plum-900 text-base mb-1">Ålder ≥ 45 år</div>
+                                <div data-i18n="ageOver45Sub" class="text-xs text-gray-600">Normal klimakterieålder</div>
                             </button>
                         </div>
 
@@ -165,64 +189,64 @@
                     <!-- STEG 2: Symtom & Differentialdiagnoser -->
                     <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100">
                         <div class="flex items-center gap-2.5 mb-4">
-                            <span class="bg-plum-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Steg 2</span>
-                            <h3 class="font-serif text-lg font-bold text-plum-950">Identifiera symtom & uteslut andra orsaker</h3>
+                            <span data-i18n="step2Badge" class="bg-plum-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Steg 2</span>
+                            <h3 data-i18n="step2Title" class="font-serif text-lg font-bold text-plum-950">Identifiera symtom & uteslut andra orsaker</h3>
                         </div>
                         
-                        <p class="text-sm text-gray-600 mb-3">Markera aktuella symtom för att bedöma behandlingsindikation:</p>
+                        <p data-i18n="step2Desc" class="text-sm text-gray-600 mb-3">Markera aktuella symtom för att bedöma behandlingsindikation:</p>
                         
                         <div class="space-y-4">
                             <div>
-                                <div class="text-xs font-semibold uppercase tracking-wider text-plum-800 mb-2">Kardinalsymtom</div>
+                                <div data-i18n="cardinalSymptoms" class="text-xs font-semibold uppercase tracking-wider text-plum-800 mb-2">Kardinalsymtom</div>
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                                     <label class="flex items-start gap-2.5 p-3 rounded-xl border border-gray-200 hover:bg-plum-50/50 cursor-pointer transition-colors">
-                                        <input type="checkbox" class="symptom-cb mt-0.5 rounded text-plum-800 focus:ring-plum-700" value="Värmevallningar & svettningar" onchange="updateSummary()">
-                                        <span class="text-sm font-medium text-gray-800">Värmevallningar & svettningar</span>
+                                        <input type="checkbox" class="symptom-cb mt-0.5 rounded text-plum-800 focus:ring-plum-700" data-sym-key="symHotFlashes" onchange="updateSummary()">
+                                        <span data-i18n="symHotFlashes" class="text-sm font-medium text-gray-800">Värmevallningar & svettningar</span>
                                     </label>
                                     <label class="flex items-start gap-2.5 p-3 rounded-xl border border-gray-200 hover:bg-plum-50/50 cursor-pointer transition-colors">
-                                        <input type="checkbox" class="symptom-cb mt-0.5 rounded text-plum-800 focus:ring-plum-700" value="Sömnstörning" onchange="updateSummary()">
-                                        <span class="text-sm font-medium text-gray-800">Sömnstörning</span>
+                                        <input type="checkbox" class="symptom-cb mt-0.5 rounded text-plum-800 focus:ring-plum-700" data-sym-key="symSleep" onchange="updateSummary()">
+                                        <span data-i18n="symSleep" class="text-sm font-medium text-gray-800">Sömnstörning</span>
                                     </label>
                                     <label class="flex items-start gap-2.5 p-3 rounded-xl border border-gray-200 hover:bg-plum-50/50 cursor-pointer transition-colors">
-                                        <input type="checkbox" class="symptom-cb mt-0.5 rounded text-plum-800 focus:ring-plum-700" value="Torra slemhinnor" onchange="updateSummary()">
-                                        <span class="text-sm font-medium text-gray-800">Torra slemhinnor</span>
+                                        <input type="checkbox" class="symptom-cb mt-0.5 rounded text-plum-800 focus:ring-plum-700" data-sym-key="symDryness" onchange="updateSummary()">
+                                        <span data-i18n="symDryness" class="text-sm font-medium text-gray-800">Torra slemhinnor</span>
                                     </label>
                                 </div>
                             </div>
 
                             <div>
-                                <div class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Andra vanliga symtom</div>
+                                <div data-i18n="otherSymptoms" class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Andra vanliga symtom</div>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer">
-                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" value="Humörsvängningar / nedstämdhet" onchange="updateSummary()">
-                                        <span class="text-xs sm:text-sm text-gray-700">Humörsvängningar och nedstämdhet</span>
+                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" data-sym-key="symMood" onchange="updateSummary()">
+                                        <span data-i18n="symMood" class="text-xs sm:text-sm text-gray-700">Humörsvängningar och nedstämdhet</span>
                                     </label>
                                     <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer">
-                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" value="Hjärndimma / koncentrationssvårigheter" onchange="updateSummary()">
-                                        <span class="text-xs sm:text-sm text-gray-700">Koncentrationssvårigheter / hjärndimma</span>
+                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" data-sym-key="symBrainFog" onchange="updateSummary()">
+                                        <span data-i18n="symBrainFog" class="text-xs sm:text-sm text-gray-700">Koncentrationssvårigheter / hjärndimma</span>
                                     </label>
                                     <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer">
-                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" value="Ökad stresskänslighet / ångest" onchange="updateSummary()">
-                                        <span class="text-xs sm:text-sm text-gray-700">Ökad stresskänslighet, oro, ångest</span>
+                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" data-sym-key="symAnxiety" onchange="updateSummary()">
+                                        <span data-i18n="symAnxiety" class="text-xs sm:text-sm text-gray-700">Ökad stresskänslighet, oro, ångest</span>
                                     </label>
                                     <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer">
-                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" value="Led- och muskelvärk / hjärtklappning" onchange="updateSummary()">
-                                        <span class="text-xs sm:text-sm text-gray-700">Led- och muskelvärk / hjärtklappning</span>
+                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" data-sym-key="symJointPain" onchange="updateSummary()">
+                                        <span data-i18n="symJointPain" class="text-xs sm:text-sm text-gray-700">Led- och muskelvärk / hjärtklappning</span>
                                     </label>
                                     <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer">
-                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" value="Viktökning / hud- & hårförändring" onchange="updateSummary()">
-                                        <span class="text-xs sm:text-sm text-gray-700">Viktökning, förändring hy och hår</span>
+                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" data-sym-key="symWeight" onchange="updateSummary()">
+                                        <span data-i18n="symWeight" class="text-xs sm:text-sm text-gray-700">Viktökning, förändring hy och hår</span>
                                     </label>
                                     <label class="flex items-center gap-2.5 p-2.5 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer">
-                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" value="Urinvägsbesvär / trängningar" onchange="updateSummary()">
-                                        <span class="text-xs sm:text-sm text-gray-700">Urininkontinens, trängningar, UVI</span>
+                                        <input type="checkbox" class="symptom-cb rounded text-plum-800" data-sym-key="symUrinary" onchange="updateSummary()">
+                                        <span data-i18n="symUrinary" class="text-xs sm:text-sm text-gray-700">Urininkontinens, trängningar, UVI</span>
                                     </label>
                                 </div>
                             </div>
 
                             <div class="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-950">
-                                <span class="font-bold block mb-1">Kom ihåg differentialdiagnoser när bilden motiverar det:</span>
-                                Tyreoidasjukdom, infektion, reumatologisk sjukdom, depression/utmattning, sömnapné, anemi eller läkemedelsbiverkningar.
+                                <span data-i18n="diffDiagTitle" class="font-bold block mb-1">Kom ihåg differentialdiagnoser när bilden motiverar det:</span>
+                                <span data-i18n="diffDiagList">Tyreoidasjukdom, infektion, reumatologisk sjukdom, depression/utmattning, sömnapné, anemi eller läkemedelsbiverkningar.</span>
                             </div>
                         </div>
                     </div>
@@ -230,8 +254,8 @@
                     <!-- STEG 3: Kontraindikationer & Remiss -->
                     <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100">
                         <div class="flex items-center gap-2.5 mb-4">
-                            <span class="bg-plum-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Steg 3</span>
-                            <h3 class="font-serif text-lg font-bold text-plum-950">Kontrollera kontraindikationer & remissbehov</h3>
+                            <span data-i18n="step3Badge" class="bg-plum-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Steg 3</span>
+                            <h3 data-i18n="step3Title" class="font-serif text-lg font-bold text-plum-950">Kontrollera kontraindikationer & remissbehov</h3>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -240,8 +264,8 @@
                                 <label class="flex items-start gap-2 cursor-pointer">
                                     <input type="checkbox" id="contra-abs" class="mt-1 rounded text-red-700 focus:ring-red-600" onchange="updateSummary()">
                                     <div>
-                                        <span class="font-bold text-red-900 text-sm block">Absoluta kontraindikationer</span>
-                                        <ul class="text-xs text-red-800 mt-1.5 space-y-1 list-disc pl-4">
+                                        <span data-i18n="contraAbsTitle" class="font-bold text-red-900 text-sm block">Absoluta kontraindikationer</span>
+                                        <ul id="contra-abs-list" class="text-xs text-red-800 mt-1.5 space-y-1 list-disc ps-4">
                                             <li>Tidigare bröstcancer</li>
                                             <li>Odiagnostiserad vaginal blödning</li>
                                             <li>Aktuell DVT / lungemboli</li>
@@ -257,8 +281,8 @@
                                 <label class="flex items-start gap-2 cursor-pointer">
                                     <input type="checkbox" id="contra-rel" class="mt-1 rounded text-amber-700 focus:ring-amber-600" onchange="updateSummary()">
                                     <div>
-                                        <span class="font-bold text-amber-900 text-sm block">Relativa kontraindikationer</span>
-                                        <ul class="text-xs text-amber-800 mt-1.5 space-y-1 list-disc pl-4">
+                                        <span data-i18n="contraRelTitle" class="font-bold text-amber-900 text-sm block">Relativa kontraindikationer</span>
+                                        <ul id="contra-rel-list" class="text-xs text-amber-800 mt-1.5 space-y-1 list-disc ps-4">
                                             <li>Diabetes med kärlpåverkan</li>
                                             <li>Hög kardiovaskulär risk</li>
                                             <li>Tidigare DVT/LE eller riskfaktorer</li>
@@ -274,8 +298,8 @@
                                 <label class="flex items-start gap-2 cursor-pointer">
                                     <input type="checkbox" id="contra-other" class="mt-1 rounded text-indigo-700 focus:ring-indigo-600" onchange="updateSummary()">
                                     <div>
-                                        <span class="font-bold text-indigo-900 text-sm block">Andra svårigheter</span>
-                                        <ul class="text-xs text-indigo-800 mt-1.5 space-y-1 list-disc pl-4">
+                                        <span data-i18n="contraOtherTitle" class="font-bold text-indigo-900 text-sm block">Andra svårigheter</span>
+                                        <ul id="contra-other-list" class="text-xs text-indigo-800 mt-1.5 space-y-1 list-disc ps-4">
                                             <li>&lt;45 år, &gt;60 år, &gt;10 år sedan menopaus</li>
                                             <li>Blödningsrubbningar / oklarheter</li>
                                             <li>Behandlingssvikt</li>
@@ -291,23 +315,23 @@
                     <!-- STEG 4: Fas & Behandlingsval -->
                     <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100">
                         <div class="flex items-center gap-2.5 mb-4">
-                            <span class="bg-plum-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Steg 4</span>
-                            <h3 class="font-serif text-lg font-bold text-plum-950">Klimakteriefas & Val av regim</h3>
+                            <span data-i18n="step4Badge" class="bg-plum-900 text-white text-xs font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider">Steg 4</span>
+                            <h3 data-i18n="step4Title" class="font-serif text-lg font-bold text-plum-950">Klimakteriefas & Val av regim</h3>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">Välj patientens blödningsstatus för att se rekommenderad regim (förutsatt kvarvarande livmoder):</p>
+                        <p data-i18n="step4Desc" class="text-sm text-gray-600 mb-4">Välj patientens blödningsstatus för att se rekommenderad regim (förutsatt kvarvarande livmoder):</p>
 
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <button onclick="selectPhase('peri')" id="btn-phase-peri" class="phase-btn text-left p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
-                                <div class="font-bold text-plum-900 text-sm mb-1">Perimenopaus</div>
-                                <div class="text-xs text-gray-600">Har fortfarande menstruationer / oregelbundna blödningar</div>
+                            <button onclick="selectPhase('peri')" id="btn-phase-peri" class="phase-btn text-start p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
+                                <div data-i18n="phasePeriTitle" class="font-bold text-plum-900 text-sm mb-1">Perimenopaus</div>
+                                <div data-i18n="phasePeriSub" class="text-xs text-gray-600">Har fortfarande menstruationer / oregelbundna blödningar</div>
                             </button>
-                            <button onclick="selectPhase('post')" id="btn-phase-post" class="phase-btn text-left p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
-                                <div class="font-bold text-plum-900 text-sm mb-1">Postmenopaus</div>
-                                <div class="text-xs text-gray-600">&gt; 1 år sedan sista menstruation (blödningsfri)</div>
+                            <button onclick="selectPhase('post')" id="btn-phase-post" class="phase-btn text-start p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
+                                <div data-i18n="phasePostTitle" class="font-bold text-plum-900 text-sm mb-1">Postmenopaus</div>
+                                <div data-i18n="phasePostSub" class="text-xs text-gray-600">&gt; 1 år sedan sista menstruation (blödningsfri)</div>
                             </button>
-                            <button onclick="selectPhase('hyst')" id="btn-phase-hyst" class="phase-btn text-left p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
-                                <div class="font-bold text-plum-900 text-sm mb-1">Hysterektomerad</div>
-                                <div class="text-xs text-gray-600">Saknar livmoder (behöver ej gestagentillägg)</div>
+                            <button onclick="selectPhase('hyst')" id="btn-phase-hyst" class="phase-btn text-start p-4 rounded-xl border-2 border-gray-200 hover:border-plum-400 transition-all">
+                                <div data-i18n="phaseHystTitle" class="font-bold text-plum-900 text-sm mb-1">Hysterektomerad</div>
+                                <div data-i18n="phaseHystSub" class="text-xs text-gray-600">Saknar livmoder (behöver ej gestagentillägg)</div>
                             </button>
                         </div>
 
@@ -315,7 +339,7 @@
                         <div class="mt-4 pt-4 border-t border-gray-100">
                             <label class="flex items-center gap-3 cursor-pointer">
                                 <input type="checkbox" id="risk-dvt" class="w-4 h-4 rounded text-plum-800 focus:ring-plum-700" onchange="updateSummary()">
-                                <span class="text-sm font-medium text-gray-800">Patienten har riskfaktorer för venös tromboembolism (DVT), övervikt eller migrän (Välj transdermalt östrogen)</span>
+                                <span data-i18n="riskDvtLabel" class="text-sm font-medium text-gray-800">Patienten har riskfaktorer för venös tromboembolism (DVT), övervikt eller migrän (Välj transdermalt östrogen)</span>
                             </label>
                         </div>
                     </div>
@@ -325,14 +349,14 @@
                 <!-- Right Column: Live Clinical Decision Output (5 cols) -->
                 <div class="lg:col-span-5 lg:sticky lg:top-24 space-y-5">
                     <div class="bg-white rounded-2xl shadow-md border-2 border-plum-900/15 overflow-hidden">
-                        <div class="bg-plum-900 text-white px-5 py-4 flex items-center justify-between">
+                        <div class="bg-plum-900 text-white px-5 py-4 flex items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
-                                <i data-lucide="clipboard-check" class="w-5 h-5 text-plum-200"></i>
-                                <h3 class="font-serif font-bold text-lg">Beslutsstöd & Åtgärdsplan</h3>
+                                <i data-lucide="clipboard-check" class="w-5 h-5 text-plum-200 shrink-0"></i>
+                                <h3 data-i18n="outputHeader" class="font-serif font-bold text-lg">Beslutsstöd & Åtgärdsplan</h3>
                             </div>
-                            <button onclick="copySummaryToClipboard()" class="text-xs bg-white/15 hover:bg-white/25 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors" title="Kopiera journalanteckning">
+                            <button onclick="copySummaryToClipboard()" class="text-xs bg-white/15 hover:bg-white/25 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors shrink-0">
                                 <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                <span>Kopiera</span>
+                                <span data-i18n="copyBtn">Kopiera</span>
                             </button>
                         </div>
 
@@ -340,10 +364,10 @@
                             <!-- Always present: Lifestyle -->
                             <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950">
                                 <div class="font-bold flex items-center gap-1.5 text-emerald-900 mb-1">
-                                    <i data-lucide="heart-pulse" class="w-4 h-4"></i>
-                                    <span>1. Grundbehandling: Individanpassade livsstilsråd</span>
+                                    <i data-lucide="heart-pulse" class="w-4 h-4 shrink-0"></i>
+                                    <span data-i18n="lifestyleTitle">1. Grundbehandling: Individanpassade livsstilsråd</span>
                                 </div>
-                                <p class="text-xs leading-relaxed">
+                                <p data-i18n="lifestyleDesc" class="text-xs leading-relaxed">
                                     Rekommendera alltid <strong>fysisk aktivitet</strong> (kondition & styrka, minskar vasomotorsymtom & nedstämdhet), varierad kost, stresshantering, god sömnhygien samt undvika utlösande faktorer (alkohol, varma miljöer).
                                 </p>
                             </div>
@@ -352,16 +376,16 @@
                             <div id="output-referral" class="hidden"></div>
                             <div id="output-diagnostics" class="hidden"></div>
                             <div id="output-treatment" class="p-4 rounded-xl bg-plum-50 border border-plum-200 text-plum-950">
-                                <p class="text-xs text-plum-800 italic">Välj ålder, symtom och fas till vänster för att generera behandlingsförslag...</p>
+                                <p data-i18n="treatmentPlaceholder" class="text-xs text-plum-800 italic">Välj ålder, symtom och fas till vänster för att generera behandlingsförslag...</p>
                             </div>
 
                             <!-- Follow-up -->
                             <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800">
                                 <div class="font-bold flex items-center gap-1.5 text-gray-900 mb-1">
-                                    <i data-lucide="calendar-clock" class="w-4 h-4 text-plum-800"></i>
-                                    <span>Uppföljning efter ca 3 månader</span>
+                                    <i data-lucide="calendar-clock" class="w-4 h-4 text-plum-800 shrink-0"></i>
+                                    <span data-i18n="followupTitle">Uppföljning efter ca 3 månader</span>
                                 </div>
-                                <ul class="text-xs space-y-1 list-disc pl-4 text-gray-600">
+                                <ul id="followup-list" class="text-xs space-y-1 list-disc ps-4 text-gray-600">
                                     <li>Utvärdera symtomlindring, biverkningar och följsamhet.</li>
                                     <li>Vid otillräcklig effekt: kontrollera preparat, dos, applikationsteknik och differentialdiagnoser.</li>
                                     <li>Vid kvarstående oklarheter eller behandlingssvikt: <strong>remiss till gynekolog</strong>.</li>
@@ -384,14 +408,14 @@
             <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-gray-100">
                     <div>
-                        <div class="flex items-center gap-2.5">
-                            <h2 class="font-serif text-xl sm:text-2xl font-bold text-plum-950">Mina Sparade Bilder & Infografik</h2>
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <h2 data-i18n="galTitle" class="font-serif text-xl sm:text-2xl font-bold text-plum-950">Mina Sparade Bilder & Infografik</h2>
                             <span id="cloud-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                Ansluter till molnet...
+                                <span data-i18n="cloudConnecting">Ansluter till molnet...</span>
                             </span>
                         </div>
-                        <p class="text-sm text-gray-600 mt-1">
+                        <p data-i18n="galDesc" class="text-sm text-gray-600 mt-1">
                             Ladda upp dina egna sammanfattningar, algoritmer eller tabeller. De komprimeras automatiskt och sparas säkert online.
                         </p>
                     </div>
@@ -406,8 +430,8 @@
                                 <div class="p-3 bg-white rounded-full shadow-sm text-plum-800 group-hover:scale-110 transition-transform mb-2">
                                     <i data-lucide="upload-cloud" class="w-6 h-6"></i>
                                 </div>
-                                <p class="text-sm font-semibold text-plum-950">Klicka för att välja bild eller dra och släpp här</p>
-                                <p class="text-xs text-gray-500 mt-1">Stöder PNG, JPG, WEBP (sparas automatiskt i molnet)</p>
+                                <p data-i18n="dropTitle" class="text-sm font-semibold text-plum-950">Klicka för att välja bild eller dra och släpp här</p>
+                                <p data-i18n="dropSub" class="text-xs text-gray-500 mt-1">Stöder PNG, JPG, WEBP (sparas automatiskt i molnet)</p>
                                 <p id="selected-file-name" class="text-xs font-medium text-plum-700 mt-2 hidden"></p>
                             </div>
                             <input id="image-file-input" type="file" accept="image/*" class="hidden" onchange="handleFileSelect(event)" />
@@ -417,24 +441,24 @@
                     <!-- Metadata Inputs & Save Button -->
                     <div class="lg:col-span-5 space-y-3 bg-gray-50/80 p-4 rounded-2xl border border-gray-200/80">
                         <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Bildtitel *</label>
+                            <label data-i18n="imgTitleLabel" class="block text-xs font-semibold text-gray-700 mb-1">Bildtitel *</label>
                             <input type="text" id="img-title-input" placeholder="T.ex. Behandlingsalgoritm Klimakteriet" class="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-plum-700 bg-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Kategori</label>
+                            <label data-i18n="imgCatLabel" class="block text-xs font-semibold text-gray-700 mb-1">Kategori</label>
                             <select id="img-category-input" class="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-plum-700 bg-white">
-                                <option value="Algoritm & Flöde">Algoritm & Flödesschema</option>
-                                <option value="Översikt">Översikt & Grundfakta</option>
-                                <option value="Symtom">Symtom</option>
-                                <option value="Behandling">Behandling</option>
-                                <option value="Riktlinjer">Socialstyrelsens riktlinjer</option>
-                                <option value="Preparat & Dosering">Preparat, Ekvipotens & Restnotering</option>
-                                <option value="Övrigt">Övrigt</option>
+                                <option value="Algoritm & Flöde" data-i18n="catAlg">Algoritm & Flödesschema</option>
+                                <option value="Översikt" data-i18n="catOverview">Översikt & Grundfakta</option>
+                                <option value="Symtom" data-i18n="catSymptoms">Symtom</option>
+                                <option value="Behandling" data-i18n="catTreatment">Behandling</option>
+                                <option value="Riktlinjer" data-i18n="catGuidelines">Socialstyrelsens riktlinjer</option>
+                                <option value="Preparat & Dosering" data-i18n="catPrep">Preparat, Ekvipotens & Restnotering</option>
+                                <option value="Övrigt" data-i18n="catOther">Övrigt</option>
                             </select>
                         </div>
                         <button onclick="uploadImageToCloud()" id="upload-btn" class="w-full py-2.5 px-4 bg-plum-900 hover:bg-plum-800 text-white font-medium text-sm rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all disabled:opacity-50">
                             <i data-lucide="cloud-upload" class="w-4 h-4"></i>
-                            <span>Spara bild online</span>
+                            <span data-i18n="saveImgBtn">Spara bild online</span>
                         </button>
                     </div>
                 </div>
@@ -443,17 +467,17 @@
             <!-- Filter & Search Bar -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div class="flex flex-wrap gap-2" id="category-filters">
-                    <button onclick="filterGallery('Alla')" class="filter-chip active px-3.5 py-1.5 rounded-full text-xs font-medium bg-plum-900 text-white transition-colors">Alla</button>
-                    <button onclick="filterGallery('Algoritm & Flöde')" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Algoritm & Flöde</button>
-                    <button onclick="filterGallery('Översikt')" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Översikt</button>
-                    <button onclick="filterGallery('Symtom')" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Symtom</button>
-                    <button onclick="filterGallery('Behandling')" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Behandling</button>
-                    <button onclick="filterGallery('Riktlinjer')" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Riktlinjer</button>
-                    <button onclick="filterGallery('Preparat & Dosering')" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Preparat & Dosering</button>
+                    <button onclick="filterGallery('Alla')" data-cat-key="Alla" data-i18n="filterAll" class="filter-chip active px-3.5 py-1.5 rounded-full text-xs font-medium bg-plum-900 text-white transition-colors">Alla</button>
+                    <button onclick="filterGallery('Algoritm & Flöde')" data-cat-key="Algoritm & Flöde" data-i18n="filterAlg" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Algoritm & Flöde</button>
+                    <button onclick="filterGallery('Översikt')" data-cat-key="Översikt" data-i18n="filterOverview" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Översikt</button>
+                    <button onclick="filterGallery('Symtom')" data-cat-key="Symtom" data-i18n="filterSymptoms" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Symtom</button>
+                    <button onclick="filterGallery('Behandling')" data-cat-key="Behandling" data-i18n="filterTreatment" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Behandling</button>
+                    <button onclick="filterGallery('Riktlinjer')" data-cat-key="Riktlinjer" data-i18n="filterGuidelines" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Riktlinjer</button>
+                    <button onclick="filterGallery('Preparat & Dosering')" data-cat-key="Preparat & Dosering" data-i18n="filterPrep" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors">Preparat & Dosering</button>
                 </div>
                 <div class="relative w-full sm:w-64">
-                    <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                    <input type="text" id="gallery-search" oninput="renderGallery()" placeholder="Sök bland sparade bilder..." class="w-full pl-9 pr-3.5 py-1.5 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-plum-700 bg-white">
+                    <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute start-3 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" id="gallery-search" oninput="renderGallery()" placeholder="Sök bland sparade bilder..." class="w-full ps-9 pe-3.5 py-1.5 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-plum-700 bg-white">
                 </div>
             </div>
 
@@ -467,8 +491,8 @@
                 <div class="w-14 h-14 rounded-full bg-plum-50 text-plum-800 flex items-center justify-center mx-auto mb-3">
                     <i data-lucide="image-plus" class="w-7 h-7"></i>
                 </div>
-                <h3 class="font-serif text-lg font-bold text-gray-900">Inga sparade bilder ännu</h3>
-                <p class="text-sm text-gray-500 max-w-md mx-auto mt-1">
+                <h3 data-i18n="emptyTitle" class="font-serif text-lg font-bold text-gray-900">Inga sparade bilder ännu</h3>
+                <p data-i18n="emptyDesc" class="text-sm text-gray-500 max-w-md mx-auto mt-1">
                     Ladda upp dina sammanfattningsbilder ovan så sparas de direkt i ditt molnarkiv och visas här.
                 </p>
             </div>
@@ -485,10 +509,10 @@
                 <!-- Begreppsförklaring -->
                 <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100 space-y-4">
                     <h2 class="font-serif text-xl font-bold text-plum-950 flex items-center gap-2">
-                        <i data-lucide="info" class="w-5 h-5 text-plum-700"></i>
-                        <span>Definitioner & Tidslinje</span>
+                        <i data-lucide="info" class="w-5 h-5 text-plum-700 shrink-0"></i>
+                        <span data-i18n="refDefTitle">Definitioner & Tidslinje</span>
                     </h2>
-                    <div class="space-y-2.5 text-sm">
+                    <div id="ref-def-cards" class="space-y-2.5 text-sm">
                         <div class="p-3.5 rounded-xl bg-plum-900 text-white">
                             <span class="font-bold">Menopaus:</span> Tidpunkt för sista menstruation (fastställs i efterhand efter 12 månaders blödningsfrihet).
                         </div>
@@ -503,19 +527,19 @@
                     <!-- Visual Timeline -->
                     <div class="pt-3">
                         <div class="flex justify-between text-xs font-bold text-gray-500 uppercase mb-1">
-                            <span>Blödningar</span>
-                            <span class="text-red-600">Menopaus</span>
-                            <span>Inga blödningar</span>
+                            <span data-i18n="tlBleeding">Blödningar</span>
+                            <span data-i18n="tlMenopause" class="text-red-600">Menopaus</span>
+                            <span data-i18n="tlNoBleeding">Inga blödningar</span>
                         </div>
                         <div class="relative h-3 bg-gray-200 rounded-full overflow-hidden flex">
-                            <div class="w-1/2 bg-sky-500 h-full" title="Perimenopaus / Blödningar"></div>
+                            <div class="w-1/2 bg-sky-500 h-full"></div>
                             <div class="w-1 bg-red-600 h-full z-10"></div>
-                            <div class="w-1/2 bg-emerald-600 h-full" title="Postmenopaus"></div>
+                            <div class="w-1/2 bg-emerald-600 h-full"></div>
                         </div>
                         <div class="flex justify-between text-[11px] text-gray-500 mt-1">
-                            <span>Sekventiell behandling</span>
-                            <span>+1 år</span>
-                            <span>Kontinuerlig behandling</span>
+                            <span data-i18n="tlSeq">Sekventiell behandling</span>
+                            <span data-i18n="tlPlus1">+1 år</span>
+                            <span data-i18n="tlCont">Kontinuerlig behandling</span>
                         </div>
                     </div>
                 </div>
@@ -523,10 +547,10 @@
                 <!-- Socialstyrelsens 5 riktlinjer -->
                 <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100 space-y-3">
                     <h2 class="font-serif text-xl font-bold text-plum-950 flex items-center gap-2">
-                        <i data-lucide="shield-check" class="w-5 h-5 text-plum-700"></i>
-                        <span>Socialstyrelsens riktlinjer</span>
+                        <i data-lucide="shield-check" class="w-5 h-5 text-plum-700 shrink-0"></i>
+                        <span data-i18n="refGuidelinesTitle">Socialstyrelsens riktlinjer</span>
                     </h2>
-                    <ol class="space-y-2.5 text-sm">
+                    <ol id="ref-guidelines-list" class="space-y-2.5 text-sm">
                         <li class="flex items-start gap-3 p-2.5 rounded-xl bg-plum-50/70">
                             <span class="w-6 h-6 rounded-full bg-plum-900 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
                             <span><strong>FSH-prov &lt; 45 år:</strong> Ta FSH-prov för personer under 45 år med oförklarad amenorré (med eller utan klimakteriebesvär).</span>
@@ -555,26 +579,26 @@
             <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                     <div>
-                        <h2 class="font-serif text-xl font-bold text-plum-950">Ekvipotenta behandlingar (Estradiol)</h2>
-                        <p class="text-xs text-gray-500">Ungefärlig ekvipotens mellan olika beredningsformer vid byte t.ex. på grund av restnotering.</p>
+                        <h2 data-i18n="eqTitle" class="font-serif text-xl font-bold text-plum-950">Ekvipotenta behandlingar (Estradiol)</h2>
+                        <p data-i18n="eqSub" class="text-xs text-gray-500">Ungefärlig ekvipotens mellan olika beredningsformer vid byte t.ex. på grund av restnotering.</p>
                     </div>
-                    <div class="text-xs bg-plum-50 text-plum-900 px-3 py-1.5 rounded-lg border border-plum-200 font-medium">
+                    <div data-i18n="eqNote" class="text-xs bg-plum-50 text-plum-900 px-3 py-1.5 rounded-lg border border-plum-200 font-medium">
                         Indivina = Progynon + Provera &nbsp;|&nbsp; Femasekvens = dubbeldos Novofem (mer NETA)
                     </div>
                 </div>
 
                 <div class="overflow-x-auto rounded-xl border border-gray-200">
-                    <table class="w-full text-left border-collapse text-sm">
+                    <table class="w-full text-start border-collapse text-sm">
                         <thead>
                             <tr class="bg-plum-900 text-white">
-                                <th class="py-3 px-4 font-semibold">Beredningsform</th>
-                                <th class="py-3 px-4 font-semibold">Preparat</th>
-                                <th class="py-3 px-4 font-semibold">Lågdos</th>
-                                <th class="py-3 px-4 font-semibold">Medelhög dos</th>
-                                <th class="py-3 px-4 font-semibold">Högdos</th>
+                                <th data-i18n="thForm" class="py-3 px-4 font-semibold text-start">Beredningsform</th>
+                                <th data-i18n="thPrep" class="py-3 px-4 font-semibold text-start">Preparat</th>
+                                <th data-i18n="thLow" class="py-3 px-4 font-semibold text-start">Lågdos</th>
+                                <th data-i18n="thMed" class="py-3 px-4 font-semibold text-start">Medelhög dos</th>
+                                <th data-i18n="thHigh" class="py-3 px-4 font-semibold text-start">Högdos</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody id="eq-table-body" class="divide-y divide-gray-200">
                             <tr class="hover:bg-plum-50/40">
                                 <td class="py-3 px-4 font-medium text-gray-900">Tablett</td>
                                 <td class="py-3 px-4 text-gray-700">Femanest, Progynon</td>
@@ -619,10 +643,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100">
                     <h3 class="font-serif text-lg font-bold text-plum-950 mb-3 flex items-center gap-2">
-                        <i data-lucide="package-search" class="w-5 h-5 text-plum-700"></i>
-                        <span>Hantering av restnoteringar</span>
+                        <i data-lucide="package-search" class="w-5 h-5 text-plum-700 shrink-0"></i>
+                        <span data-i18n="shortageTitle">Hantering av restnoteringar</span>
                     </h3>
-                    <ul class="space-y-2.5 text-sm text-gray-700 list-disc pl-5">
+                    <ul id="shortage-list" class="space-y-2.5 text-sm text-gray-700 list-disc ps-5">
                         <li><strong>Byt plåster/spray mot gel:</strong> Vid brist på Estradot eller Lenzetto, byt till ekvipotent dos av <em>Divigel</em> eller <em>Estrogel</em>.</li>
                         <li><strong>Dela starkare plåster:</strong> När starkare depotplåster finns tillgängliga kan dessa klippas/delas för rätt styrka.</li>
                         <li><strong>Överväg tabletter:</strong> Perorala alternativ har oftast god tillgänglighet och lägre pris om kontraindikationer saknas.</li>
@@ -633,10 +657,10 @@
 
                 <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-plum-100">
                     <h3 class="font-serif text-lg font-bold text-plum-950 mb-3 flex items-center gap-2">
-                        <i data-lucide="alert-circle" class="w-5 h-5 text-plum-700"></i>
-                        <span>Viktigt vid val av preparat</span>
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-plum-700 shrink-0"></i>
+                        <span data-i18n="prepTipsTitle">Viktigt vid val av preparat</span>
                     </h3>
-                    <ul class="space-y-2.5 text-sm text-gray-700 list-disc pl-5">
+                    <ul id="prep-tips-list" class="space-y-2.5 text-sm text-gray-700 list-disc ps-5">
                         <li><strong>Transdermalt östrogen:</strong> Ingen riskökning för DVT (förstahandsval vid trombosrisk/övervikt). <em>Obs: Akta barn och husdjur för hudkontakt vid spray och gel!</em></li>
                         <li><strong>Gestagentillägg (skydd för endometriet):</strong> Mirena hormonspiral ger blödningsfrihet + antikonception perimenopausalt. Alternativt Provera (10 mg 12 d/mån sekventiellt) eller fast kombination.</li>
                         <li><strong>Kostnad & Högkostnadsskydd:</strong> Allt fler preparat ligger utanför förmånen (t.ex. Femoston, Lenzetto, lokal behandling) och prishöjningar har skett.</li>
@@ -659,7 +683,7 @@
             <div class="flex items-center gap-2">
                 <a id="lightbox-download" href="#" download="klimakterie-infografik.jpg" class="px-3.5 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-medium flex items-center gap-1.5 transition-colors">
                     <i data-lucide="download" class="w-4 h-4"></i>
-                    <span>Ladda ner</span>
+                    <span data-i18n="downloadBtn">Ladda ner</span>
                 </a>
                 <button onclick="closeLightbox()" class="p-2 rounded-full bg-white/10 hover:bg-white/25 text-white transition-colors">
                     <i data-lucide="x" class="w-6 h-6"></i>
@@ -669,26 +693,26 @@
         <div class="flex-grow flex items-center justify-center my-4 overflow-hidden">
             <img id="lightbox-img" src="" alt="Förhandsvisning" class="max-h-[80vh] max-w-full object-contain rounded-lg shadow-2xl">
         </div>
-        <div class="text-center text-xs text-gray-400">
+        <div data-i18n="lightboxHint" class="text-center text-xs text-gray-400">
             Klicka på krysset eller tryck ESC för att stänga
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal (No browser confirm()) -->
+    <!-- Delete Confirmation Modal -->
     <div id="delete-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-gray-100">
             <div class="flex items-center gap-3 text-red-600 mb-3">
                 <div class="p-2 bg-red-100 rounded-full">
                     <i data-lucide="trash-2" class="w-5 h-5"></i>
                 </div>
-                <h3 class="font-bold text-lg text-gray-900">Ta bort bild?</h3>
+                <h3 data-i18n="delModalTitle" class="font-bold text-lg text-gray-900">Ta bort bild?</h3>
             </div>
-            <p class="text-sm text-gray-600 mb-5">
-                Är du säker på att du vill radera den här bilden från molnarkivet? Åtgärden går inte att ångra.
+            <p data-i18n="delModalDesc" class="text-sm text-gray-600 mb-5">
+                Är du säker på att du vill radera den här bilden från arkivet? Åtgärden går inte att ångra.
             </p>
             <div class="flex justify-end gap-2.5">
-                <button onclick="closeDeleteModal()" class="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors">Avbryt</button>
-                <button id="confirm-delete-btn" class="px-4 py-2 rounded-xl text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors">Ja, ta bort</button>
+                <button onclick="closeDeleteModal()" data-i18n="cancelBtn" class="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors">Avbryt</button>
+                <button id="confirm-delete-btn" data-i18n="confirmDelBtn" class="px-4 py-2 rounded-xl text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors">Ja, ta bort</button>
             </div>
         </div>
     </div>
@@ -696,13 +720,669 @@
     <!-- Footer -->
     <footer class="bg-white border-t border-plum-100 py-5 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
-            <p>Kliniskt beslutsstöd baserat på Socialstyrelsens riktlinjer & Kloka listan.</p>
+            <p data-i18n="footerText">Kliniskt beslutsstöd baserat på Socialstyrelsens riktlinjer & Kloka listan.</p>
             <p id="user-id-display" class="font-mono text-[11px] text-gray-400">Initierar session...</p>
         </div>
     </footer>
 
     <!-- ========================================================= -->
-    <!-- JAVASCRIPT & FIREBASE CLOUD STORAGE LOGIC                 -->
+    <!-- MULTILINGUAL DICTIONARY & UI TRANSLATION ENGINE           -->
+    <!-- ========================================================= -->
+    <script>
+        window.currentLang = 'sv';
+
+        const I18N = {
+            sv: {
+                pageTitle: "Kliniskt Beslutsstöd: Klimakteriet & Bildarkiv",
+                hdrTitle: "Menopaus & Klimakteriet",
+                hdrSubtitle: "Kliniskt beslutsstöd, behandlingsalgoritm & molnsparat bildarkiv",
+                tabAlgorithm: "Interaktiv Algoritm",
+                tabGallery: "Mina Sparade Bilder",
+                tabReference: "Lathund & Ekvipotens",
+                algIntroTitle: "Klinisk vägledning steg-för-steg",
+                algIntroDesc: "Klicka i patientens uppgifter nedan för skräddarsydda rekommendationer enligt Socialstyrelsen & Kloka listan.",
+                resetBtn: "Börja om bedömning",
+                resetToast: "Bedömningen har återställts.",
+                step1Badge: "Steg 1",
+                step1Title: "Patientens ålder & provtagning",
+                step1Desc: "Hur gammal är patienten som söker med misstänkta klimakteriebesvär?",
+                ageUnder45Title: "Ålder < 45 år",
+                ageUnder45Sub: "Tidig menopaus / Prematur ovariell insufficiens (POI)",
+                ageOver45Title: "Ålder ≥ 45 år",
+                ageOver45Sub: "Normal klimakterieålder",
+                ageUnder45Advice: `<div class="font-bold text-plum-900 mb-1">Åtgärd vid ålder &lt; 45 år (Socialstyrelsen):</div><p class="text-xs leading-relaxed">Ta <strong>FSH-prov</strong> vid oförklarad amenorré (med eller utan klimakteriebesvär). Observera att ålder &lt; 45 år även utgör indikation för remiss/samråd med gynekolog och ofta kräver högre östradioldos (t.ex. 2 mg tablett eller motsvarande).</p>`,
+                ageOver45Advice: `<div class="font-bold text-plum-900 mb-1">Åtgärd vid ålder ≥ 45 år (Socialstyrelsen):</div><p class="text-xs leading-relaxed"><strong>Ta INTE FSH-prov rutinmässigt.</strong> Ställ diagnos baserat på klinisk bild och symtom. Friska kvinnor med typiska klimakteriebesvär kan i regel bedömas och behandlas i primärvården.</p>`,
+                step2Badge: "Steg 2",
+                step2Title: "Identifiera symtom & uteslut andra orsaker",
+                step2Desc: "Markera aktuella symtom för att bedöma behandlingsindikation:",
+                cardinalSymptoms: "Kardinalsymtom",
+                symHotFlashes: "Värmevallningar & svettningar",
+                symSleep: "Sömnstörning",
+                symDryness: "Torra slemhinnor",
+                otherSymptoms: "Andra vanliga symtom",
+                symMood: "Humörsvängningar och nedstämdhet",
+                symBrainFog: "Koncentrationssvårigheter / hjärndimma",
+                symAnxiety: "Ökad stresskänslighet, oro, ångest",
+                symJointPain: "Led- och muskelvärk / hjärtklappning",
+                symWeight: "Viktökning, förändring hy och hår",
+                symUrinary: "Urininkontinens, trängningar, UVI",
+                diffDiagTitle: "Kom ihåg differentialdiagnoser när bilden motiverar det:",
+                diffDiagList: "Tyreoidasjukdom, infektion, reumatologisk sjukdom, depression/utmattning, sömnapné, anemi eller läkemedelsbiverkningar.",
+                step3Badge: "Steg 3",
+                step3Title: "Kontrollera kontraindikationer & remissbehov",
+                contraAbsTitle: "Absoluta kontraindikationer",
+                contraAbsItems: ["Tidigare bröstcancer", "Odiagnostiserad vaginal blödning", "Aktuell DVT / lungemboli", "Arteriell hjärt-kärlsjukdom", "Allvarlig gall-/leversjukdom"],
+                contraRelTitle: "Relativa kontraindikationer",
+                contraRelItems: ["Diabetes med kärlpåverkan", "Hög kardiovaskulär risk", "Tidigare DVT/LE eller riskfaktorer", "Gallblåsesjukdom", "Tidigare endometriecancer"],
+                contraOtherTitle: "Andra svårigheter",
+                contraOtherItems: ["<45 år, >60 år, >10 år sedan menopaus", "Blödningsrubbningar / oklarheter", "Behandlingssvikt", "Lång behandlingsduration", "Preparat utanför Kloka listan"],
+                step4Badge: "Steg 4",
+                step4Title: "Klimakteriefas & Val av regim",
+                step4Desc: "Välj patientens blödningsstatus för att se rekommenderad regim (förutsatt kvarvarande livmoder):",
+                phasePeriTitle: "Perimenopaus",
+                phasePeriSub: "Har fortfarande menstruationer / oregelbundna blödningar",
+                phasePostTitle: "Postmenopaus",
+                phasePostSub: "> 1 år sedan sista menstruation (blödningsfri)",
+                phaseHystTitle: "Hysterektomerad",
+                phaseHystSub: "Saknar livmoder (behöver ej gestagentillägg)",
+                riskDvtLabel: "Patienten har riskfaktorer för venös tromboembolism (DVT), övervikt eller migrän (Välj transdermalt östrogen)",
+                outputHeader: "Beslutsstöd & Åtgärdsplan",
+                copyBtn: "Kopiera",
+                copyHeader: "KLINISKT BESLUTSSTÖD – KLIMAKTERIEBESVÄR",
+                copySuccess: "Sammanfattning kopierad till urklipp!",
+                copyError: "Kunde inte kopiera texten.",
+                lifestyleTitle: "1. Grundbehandling: Individanpassade livsstilsråd",
+                lifestyleDesc: "Rekommendera alltid <strong>fysisk aktivitet</strong> (kondition & styrka, minskar vasomotorsymtom & nedstämdhet), varierad kost, stresshantering, god sömnhygien samt undvika utlösande faktorer (alkohol, varma miljöer).",
+                treatmentPlaceholder: "Välj ålder, symtom och fas till vänster för att generera behandlingsförslag...",
+                followupTitle: "Uppföljning efter ca 3 månader",
+                followupItems: [
+                    "Utvärdera symtomlindring, biverkningar och följsamhet.",
+                    "Vid otillräcklig effekt: kontrollera preparat, dos, applikationsteknik och differentialdiagnoser.",
+                    "Vid kvarstående oklarheter eller behandlingssvikt: <strong>remiss till gynekolog</strong>."
+                ],
+                outAbsStop: "<strong>STOPP – Absolut kontraindikation:</strong> Systemisk hormonbehandling ska ej sättas in. Skicka <strong>remiss till gynekolog</strong> för bedömning av alternativa behandlingar.",
+                outRelWarn: "<strong>Relativ kontraindikation:</strong> Överväg <strong>remiss till gynekolog</strong> eller noggrann individuell risk-nyttabedömning (t.ex. transdermalt val vid kärlrisk).",
+                outOtherWarn: "<strong>Särskild hänsyn / Remissindikation:</strong> Vid ålder &lt;45 år, &gt;60 år, &gt;10 år efter menopaus, blödningsrubbning eller behandlingssvikt rekommenderas <strong>remiss till gynekolog</strong>.",
+                outDiagHeader: "Diagnostik & Symtombild",
+                outDiagUnder45: "• <strong>Provtagning:</strong> Ta FSH-prov (ålder &lt; 45 år).",
+                outDiagOver45: "• <strong>Provtagning:</strong> Klinisk diagnos (ej rutinmässigt FSH-prov).",
+                outDiagSymptoms: "• <strong>Aktuella symtom",
+                outTreatHeader: "Föreslagen hormonbehandling (MHT)",
+                outTreatContraindicated: "Systemisk MHT avråds p.g.a. absoluta kontraindikationer. Fokus på livsstilsråd, icke-hormonella alternativ samt gynekologbedömning.",
+                outTreatSelectPhase: "Välj klimakteriefas (Perimenopaus, Postmenopaus eller Hysterektomerad) i Steg 4 för specifika preparatförslag.",
+                outTreatPeri: `<p><strong>Regim: Sekventiell behandling</strong> (Östradiol kontinuerligt + gestagen 12 dagar/månad för regelbunden bortfallsblödning).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>Fast kombination:</strong> <em>Novofem</em> (1 mg) eller <em>Femasekvens</em> (2 mg, vid &lt;45 år eller otillräcklig effekt av 1 mg).</li><li><strong>Individuell kombination:</strong> Östrogen (plåster/gel/tablett) + <em>Provera</em> 10 mg (12 d/mån) eller <em>Mirena</em> hormonspiral (ger blödningsfrihet + antikonception).</li></ul>`,
+                outTreatPost: `<p><strong>Regim: Kontinuerlig behandling</strong> (Östradiol + kontinuerligt gestagen för blödningsfrihet).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>Fast kombination:</strong> <em>Activelle</em> / <em>Cliovelle</em> / <em>Noresmea</em> (estradiol + noretisteron) eller <em>Indivina</em> (estradiol + MPA).</li><li><strong>Individuell kombination:</strong> Östrogen (plåster/gel/tablett) + <em>Mirena</em> hormonspiral.</li></ul>`,
+                outTreatHyst: `<p><strong>Regim: Ren östrogenbehandling</strong> (Gestagentillägg behövs ej då livmoder saknas).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>Transdermalt:</strong> <em>Divigel</em>, <em>Estrogel</em>, <em>Estradot</em> eller <em>Lenzetto</em>.</li><li><strong>Peroralt:</strong> <em>Femanest</em> eller <em>Progynon</em> (1–2 mg).</li></ul>`,
+                outTreatDvtYes: `<strong>Välj transdermalt östrogen!</strong> Ger ingen ökad risk för DVT. Vid restnotering på plåster (Estradot) eller spray (Lenzetto), förskriv gel (<strong>Divigel</strong> eller <strong>Estrogel</strong>).`,
+                outTreatDvtNo: `<strong>Tips vid restnotering:</strong> Plåster och spray har ofta restnoteringar. Byt vid behov till ekvipotent dos gel (<em>Divigel</em> / <em>Estrogel</em>) eller tablett.`,
+                outTreatLocal: `+ Vid enbart eller kvarstående urogenitala besvär: överväg lokal östrogenbehandling.`,
+                galTitle: "Mina Sparade Bilder & Infografik",
+                cloudConnecting: "Ansluter till molnet...",
+                cloudOnline: "Molnsynk aktiv (Sparas online)",
+                cloudLocal: "Lokal & molnlagring aktiv (Sparas i webbläsaren)",
+                galDesc: "Ladda upp dina egna sammanfattningar, algoritmer eller tabeller. De komprimeras automatiskt och sparas säkert.",
+                dropTitle: "Klicka för att välja bild eller dra och släpp här",
+                dropSub: "Stöder PNG, JPG, WEBP (komprimeras & sparas automatiskt)",
+                imgTitleLabel: "Bildtitel *",
+                imgTitlePlaceholder: "T.ex. Behandlingsalgoritm Klimakteriet",
+                imgCatLabel: "Kategori",
+                catAlg: "Algoritm & Flödesschema",
+                catOverview: "Översikt & Grundfakta",
+                catSymptoms: "Symtom",
+                catTreatment: "Behandling",
+                catGuidelines: "Socialstyrelsens riktlinjer",
+                catPrep: "Preparat, Ekvipotens & Restnotering",
+                catOther: "Övrigt",
+                saveImgBtn: "Spara bild online",
+                savingImgBtn: "Komprimerar och sparar...",
+                filterAll: "Alla",
+                filterAlg: "Algoritm & Flöde",
+                filterOverview: "Översikt",
+                filterSymptoms: "Symtom",
+                filterTreatment: "Behandling",
+                filterGuidelines: "Riktlinjer",
+                filterPrep: "Preparat & Dosering",
+                searchPlaceholder: "Sök bland sparade bilder...",
+                emptyTitle: "Inga sparade bilder ännu",
+                emptyDesc: "Ladda upp dina sammanfattningsbilder ovan så sparas de direkt i ditt arkiv och visas här.",
+                cardFullscreen: "Klicka för helskärm",
+                cardSavedLabel: "Sparad",
+                downloadBtn: "Ladda ner",
+                lightboxHint: "Klicka på krysset eller tryck ESC för att stänga",
+                delModalTitle: "Ta bort bild?",
+                delModalDesc: "Är du säker på att du vill radera den här bilden från arkivet? Åtgärden går inte att ångra.",
+                cancelBtn: "Avbryt",
+                confirmDelBtn: "Ja, ta bort",
+                footerText: "Kliniskt beslutsstöd baserat på Socialstyrelsens riktlinjer & Kloka listan.",
+                refDefTitle: "Definitioner & Tidslinje",
+                refDefs: [
+                    { term: "Menopaus:", text: "Tidpunkt för sista menstruation (fastställs i efterhand efter 12 månaders blödningsfrihet)." },
+                    { term: "Perimenopaus:", text: "Från det att hormonerna börjar svaja till ett år efter menopaus (förklimakteriet)." },
+                    { term: "Klimakteriet:", text: "Hela övergångsperioden kring menopaus." }
+                ],
+                tlBleeding: "Blödningar",
+                tlMenopause: "Menopaus",
+                tlNoBleeding: "Inga blödningar",
+                tlSeq: "Sekventiell behandling",
+                tlPlus1: "+1 år",
+                tlCont: "Kontinuerlig behandling",
+                refGuidelinesTitle: "Socialstyrelsens riktlinjer",
+                refGuidelines: [
+                    "<strong>FSH-prov &lt; 45 år:</strong> Ta FSH-prov för personer under 45 år med oförklarad amenorré (med eller utan klimakteriebesvär).",
+                    "<strong>Ej rutinmässigt ≥ 45 år:</strong> Ta <em>inte</em> FSH-prov rutinmässigt för personer över 45 år med klimakteriebesvär.",
+                    "<strong>Information & rådgivning:</strong> Ge strukturerad information och rådgivning om klimakteriet.",
+                    "<strong>Följ upp vårdinsatser:</strong> Utvärdera rådgivning och behandling (rekommenderas efter ca 3 månader).",
+                    "<strong>Fysisk aktivitet:</strong> Ge råd om fysisk aktivitet (kan ge mindre vasomotorsymtom och depressiva symtom)."
+                ],
+                eqTitle: "Ekvipotenta behandlingar (Estradiol)",
+                eqSub: "Ungefärlig ekvipotens mellan olika beredningsformer vid byte t.ex. på grund av restnotering.",
+                eqNote: "Indivina = Progynon + Provera | Femasekvens = dubbeldos Novofem (mer NETA)",
+                thForm: "Beredningsform",
+                thPrep: "Preparat",
+                thLow: "Lågdos",
+                thMed: "Medelhög dos",
+                thHigh: "Högdos",
+                eqRows: [
+                    ["Tablett", "Femanest, Progynon", "–", "1,0 mg", "2,0 mg"],
+                    ["Depotplåster", "Estradot", "25 µg", "37,5 – 50 µg", "75 – 100 µg"],
+                    ["Gel i dospåse", "Divigel", "0,5 mg (1 dos)", "1,0 mg (2 doser)", "1,5 mg (3 doser)"],
+                    ["Gel i flaska", "Estrogel", "–", "0,75 mg (1 dos)", "1,5 mg (2 doser)"],
+                    ["Spray", "Lenzetto", "1,53 mg (1 dos)", "3,06 – 4,59 mg (2–3 doser)", "–"]
+                ],
+                shortageTitle: "Hantering av restnoteringar",
+                shortageItems: [
+                    "<strong>Byt plåster/spray mot gel:</strong> Vid brist på Estradot eller Lenzetto, byt till ekvipotent dos av <em>Divigel</em> eller <em>Estrogel</em>.",
+                    "<strong>Dela starkare plåster:</strong> När starkare depotplåster finns tillgängliga kan dessa klippas/delas för rätt styrka.",
+                    "<strong>Överväg tabletter:</strong> Perorala alternativ har oftast god tillgänglighet och lägre pris om kontraindikationer saknas.",
+                    "<strong>Licenspreparat:</strong> Finns tillgängligt vid särskilda behov.",
+                    "<strong>Svenska recept utomlands:</strong> Vissa patienter hämtar ut på apotek i andra EU/EES-länder med svenskt recept."
+                ],
+                prepTipsTitle: "Viktigt vid val av preparat",
+                prepTipsItems: [
+                    "<strong>Transdermalt östrogen:</strong> Ingen riskökning för DVT (förstahandsval vid trombosrisk/övervikt). <em>Obs: Akta barn och husdjur för hudkontakt vid spray och gel!</em>",
+                    "<strong>Gestagentillägg (skydd för endometriet):</strong> Mirena hormonspiral ger blödningsfrihet + antikonception perimenopausalt. Alternativt Provera (10 mg 12 d/mån sekventiellt) eller fast kombination.",
+                    "<strong>Kostnad & Högkostnadsskydd:</strong> Allt fler preparat ligger utanför förmånen (t.ex. Femoston, Lenzetto, lokal behandling) och prishöjningar har skett.",
+                    "<strong>Utrogestan (mikroniserat progesteron):</strong> Ökad efterfrågan, men ingår ej i Kloka listan."
+                ],
+                toastInvalidFile: "Vänligen välj en giltig bildfil (PNG, JPG, WEBP).",
+                toastCompressing: "Komprimerar \"{name}\"...",
+                toastReady: "Redo att sparas: {name} ({kb} KB optimerad)",
+                toastNoImg: "Välj en bild först innan du klickar på spara.",
+                toastSavedCloud: "Bilden har sparats online i ditt molnarkiv!",
+                toastSavedLocal: "Bilden sparades säkert i ditt lokala webbläsararkiv!",
+                toastDeleted: "Bilden togs bort."
+            },
+
+            en: {
+                pageTitle: "Clinical Decision Support: Menopause & Image Archive",
+                hdrTitle: "Menopause & Climacteric",
+                hdrSubtitle: "Clinical decision support, treatment algorithm & cloud image archive",
+                tabAlgorithm: "Interactive Algorithm",
+                tabGallery: "My Saved Images",
+                tabReference: "Reference & Equipotency",
+                algIntroTitle: "Step-by-step clinical guidance",
+                algIntroDesc: "Select patient details below for tailored recommendations based on Swedish National Board of Health and Welfare guidelines.",
+                resetBtn: "Reset assessment",
+                resetToast: "Assessment has been reset.",
+                step1Badge: "Step 1",
+                step1Title: "Patient age & laboratory testing",
+                step1Desc: "How old is the patient presenting with suspected menopausal symptoms?",
+                ageUnder45Title: "Age < 45 years",
+                ageUnder45Sub: "Early menopause / Premature Ovarian Insufficiency (POI)",
+                ageOver45Title: "Age ≥ 45 years",
+                ageOver45Sub: "Normal menopausal age",
+                ageUnder45Advice: `<div class="font-bold text-plum-900 mb-1">Action for age &lt; 45 years (National Guidelines):</div><p class="text-xs leading-relaxed">Order an <strong>FSH test</strong> in cases of unexplained amenorrhea (with or without climacteric symptoms). Note that age &lt; 45 years also warrants referral/consultation with a gynecologist and often requires a higher estradiol dose (e.g., 2 mg tablet or equivalent).</p>`,
+                ageOver45Advice: `<div class="font-bold text-plum-900 mb-1">Action for age ≥ 45 years (National Guidelines):</div><p class="text-xs leading-relaxed"><strong>Do NOT routinely order FSH tests.</strong> Diagnose clinically based on symptoms. Healthy women with typical climacteric symptoms can generally be assessed and treated in primary care.</p>`,
+                step2Badge: "Step 2",
+                step2Title: "Identify symptoms & exclude other causes",
+                step2Desc: "Check current symptoms to assess indication for treatment:",
+                cardinalSymptoms: "Cardinal symptoms",
+                symHotFlashes: "Hot flashes & night sweats",
+                symSleep: "Sleep disturbances",
+                symDryness: "Vaginal/mucosal dryness",
+                otherSymptoms: "Other common symptoms",
+                symMood: "Mood swings and depressed mood",
+                symBrainFog: "Concentration difficulties / brain fog",
+                symAnxiety: "Increased stress sensitivity, worry, anxiety",
+                symJointPain: "Joint and muscle pain / palpitations",
+                symWeight: "Weight gain, skin and hair changes",
+                symUrinary: "Urinary incontinence, urgency, recurrent UTIs",
+                diffDiagTitle: "Consider differential diagnoses when clinically motivated:",
+                diffDiagList: "Thyroid disease, infection, rheumatologic disease, depression/burnout, sleep apnea, anemia, or medication side effects.",
+                step3Badge: "Step 3",
+                step3Title: "Check contraindications & referral criteria",
+                contraAbsTitle: "Absolute contraindications",
+                contraAbsItems: ["History of breast cancer", "Undiagnosed abnormal vaginal bleeding", "Current DVT / pulmonary embolism", "Arterial cardiovascular disease", "Severe active gallbladder/liver disease"],
+                contraRelTitle: "Relative contraindications",
+                contraRelItems: ["Diabetes with vascular involvement", "High cardiovascular risk", "Previous DVT/PE or known risk factors", "Gallbladder disease", "History of endometrial cancer"],
+                contraOtherTitle: "Other complexities",
+                contraOtherItems: ["Age <45, >60, or >10 years post-menopause", "Bleeding irregularities / unclear diagnosis", "Treatment failure", "Long treatment duration", "Request for non-formulary preparations"],
+                step4Badge: "Step 4",
+                step4Title: "Menopausal phase & Regimen selection",
+                step4Desc: "Select bleeding status to view recommended regimen (assuming intact uterus):",
+                phasePeriTitle: "Perimenopause",
+                phasePeriSub: "Still having periods / irregular bleeding",
+                phasePostTitle: "Postmenopause",
+                phasePostSub: "> 1 year since last menstruation (bleed-free)",
+                phaseHystTitle: "Hysterectomized",
+                phaseHystSub: "No uterus (progestogen addition not required)",
+                riskDvtLabel: "Patient has risk factors for venous thromboembolism (DVT), obesity, or migraine (Choose transdermal estrogen)",
+                outputHeader: "Decision Support & Action Plan",
+                copyBtn: "Copy",
+                copyHeader: "CLINICAL DECISION SUPPORT – MENOPAUSAL SYMPTOMS",
+                copySuccess: "Summary copied to clipboard!",
+                copyError: "Could not copy text.",
+                lifestyleTitle: "1. Foundation: Individualized lifestyle advice",
+                lifestyleDesc: "Always recommend <strong>physical activity</strong> (cardio & strength training, reduces vasomotor & depressive symptoms), varied diet, stress management, good sleep hygiene, and avoiding triggers (alcohol, warm environments).",
+                treatmentPlaceholder: "Select age, symptoms, and phase on the left to generate treatment recommendations...",
+                followupTitle: "Follow-up after approx. 3 months",
+                followupItems: [
+                    "Evaluate symptom relief, side effects, and adherence.",
+                    "If insufficient effect: review preparation, dose, application technique, and differential diagnoses.",
+                    "If uncertainty persists or treatment fails: <strong>refer to a gynecologist</strong>."
+                ],
+                outAbsStop: "<strong>STOP – Absolute contraindication:</strong> Systemic hormone therapy must not be initiated. Send a <strong>referral to a gynecologist</strong> to evaluate alternative treatments.",
+                outRelWarn: "<strong>Relative contraindication:</strong> Consider <strong>referral to a gynecologist</strong> or careful individual risk-benefit assessment (e.g., transdermal route for vascular risk).",
+                outOtherWarn: "<strong>Special consideration / Referral indication:</strong> For age &lt;45, &gt;60, &gt;10 years post-menopause, bleeding disorders, or treatment failure, <strong>referral to a gynecologist</strong> is recommended.",
+                outDiagHeader: "Diagnostics & Symptom Profile",
+                outDiagUnder45: "• <strong>Lab testing:</strong> Order FSH test (age &lt; 45 years).",
+                outDiagOver45: "• <strong>Lab testing:</strong> Clinical diagnosis (no routine FSH test).",
+                outDiagSymptoms: "• <strong>Current symptoms",
+                outTreatHeader: "Recommended Hormone Therapy (MHT)",
+                outTreatContraindicated: "Systemic MHT is contraindicated due to absolute contraindications. Focus on lifestyle measures, non-hormonal options, and gynecology consultation.",
+                outTreatSelectPhase: "Select menopausal phase (Perimenopause, Postmenopause, or Hysterectomized) in Step 4 for specific preparation options.",
+                outTreatPeri: `<p><strong>Regimen: Sequential therapy</strong> (Continuous estradiol + progestogen 12 days/month for regular withdrawal bleeding).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>Fixed combination:</strong> <em>Novofem</em> (1 mg) or <em>Femasekvens</em> (2 mg, for age &lt;45 or insufficient effect of 1 mg).</li><li><strong>Individual combination:</strong> Estrogen (patch/gel/tablet) + <em>Provera</em> 10 mg (12 d/month) or <em>Mirena</em> IUD (provides bleed-free regimen + contraception).</li></ul>`,
+                outTreatPost: `<p><strong>Regimen: Continuous combined therapy</strong> (Estradiol + continuous progestogen for a bleed-free regimen).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>Fixed combination:</strong> <em>Activelle</em> / <em>Cliovelle</em> / <em>Noresmea</em> (estradiol + norethisterone) or <em>Indivina</em> (estradiol + MPA).</li><li><strong>Individual combination:</strong> Estrogen (patch/gel/tablet) + <em>Mirena</em> IUD.</li></ul>`,
+                outTreatHyst: `<p><strong>Regimen: Estrogen-only therapy</strong> (Progestogen addition is unnecessary without a uterus).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>Transdermal:</strong> <em>Divigel</em>, <em>Estrogel</em>, <em>Estradot</em>, or <em>Lenzetto</em>.</li><li><strong>Oral:</strong> <em>Femanest</em> or <em>Progynon</em> (1–2 mg).</li></ul>`,
+                outTreatDvtYes: `<strong>Choose transdermal estrogen!</strong> Carries no increased risk of DVT. During patch (Estradot) or spray (Lenzetto) shortages, prescribe gel (<strong>Divigel</strong> or <strong>Estrogel</strong>).`,
+                outTreatDvtNo: `<strong>Shortage tip:</strong> Patches and sprays frequently face supply shortages. Switch to an equipotent dose of gel (<em>Divigel</em> / <em>Estrogel</em>) or tablets if needed.`,
+                outTreatLocal: `+ For isolated or persistent urogenital symptoms: consider local vaginal estrogen therapy.`,
+                galTitle: "My Saved Images & Infographics",
+                cloudConnecting: "Connecting to cloud...",
+                cloudOnline: "Cloud sync active (Saved online)",
+                cloudLocal: "Local & cloud storage active (Saved in browser)",
+                galDesc: "Upload your own summaries, algorithms, or charts. They are automatically compressed and stored safely.",
+                dropTitle: "Click to select an image or drag and drop here",
+                dropSub: "Supports PNG, JPG, WEBP (automatically compressed & saved)",
+                imgTitleLabel: "Image title *",
+                imgTitlePlaceholder: "E.g., Menopause Treatment Algorithm",
+                imgCatLabel: "Category",
+                catAlg: "Algorithm & Flowchart",
+                catOverview: "Overview & Basics",
+                catSymptoms: "Symptoms",
+                catTreatment: "Treatment",
+                catGuidelines: "National Guidelines",
+                catPrep: "Preparations, Equipotency & Shortages",
+                catOther: "Other",
+                saveImgBtn: "Save image online",
+                savingImgBtn: "Compressing & saving...",
+                filterAll: "All",
+                filterAlg: "Algorithm & Flow",
+                filterOverview: "Overview",
+                filterSymptoms: "Symptoms",
+                filterTreatment: "Treatment",
+                filterGuidelines: "Guidelines",
+                filterPrep: "Preparations & Dosing",
+                searchPlaceholder: "Search saved images...",
+                emptyTitle: "No saved images yet",
+                emptyDesc: "Upload your summary infographics above and they will be saved directly to your archive and displayed here.",
+                cardFullscreen: "Click for fullscreen",
+                cardSavedLabel: "Saved",
+                downloadBtn: "Download",
+                lightboxHint: "Click the X or press ESC to close",
+                delModalTitle: "Delete image?",
+                delModalDesc: "Are you sure you want to delete this image from your archive? This action cannot be undone.",
+                cancelBtn: "Cancel",
+                confirmDelBtn: "Yes, delete",
+                footerText: "Clinical decision support based on Swedish National Guidelines & Wise List (Kloka listan).",
+                refDefTitle: "Definitions & Timeline",
+                refDefs: [
+                    { term: "Menopause:", text: "Time of final menstrual period (determined retrospectively after 12 months of amenorrhea)." },
+                    { term: "Perimenopause:", text: "From the onset of hormonal fluctuations until one year after menopause." },
+                    { term: "Climacteric:", text: "The entire transitional period surrounding menopause." }
+                ],
+                tlBleeding: "Bleeding",
+                tlMenopause: "Menopause",
+                tlNoBleeding: "No bleeding",
+                tlSeq: "Sequential therapy",
+                tlPlus1: "+1 year",
+                tlCont: "Continuous therapy",
+                refGuidelinesTitle: "National Board Guidelines",
+                refGuidelines: [
+                    "<strong>FSH test &lt; 45 years:</strong> Order FSH test for individuals under 45 with unexplained amenorrhea (with or without climacteric symptoms).",
+                    "<strong>Not routine ≥ 45 years:</strong> Do <em>not</em> routinely order FSH tests for individuals over 45 with climacteric symptoms.",
+                    "<strong>Information & counseling:</strong> Provide structured information and counseling regarding menopause.",
+                    "<strong>Follow-up care:</strong> Evaluate counseling and treatment (recommended after approx. 3 months).",
+                    "<strong>Physical activity:</strong> Advise physical activity (may reduce vasomotor and depressive symptoms)."
+                ],
+                eqTitle: "Equipotent Treatments (Estradiol)",
+                eqSub: "Approximate equipotency across formulations when switching due to supply shortages.",
+                eqNote: "Indivina = Progynon + Provera | Femasekvens = double dose Novofem (more NETA)",
+                thForm: "Formulation",
+                thPrep: "Preparation",
+                thLow: "Low dose",
+                thMed: "Medium dose",
+                thHigh: "High dose",
+                eqRows: [
+                    ["Tablet", "Femanest, Progynon", "–", "1.0 mg", "2.0 mg"],
+                    ["Transdermal patch", "Estradot", "25 µg", "37.5 – 50 µg", "75 – 100 µg"],
+                    ["Gel sachet", "Divigel", "0.5 mg (1 dose)", "1.0 mg (2 doses)", "1.5 mg (3 doses)"],
+                    ["Gel pump bottle", "Estrogel", "–", "0.75 mg (1 dose)", "1.5 mg (2 doses)"],
+                    ["Transdermal spray", "Lenzetto", "1.53 mg (1 spray)", "3.06 – 4.59 mg (2–3 sprays)", "–"]
+                ],
+                shortageTitle: "Managing Drug Shortages",
+                shortageItems: [
+                    "<strong>Switch patch/spray to gel:</strong> During Estradot or Lenzetto shortages, switch to an equipotent dose of <em>Divigel</em> or <em>Estrogel</em>.",
+                    "<strong>Divide higher-strength patches:</strong> When stronger patches are available, they can be cut/divided to achieve the target dose.",
+                    "<strong>Consider tablets:</strong> Oral options usually have good availability and lower cost if no contraindications exist.",
+                    "<strong>Licensed preparations:</strong> Special license imports are available when clinically needed.",
+                    "<strong>Cross-border prescriptions:</strong> Some patients fill Swedish prescriptions at pharmacies in other EU/EEA countries."
+                ],
+                prepTipsTitle: "Important Preparation Considerations",
+                prepTipsItems: [
+                    "<strong>Transdermal estrogen:</strong> No increased risk of DVT (first-line choice for thrombosis risk/obesity). <em>Note: Prevent skin contact with children and pets when using spray or gel!</em>",
+                    "<strong>Progestogen addition (endometrial protection):</strong> Mirena IUD provides bleed-free regimen + contraception in perimenopause. Alternatively Provera (10 mg 12 d/month sequentially) or fixed combination.",
+                    "<strong>Cost & Reimbursement:</strong> Increasingly many products fall outside pharmaceutical reimbursement (e.g., Femoston, Lenzetto, local therapy) with notable price increases.",
+                    "<strong>Utrogestan (micronized progesterone):</strong> Growing demand, though not included in the Wise List (Kloka listan)."
+                ],
+                toastInvalidFile: "Please select a valid image file (PNG, JPG, WEBP).",
+                toastCompressing: "Compressing \"{name}\"...",
+                toastReady: "Ready to save: {name} ({kb} KB optimized)",
+                toastNoImg: "Please select an image first before saving.",
+                toastSavedCloud: "Image saved online to your cloud archive!",
+                toastSavedLocal: "Image saved safely to your local browser archive!",
+                toastDeleted: "Image deleted."
+            },
+
+            fa: {
+                pageTitle: "پشتیبانی تصمیم‌گیری بالینی: یائسگی و آرشیو تصاویر",
+                hdrTitle: "یائسگی و دوران کلیماکتریک",
+                hdrSubtitle: "پشتیبانی تصمیم‌گیری بالینی، الگوریتم درمان و آرشیو ابری تصاویر",
+                tabAlgorithm: "الگوریتم تعاملی",
+                tabGallery: "تصاویر ذخیره‌شده من",
+                tabReference: "راهنما و هم‌ارزی دارویی",
+                algIntroTitle: "راهنمای بالینی گام‌به‌گام",
+                algIntroDesc: "مشخصات بیمار را در زیر انتخاب کنید تا توصیه‌های درمانی بر اساس دستورالعمل‌های هیئت ملی بهداشت و رفاه سوئد نمایش داده شود.",
+                resetBtn: "شروع مجدد ارزیابی",
+                resetToast: "ارزیابی بازنشانی شد.",
+                step1Badge: "گام ۱",
+                step1Title: "سن بیمار و آزمایش‌های تشخیصی",
+                step1Desc: "بیمار مراجعه‌کننده با علائم مشکوک به یائسگی چند سال دارد؟",
+                ageUnder45Title: "سن کمتر از ۴۵ سال",
+                ageUnder45Sub: "یائسگی زودرس / نارسایی زودرس تخمدان (POI)",
+                ageOver45Title: "سن ۴۵ سال و بالاتر",
+                ageOver45Sub: "سن طبیعی یائسگی",
+                ageUnder45Advice: `<div class="font-bold text-plum-900 mb-1">اقدام در سن زیر ۴۵ سال (دستورالعمل کشوری):</div><p class="text-xs leading-relaxed">در صورت آمنوره (قطع قاعدگی) بدون علت مشخص (با یا بدون علائم یائسگی)، <strong>آزمایش FSH</strong> درخواست کنید. توجه داشته باشید که سن زیر ۴۵ سال اندیکاسیون ارجاع/مشاوره با متخصص زنان است و اغلب به دوز بالاتر استرادیول (مثلاً قرص ۲ میلی‌گرم یا معادل آن) نیاز دارد.</p>`,
+                ageOver45Advice: `<div class="font-bold text-plum-900 mb-1">اقدام در سن ۴۵ سال و بالاتر (دستورالعمل کشوری):</div><p class="text-xs leading-relaxed"><strong>آزمایش FSH را به صورت روتین درخواست نکنید.</strong> تشخیص بر اساس شرح‌حال و علائم بالینی است. زنان سالم با علائم تیپیک یائسگی معمولاً در مراقبت‌های اولیه (پزشک عمومی) قابل ارزیابی و درمان هستند.</p>`,
+                step2Badge: "گام ۲",
+                step2Title: "شناسایی علائم و رد سایر علل",
+                step2Desc: "علائم فعلی بیمار را برای ارزیابی اندیکاسیون درمان انتخاب کنید:",
+                cardinalSymptoms: "علائم اصلی (کاردینال)",
+                symHotFlashes: "گرگرفتگی و تعریق شبانه",
+                symSleep: "اختلال خواب",
+                symDryness: "خشکی مخاط و واژن",
+                otherSymptoms: "سایر علائم شایع",
+                symMood: "نوسانات خلقی و افسردگی خفیف",
+                symBrainFog: "اختلال تمرکز / مه‌مغزی (Brain fog)",
+                symAnxiety: "افزایش حساسیت به استرس، نگرانی و اضطراب",
+                symJointPain: "درد مفاصل و عضلات / تپش قلب",
+                symWeight: "افزایش وزن، تغییرات پوست و مو",
+                symUrinary: "بی‌اختیاری ادرار، تکرر ادرار و عفونت‌های مکرر ادراری",
+                diffDiagTitle: "در صورت لزوم بالینی، تشخیص‌های افتراقی زیر را بررسی کنید:",
+                diffDiagList: "بیماری‌های تیروئید، عفونت، بیماری‌های روماتولوژی، افسردگی یا فرسودگی شغلی، آپنه خواب، کم‌خونی یا عوارض دارویی.",
+                step3Badge: "گام ۳",
+                step3Title: "بررسی موارد منع مصرف و نیاز به ارجاع",
+                contraAbsTitle: "موارد منع مصرف مطلق",
+                contraAbsItems: ["سابقه سرطان پستان", "خونریزی واژینال غیرطبیعی تشخیص‌داده‌نشده", "ترومبوز ورید عمقی (DVT) یا آمبولی ریه فعلی", "بیماری قلبی-عروقی شریانی", "بیماری شدید و فعال کیسه صفرا یا کبد"],
+                contraRelTitle: "موارد منع مصرف نسبی",
+                contraRelItems: ["دیابت همراه با درگیری عروقی", "ریسک بالای قلبی-عروقی", "سابقه DVT/آمبولی ریه یا عوامل خطر شناخته‌شده", "بیماری کیسه صفرا", "سابقه سرطان آندومتر"],
+                contraOtherTitle: "سایر موارد پیچیده",
+                contraOtherItems: ["سن زیر ۴۵ سال، بالای ۶۰ سال یا بیش از ۱۰ سال پس از یائسگی", "اختلالات خونریزی / ابهام تشخیصی", "عدم پاسخ به درمان", "طولانی شدن مدت درمان", "درخواست داروهای خارج از فهرست توصیه‌شده"],
+                step4Badge: "گام ۴",
+                step4Title: "مرحله یائسگی و انتخاب رژیم درمانی",
+                step4Desc: "وضعیت قاعدگی بیمار را برای مشاهده رژیم پیشنهادی انتخاب کنید (با فرض داشتن رحم):",
+                phasePeriTitle: "پری‌منوپوز (پیش‌یائسگی)",
+                phasePeriSub: "هنوز قاعدگی دارد / خونریزی‌های نامنظم",
+                phasePostTitle: "پست‌منوپوز (پس از یائسگی)",
+                phasePostSub: "بیش از ۱ سال از آخرین قاعدگی گذشته (بدون خونریزی)",
+                phaseHystTitle: "هیسترکتومی‌شده (بدون رحم)",
+                phaseHystSub: "فاقد رحم است (نیازی به پروژستوژن ندارد)",
+                riskDvtLabel: "بیمار دارای عوامل خطر ترومبوآمبولی وریدی (DVT)، چاقی یا میگرن است (استروژن ترانس‌درمال/پوستی انتخاب شود)",
+                outputHeader: "پشتیبانی تصمیم‌گیری و برنامه اقدام",
+                copyBtn: "کپی متن",
+                copyHeader: "پشتیبانی تصمیم‌گیری بالینی – علائم یائسگی",
+                copySuccess: "خلاصه در حافظه کپی شد!",
+                copyError: "خطا در کپی کردن متن.",
+                lifestyleTitle: "۱. درمان پایه: توصیه‌های سبک زندگی شخصی‌سازی‌شده",
+                lifestyleDesc: "همیشه <strong>فعالیت بدنی منظم</strong> (ورزش هوازی و قدرتی، کاهش‌دهنده علائم وازوموتور و افسردگی)، رژیم غذایی متنوع، مدیریت استرس، بهداشت خواب و پرهیز از عوامل محرک (الکل، محیط‌های گرم) را توصیه کنید.",
+                treatmentPlaceholder: "برای دریافت پیشنهاد درمانی، سن، علائم و مرحله یائسگی را در سمت راست انتخاب کنید...",
+                followupTitle: "پیگیری پس از حدود ۳ ماه",
+                followupItems: [
+                    "ارزیابی میزان بهبود علائم، عوارض جانبی و پایبندی بیمار به درمان.",
+                    "در صورت اثر ناکافی: بررسی نوع دارو، دوز، نحوه مصرف و تشخیص‌های افتراقی.",
+                    "در صورت تداوم ابهام یا شکست درمان: <strong>ارجاع به متخصص زنان</strong>."
+                ],
+                outAbsStop: "<strong>توقف – منع مصرف مطلق:</strong> هورمون‌درمانی سیستمیک نباید تجویز شود. برای بررسی درمان‌های جایگزین، <strong>بیمار را به متخصص زنان ارجاع دهید</strong>.",
+                outRelWarn: "<strong>منع مصرف نسبی:</strong> <strong>ارجاع به متخصص زنان</strong> یا ارزیابی دقیق فردی سود و زیان (مثلاً انتخاب روش پوستی در صورت ریسک عروقی) را مد نظر قرار دهید.",
+                outOtherWarn: "<strong>توجه ویژه / اندیکاسیون ارجاع:</strong> در سن زیر ۴۵ سال، بالای ۶۰ سال، بیش از ۱۰ سال پس از یائسگی، اختلالات خونریزی یا شکست درمان، <strong>ارجاع به متخصص زنان</strong> توصیه می‌شود.",
+                outDiagHeader: "تشخیص و نمای علائم",
+                outDiagUnder45: "• <strong>آزمایش:</strong> درخواست آزمایش FSH (سن زیر ۴۵ سال).",
+                outDiagOver45: "• <strong>آزمایش:</strong> تشخیص بالینی (بدون نیاز به آزمایش روتین FSH).",
+                outDiagSymptoms: "• <strong>علائم فعلی",
+                outTreatHeader: "هورمون‌درمانی پیشنهادی (MHT)",
+                outTreatContraindicated: "به دلیل موارد منع مصرف مطلق، هورمون‌درمانی سیستمیک توصیه نمی‌شود. تمرکز بر اصلاح سبک زندگی، درمان‌های غیرهورمونی و مشاوره متخصص زنان باشد.",
+                outTreatSelectPhase: "برای مشاهده داروهای پیشنهادی، مرحله یائسگی (پری‌منوپوز، پست‌منوپوز یا هیسترکتومی‌شده) را در گام ۴ انتخاب کنید.",
+                outTreatPeri: `<p><strong>رژیم: درمان ترتیبی (Sequential)</strong> (استرادیول مداوم + پروژستوژن ۱۲ روز در ماه برای ایجاد خونریزی منظم).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>ترکیب ثابت:</strong> <em>Novofem</em> (۱ میلی‌گرم) یا <em>Femasekvens</em> (۲ میلی‌گرم، برای زیر ۴۵ سال یا پاسخ ناکافی به ۱ میلی‌گرم).</li><li><strong>ترکیب جداگانه:</strong> استروژن (چسب/ژل/قرص) + <em>Provera</em> ۱۰ میلی‌گرم (۱۲ روز در ماه) یا آی‌یودی هورمونی <em>Mirena</em> (بدون خونریزی + پیشگیری از بارداری).</li></ul>`,
+                outTreatPost: `<p><strong>رژیم: درمان ترکیبی مداوم (Continuous)</strong> (استرادیول + پروژستوژن روزانه برای جلوگیری از خونریزی).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>ترکیب ثابت:</strong> <em>Activelle</em> / <em>Cliovelle</em> / <em>Noresmea</em> (استرادیول + نورتیسترون) یا <em>Indivina</em> (استرادیول + MPA).</li><li><strong>ترکیب جداگانه:</strong> استروژن (چسب/ژل/قرص) + آی‌یودی هورمونی <em>Mirena</em>.</li></ul>`,
+                outTreatHyst: `<p><strong>رژیم: درمان با استروژن خالص</strong> (به دلیل نداشتن رحم، نیازی به پروژستوژن نیست).</p><ul class="list-disc ps-4 space-y-1 text-gray-800"><li><strong>ترانس‌درمال (پوستی):</strong> <em>Divigel</em>، <em>Estrogel</em>، <em>Estradot</em> یا <em>Lenzetto</em>.</li><li><strong>خوراکی:</strong> <em>Femanest</em> یا <em>Progynon</em> (۱ تا ۲ میلی‌گرم).</li></ul>`,
+                outTreatDvtYes: `<strong>استروژن ترانس‌درمال (پوستی) انتخاب کنید!</strong> خطر DVT را افزایش نمی‌دهد. در صورت کمبود چسب (Estradot) یا اسپری (Lenzetto)، ژل (<strong>Divigel</strong> یا <strong>Estrogel</strong>) تجویز کنید.`,
+                outTreatDvtNo: `<strong>نکته در زمان کمبود دارو:</strong> چسب‌ها و اسپری‌ها اغلب با کمبود مواجه می‌شوند. در صورت نیاز به دوز هم‌ارز ژل (<em>Divigel</em> / <em>Estrogel</em>) یا قرص تغییر دهید.`,
+                outTreatLocal: `+ در صورت وجود علائم ادراری-تناسلی (خشکی واژن): درمان موضعی استروژن را در نظر بگیرید.`,
+                galTitle: "تصاویر و اینفوگرافیک‌های ذخیره‌شده من",
+                cloudConnecting: "در حال اتصال به فضای ابری...",
+                cloudOnline: "همگام‌سازی ابری فعال (ذخیره آنلاین)",
+                cloudLocal: "ذخیره‌سازی محلی و ابری فعال (ذخیره در مرورگر)",
+                galDesc: "خلاصه‌ها، الگوریتم‌ها یا جداول خود را بارگذاری کنید. تصاویر به صورت خودکار فشرده و با امنیت ذخیره می‌شوند.",
+                dropTitle: "برای انتخاب تصویر کلیک کنید یا فایل را اینجا رها کنید",
+                dropSub: "پشتیبانی از PNG، JPG، WEBP (فشرده‌سازی و ذخیره خودکار)",
+                imgTitleLabel: "عنوان تصویر *",
+                imgTitlePlaceholder: "مثلاً: الگوریتم درمان یائسگی",
+                imgCatLabel: "دسته‌بندی",
+                catAlg: "الگوریتم و فلوچارت",
+                catOverview: "نمای کلی و مفاهیم پایه",
+                catSymptoms: "علائم",
+                catTreatment: "درمان",
+                catGuidelines: "دستورالعمل‌های کشوری",
+                catPrep: "داروها، هم‌ارزی دوز و کمبود دارویی",
+                catOther: "سایر موارد",
+                saveImgBtn: "ذخیره آنلاین تصویر",
+                savingImgBtn: "در حال فشرده‌سازی و ذخیره...",
+                filterAll: "همه",
+                filterAlg: "الگوریتم و فلوچارت",
+                filterOverview: "نمای کلی",
+                filterSymptoms: "علائم",
+                filterTreatment: "درمان",
+                filterGuidelines: "دستورالعمل‌ها",
+                filterPrep: "داروها و دوز",
+                searchPlaceholder: "جستجو در تصاویر ذخیره‌شده...",
+                emptyTitle: "هنوز تصویری ذخیره نشده است",
+                emptyDesc: "تصاویر خلاصه خود را در بالا بارگذاری کنید تا مستقیماً در آرشیو شما ذخیره و نمایش داده شوند.",
+                cardFullscreen: "کلیک برای تمام‌صفحه",
+                cardSavedLabel: "ذخیره‌شده",
+                downloadBtn: "دانلود تصویر",
+                lightboxHint: "برای بستن روی ضربدر کلیک کنید یا کلید ESC را بزنید",
+                delModalTitle: "حذف تصویر؟",
+                delModalDesc: "آیا مطمئن هستید که می‌خواهید این تصویر را از آرشیو حذف کنید؟ این عمل قابل بازگشت نیست.",
+                cancelBtn: "انصراف",
+                confirmDelBtn: "بله، حذف شود",
+                footerText: "پشتیبانی تصمیم‌گیری بالینی بر اساس دستورالعمل‌های هیئت ملی بهداشت سوئد و فهرست داروهای توصیه‌شده (Kloka listan).",
+                refDefTitle: "تعاریف و خط زمانی",
+                refDefs: [
+                    { term: "منوپوز (یائسگی):", text: "زمان آخرین قاعدگی (که به صورت گذشته‌نگر پس از ۱۲ ماه قطع کامل قاعدگی قطعی می‌شود)." },
+                    { term: "پری‌منوپوز:", text: "از زمان شروع نوسانات هورمونی تا یک سال پس از یائسگی (دوران پیش‌یائسگی)." },
+                    { term: "کلیماکتریک:", text: "کل دوره انتقالی پیرامون یائسگی." }
+                ],
+                tlBleeding: "دارای قاعدگی",
+                tlMenopause: "منوپوز (یائسگی)",
+                tlNoBleeding: "بدون قاعدگی",
+                tlSeq: "درمان ترتیبی (Sequential)",
+                tlPlus1: "+۱ سال",
+                tlCont: "درمان مداوم (Continuous)",
+                refGuidelinesTitle: "دستورالعمل‌های هیئت ملی بهداشت",
+                refGuidelines: [
+                    "<strong>آزمایش FSH زیر ۴۵ سال:</strong> برای افراد زیر ۴۵ سال با آمنوره بدون علت (با یا بدون علائم یائسگی) آزمایش FSH انجام دهید.",
+                    "<strong>عدم انجام روتین در ۴۵ سال و بالاتر:</strong> برای افراد بالای ۴۵ سال با علائم یائسگی، آزمایش FSH را <em>به صورت روتین</em> انجام ندهید.",
+                    "<strong>اطلاع‌رسانی و مشاوره:</strong> اطلاعات و مشاوره ساختاریافته درباره دوران یائسگی ارائه دهید.",
+                    "<strong>پیگیری مراقبت‌ها:</strong> مشاوره و درمان را ارزیابی کنید (توصیه می‌شود حدود ۳ ماه بعد انجام شود).",
+                    "<strong>فعالیت بدنی:</strong> انجام فعالیت بدنی را توصیه کنید (می‌تواند علائم وازوموتور و افسردگی را کاهش دهد)."
+                ],
+                eqTitle: "درمان‌های هم‌ارز (استرادیول)",
+                eqSub: "هم‌ارزی تقریبی بین اشکال مختلف دارویی هنگام تغییر دارو (مثلاً به دلیل کمبود دارویی).",
+                eqNote: "Indivina = Progynon + Provera | Femasekvens = دوز دو برابر Novofem (با NETA بیشتر)",
+                thForm: "شکل دارویی",
+                thPrep: "نام دارو",
+                thLow: "دوز پایین",
+                thMed: "دوز متوسط",
+                thHigh: "دوز بالا",
+                eqRows: [
+                    ["قرص خوراکی", "Femanest, Progynon", "–", "1,0 mg", "2,0 mg"],
+                    ["چسب پوستی", "Estradot", "25 µg", "37,5 – 50 µg", "75 – 100 µg"],
+                    ["ژل ساشه‌ای", "Divigel", "0,5 mg (۱ دوز)", "1,0 mg (۲ دوز)", "1,5 mg (۳ دوز)"],
+                    ["ژل پمپی (بطری)", "Estrogel", "–", "0,75 mg (۱ دوز)", "1,5 mg (۲ دوز)"],
+                    ["اسپری پوستی", "Lenzetto", "1,53 mg (۱ پاف)", "3,06 – 4,59 mg (۲ تا ۳ پاف)", "–"]
+                ],
+                shortageTitle: "مدیریت کمبودهای دارویی",
+                shortageItems: [
+                    "<strong>جایگزینی چسب/اسپری با ژل:</strong> در صورت کمبود Estradot یا Lenzetto، از دوز هم‌ارز <em>Divigel</em> یا <em>Estrogel</em> استفاده کنید.",
+                    "<strong>تقسیم چسب‌های با دوز بالاتر:</strong> در صورت موجود بودن چسب‌های قوی‌تر، می‌توان آن‌ها را برای رسیدن به دوز مناسب برش داد و تقسیم کرد.",
+                    "<strong>بررسی قرص‌های خوراکی:</strong> در صورت نبود منع مصرف، قرص‌ها معمولاً در دسترس‌تر و ارزان‌تر هستند.",
+                    "<strong>داروهای مجوزدار (Licenspreparat):</strong> در موارد خاص قابل درخواست هستند.",
+                    "<strong>تهیه دارو با نسخه سوئدی در خارج از کشور:</strong> برخی بیماران با نسخه سوئدی از داروخانه‌های سایر کشورهای اتحادیه اروپا دارو تهیه می‌کنند."
+                ],
+                prepTipsTitle: "نکات مهم در انتخاب دارو",
+                prepTipsItems: [
+                    "<strong>استروژن ترانس‌درمال (پوستی):</strong> بدون افزایش خطر DVT (انتخاب اول در افراد دارای ریسک ترومبوز یا چاقی). <em>توجه: هنگام استفاده از اسپری و ژل، از تماس پوستی با کودکان و حیوانات خانگی جلوگیری کنید!</em>",
+                    "<strong>افزودن پروژستوژن (محافظت از آندومتر):</strong> آی‌یودی هورمونی Mirena در دوران پری‌منوپوز هم باعث قطع خونریزی می‌شود و هم پیشگیری از بارداری ایجاد می‌کند. جایگزین‌ها: Provera (۱۰ میلی‌گرم، ۱۲ روز در ماه) یا قرص‌های ترکیبی.",
+                    "<strong>هزینه و پوشش بیمه‌ای:</strong> تعداد بیشتری از داروها خارج از پوشش یارانه دارویی قرار گرفته‌اند (مانند Femoston، Lenzetto و درمان‌های موضعی).",
+                    "<strong>Utrogestan (پروژسترون میکرونیزه):</strong> تقاضا برای آن رو به افزایش است اما در فهرست داروهای توصیه‌شده (Kloka listan) قرار ندارد."
+                ],
+                toastInvalidFile: "لطفاً یک فایل تصویری معتبر (PNG، JPG، WEBP) انتخاب کنید.",
+                toastCompressing: "در حال فشرده‌سازی «{name}»...",
+                toastReady: "آماده ذخیره: {name} ({kb} کیلوبایت بهینه‌شده)",
+                toastNoImg: "لطفاً ابتدا یک تصویر انتخاب کنید.",
+                toastSavedCloud: "تصویر با موفقیت به صورت آنلاین ذخیره شد!",
+                toastSavedLocal: "تصویر با موفقیت در آرشیو مرورگر شما ذخیره شد!",
+                toastDeleted: "تصویر حذف شد."
+            }
+        };
+
+        window.t = function(key) {
+            return (I18N[window.currentLang] && I18N[window.currentLang][key]) || I18N.sv[key] || key;
+        };
+
+        window.setLanguage = function(lang) {
+            window.currentLang = lang;
+            const htmlEl = document.documentElement;
+            htmlEl.setAttribute('lang', lang);
+            htmlEl.setAttribute('dir', lang === 'fa' ? 'rtl' : 'ltr');
+
+            // Update active language button styling
+            ['sv', 'en', 'fa'].forEach(code => {
+                const btn = document.getElementById(`lang-btn-${code}`);
+                if (!btn) return;
+                if (code === lang) {
+                    btn.className = 'lang-btn px-2.5 py-1 rounded-lg text-xs font-semibold transition-all bg-white text-plum-950 shadow-xs';
+                } else {
+                    btn.className = 'lang-btn px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-plum-200 hover:text-white';
+                }
+            });
+
+            document.title = t('pageTitle');
+            document.getElementById('hdr-title').textContent = t('hdrTitle');
+            document.getElementById('hdr-subtitle').textContent = t('hdrSubtitle');
+
+            // Translate all elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const val = t(key);
+                if (typeof val === 'string') {
+                    el.innerHTML = val;
+                }
+            });
+
+            // Placeholders
+            const imgTitleInput = document.getElementById('img-title-input');
+            if (imgTitleInput) imgTitleInput.placeholder = t('imgTitlePlaceholder');
+            const gallerySearch = document.getElementById('gallery-search');
+            if (gallerySearch) gallerySearch.placeholder = t('searchPlaceholder');
+
+            // Lists in Step 3
+            const renderList = (id, items) => {
+                const ul = document.getElementById(id);
+                if (ul && Array.isArray(items)) {
+                    ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+                }
+            };
+            renderList('contra-abs-list', t('contraAbsItems'));
+            renderList('contra-rel-list', t('contraRelItems'));
+            renderList('contra-other-list', t('contraOtherItems'));
+            renderList('followup-list', t('followupItems'));
+            renderList('shortage-list', t('shortageItems'));
+            renderList('prep-tips-list', t('prepTipsItems'));
+
+            // Reference Tab Definitions
+            const defContainer = document.getElementById('ref-def-cards');
+            const defs = t('refDefs');
+            if (defContainer && Array.isArray(defs)) {
+                const bgClasses = ['bg-plum-900', 'bg-plum-800', 'bg-plum-700'];
+                defContainer.innerHTML = defs.map((d, idx) => `
+                    <div class="p-3.5 rounded-xl ${bgClasses[idx] || 'bg-plum-800'} text-white">
+                        <span class="font-bold">${d.term}</span> ${d.text}
+                    </div>
+                `).join('');
+            }
+
+            // Reference Tab Guidelines
+            const guideList = document.getElementById('ref-guidelines-list');
+            const guides = t('refGuidelines');
+            if (guideList && Array.isArray(guides)) {
+                guideList.innerHTML = guides.map((g, idx) => `
+                    <li class="flex items-start gap-3 p-2.5 rounded-xl bg-plum-50/70">
+                        <span class="w-6 h-6 rounded-full bg-plum-900 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">${idx + 1}</span>
+                        <span>${g}</span>
+                    </li>
+                `).join('');
+            }
+
+            // Equipotency Table Body
+            const eqBody = document.getElementById('eq-table-body');
+            const eqRows = t('eqRows');
+            if (eqBody && Array.isArray(eqRows)) {
+                eqBody.innerHTML = eqRows.map((row, rIdx) => `
+                    <tr class="${rIdx % 2 === 1 ? 'bg-gray-50/70 ' : ''}hover:bg-plum-50/40">
+                        <td class="py-3 px-4 font-medium text-gray-900">${row[0]}</td>
+                        <td class="py-3 px-4 text-gray-700">${row[1]}</td>
+                        <td class="py-3 px-4 ${row[2] === '–' ? 'text-gray-400' : ''}">${row[2]}</td>
+                        <td class="py-3 px-4 font-medium text-plum-900">${row[3]}</td>
+                        <td class="py-3 px-4 ${row[4] === '–' ? 'text-gray-400' : 'font-medium text-plum-900'}">${row[4]}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Re-render dynamic age advice, summary, cloud status & gallery
+            if (window.state && window.state.age) {
+                const resEl = document.getElementById('age-result');
+                resEl.innerHTML = window.state.age === 'under45' ? t('ageUnder45Advice') : t('ageOver45Advice');
+            }
+            if (typeof window.updateSummary === 'function') window.updateSummary();
+            if (typeof window.refreshCloudStatusText === 'function') window.refreshCloudStatusText();
+            if (typeof window.renderGallery === 'function') window.renderGallery();
+            lucide.createIcons();
+        };
+    </script>
+
+    <!-- ========================================================= -->
+    <!-- JAVASCRIPT & FIREBASE + INDEXEDDB STORAGE LOGIC           -->
     <!-- ========================================================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -714,7 +1394,7 @@
         let auth = null;
         let currentUser = null;
         let authReadyPromise = null;
-        let useMemoryFallback = false;
+        let storageMode = 'connecting'; // 'connecting' | 'cloud' | 'local'
         let savedImages = [];
         let activeFilter = 'Alla';
         let selectedImageBase64 = null;
@@ -722,24 +1402,79 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'menopaus-beslutsstod-app';
 
-        // Initialize Firebase with reliable auth promise
+        // IndexedDB Helper (Persistent browser fallback when cloud config is unavailable)
+        const IDB_NAME = 'MenopausArchiveDB';
+        const IDB_STORE = 'images';
+
+        function openLocalDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(IDB_NAME, 1);
+                req.onupgradeneeded = (e) => {
+                    const idb = e.target.result;
+                    if (!idb.objectStoreNames.contains(IDB_STORE)) {
+                        idb.createObjectStore(IDB_STORE, { keyPath: 'id' });
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function loadFromLocalDB() {
+            try {
+                const idb = await openLocalDB();
+                return new Promise((resolve) => {
+                    const tx = idb.transaction(IDB_STORE, 'readonly');
+                    const store = tx.objectStore(IDB_STORE);
+                    const req = store.getAll();
+                    req.onsuccess = () => {
+                        const items = req.result || [];
+                        items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                        resolve(items);
+                    };
+                    req.onerror = () => resolve([]);
+                });
+            } catch (e) {
+                return [];
+            }
+        }
+
+        async function saveToLocalDB(item) {
+            const idb = await openLocalDB();
+            return new Promise((resolve, reject) => {
+                const tx = idb.transaction(IDB_STORE, 'readwrite');
+                tx.objectStore(IDB_STORE).put(item);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        async function deleteFromLocalDB(id) {
+            const idb = await openLocalDB();
+            return new Promise((resolve, reject) => {
+                const tx = idb.transaction(IDB_STORE, 'readwrite');
+                tx.objectStore(IDB_STORE).delete(id);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        // Initialize Firebase with IndexedDB seamless fallback
         function initFirebase() {
             authReadyPromise = (async () => {
                 try {
                     if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-                        throw new Error("Molnkonfiguration saknas i miljön.");
+                        throw new Error("No cloud config");
                     }
                     const firebaseConfig = JSON.parse(__firebase_config);
                     const app = initializeApp(firebaseConfig);
                     auth = getAuth(app);
                     db = getFirestore(app);
 
-                    // Authenticate BEFORE Firestore queries (Rule 3)
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         try {
                             await signInWithCustomToken(auth, __initial_auth_token);
                         } catch (tokenErr) {
-                            console.warn("Custom token fallback till anonym inloggning:", tokenErr);
                             await signInAnonymously(auth);
                         }
                     } else {
@@ -750,40 +1485,42 @@
                         onAuthStateChanged(auth, (user) => {
                             if (user) {
                                 currentUser = user;
-                                document.getElementById('user-id-display').textContent = `Användar-ID: ${user.uid}`;
-                                updateCloudStatus('online', 'Molnsynk aktiv (Sparas online)');
+                                storageMode = 'cloud';
+                                document.getElementById('user-id-display').textContent = `ID: ${user.uid}`;
+                                window.refreshCloudStatusText();
                                 subscribeToImages(user.uid);
                                 resolve(user);
                             }
                         });
                     });
                 } catch (error) {
-                    console.error("Firebase init error:", error);
-                    useMemoryFallback = true;
-                    document.getElementById('user-id-display').textContent = 'Sessionsläge (tillfälligt minne)';
-                    updateCloudStatus('error', 'Molnanslutning blockerad – sparar i sessionen');
+                    storageMode = 'local';
+                    document.getElementById('user-id-display').textContent = 'IndexedDB Persistent Storage';
+                    window.refreshCloudStatusText();
+                    savedImages = await loadFromLocalDB();
+                    document.getElementById('image-count-badge').textContent = savedImages.length;
+                    window.renderGallery();
                     return null;
                 }
             })();
             return authReadyPromise;
         }
 
-        function updateCloudStatus(status, text) {
+        window.refreshCloudStatusText = function() {
             const badge = document.getElementById('cloud-status-badge');
             if (!badge) return;
-            if (status === 'online') {
+            if (storageMode === 'cloud') {
                 badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800';
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> ${text}`;
-            } else if (status === 'error') {
-                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-900';
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> ${text}`;
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span>${window.t('cloudOnline')}</span>`;
+            } else if (storageMode === 'local') {
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800';
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> <span>${window.t('cloudLocal')}</span>`;
             } else {
-                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800';
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-gray-500"></span> ${text}`;
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800';
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> <span>${window.t('cloudConnecting')}</span>`;
             }
-        }
+        };
 
-        // Subscribe to Firestore collection (Rule 1 & Rule 2: simple collection query, sort in JS)
         function subscribeToImages(userId) {
             if (!db || !userId) return;
             const colRef = collection(db, 'artifacts', appId, 'users', userId, 'menopaus_images');
@@ -793,20 +1530,21 @@
                 snapshot.forEach((docSnap) => {
                     items.push({ id: docSnap.id, ...docSnap.data() });
                 });
-                // Sort newest first in memory
                 items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 savedImages = items;
                 document.getElementById('image-count-badge').textContent = savedImages.length;
                 window.renderGallery();
-            }, (error) => {
-                console.error("Firestore snapshot error:", error);
-                useMemoryFallback = true;
-                updateCloudStatus('error', 'Behörighetsfel i molnet – använder sessionsminne');
-                showToast(`Kunde inte läsa från molnet (${error.code || 'fel'}).`, "error");
+            }, async (error) => {
+                console.warn("Switching to local persistent storage:", error);
+                storageMode = 'local';
+                window.refreshCloudStatusText();
+                savedImages = await loadFromLocalDB();
+                document.getElementById('image-count-badge').textContent = savedImages.length;
+                window.renderGallery();
             });
         }
 
-        // Dynamic client-side image compression: guarantees base64 string stays safely under 700 KB (Firestore limit is 1 MB)
+        // Dynamic client-side image compression (< 700 KB)
         function compressImage(file, maxDimension = 1400, initialQuality = 0.82) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -816,7 +1554,6 @@
                         let width = img.width;
                         let height = img.height;
 
-                        // Scale down if either dimension exceeds maxDimension
                         if (width > maxDimension || height > maxDimension) {
                             if (width >= height) {
                                 height = Math.round((height * maxDimension) / width);
@@ -831,12 +1568,10 @@
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
-                        // White background in case of transparent PNG
                         ctx.fillStyle = '#ffffff';
                         ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Iteratively adjust quality/scale until string length is < 700,000 chars (~525 KB binary, well below 1 MB Firestore limit)
                         let quality = initialQuality;
                         let dataUrl = canvas.toDataURL('image/jpeg', quality);
                         const MAX_CHARS = 700000;
@@ -846,7 +1581,6 @@
                             dataUrl = canvas.toDataURL('image/jpeg', quality);
                         }
 
-                        // If still too large, scale down dimensions by 25% and re-encode
                         if (dataUrl.length > MAX_CHARS) {
                             const smallCanvas = document.createElement('canvas');
                             smallCanvas.width = Math.round(width * 0.75);
@@ -860,15 +1594,14 @@
 
                         resolve(dataUrl);
                     };
-                    img.onerror = () => reject(new Error("Bilden kunde inte avkodas."));
+                    img.onerror = () => reject(new Error("Decode error"));
                     img.src = event.target.result;
                 };
-                reader.onerror = () => reject(new Error("Filen kunde inte läsas."));
+                reader.onerror = () => reject(new Error("Read error"));
                 reader.readAsDataURL(file);
             });
         }
 
-        // Expose functions to window for HTML event handlers
         window.handleFileSelect = async function(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -877,14 +1610,13 @@
 
         async function processSelectedFile(file) {
             if (!file.type.startsWith('image/')) {
-                showToast("Vänligen välj en giltig bildfil (PNG, JPG, WEBP).", "error");
+                showToast(window.t('toastInvalidFile'), "error");
                 return;
             }
             const fileNameEl = document.getElementById('selected-file-name');
-            fileNameEl.textContent = `Komprimerar "${file.name}" för snabb molnlagring...`;
+            fileNameEl.textContent = window.t('toastCompressing').replace('{name}', file.name);
             fileNameEl.classList.remove('hidden');
 
-            // Auto-fill title if empty
             const titleInput = document.getElementById('img-title-input');
             if (!titleInput.value.trim()) {
                 titleInput.value = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
@@ -893,32 +1625,30 @@
             try {
                 selectedImageBase64 = await compressImage(file);
                 const sizeKb = Math.round((selectedImageBase64.length * 3) / 4 / 1024);
-                fileNameEl.textContent = `Redo att sparas: ${file.name} (${sizeKb} KB optimerad)`;
+                fileNameEl.textContent = window.t('toastReady').replace('{name}', file.name).replace('{kb}', sizeKb);
             } catch (err) {
-                console.error(err);
                 selectedImageBase64 = null;
                 fileNameEl.classList.add('hidden');
-                showToast(`Kunde inte behandla bilden: ${err.message}`, "error");
+                showToast(err.message, "error");
             }
         }
 
         window.uploadImageToCloud = async function() {
             if (!selectedImageBase64) {
-                showToast("Välj en bild först innan du klickar på spara.", "error");
+                showToast(window.t('toastNoImg'), "error");
                 return;
             }
 
-            const title = document.getElementById('img-title-input').value.trim() || "Namnlös infografik";
+            const title = document.getElementById('img-title-input').value.trim() || "Infographic";
             const category = document.getElementById('img-category-input').value;
 
             const btn = document.getElementById('upload-btn');
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Komprimerar och sparar...</span>`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>${window.t('savingImgBtn')}</span>`;
             lucide.createIcons();
 
             try {
-                // Wait for auth initialization if it's still finishing
-                if (authReadyPromise && !currentUser && !useMemoryFallback) {
+                if (authReadyPromise && storageMode === 'connecting') {
                     await authReadyPromise;
                 }
 
@@ -929,29 +1659,48 @@
                     createdAt: Date.now()
                 };
 
-                if (currentUser && db && !useMemoryFallback) {
+                if (storageMode === 'cloud' && currentUser && db) {
                     const colRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'menopaus_images');
                     await addDoc(colRef, newItem);
-                    showToast("Bilden har sparats online i ditt molnarkiv!", "success");
+                    showToast(window.t('toastSavedCloud'), "success");
                 } else {
-                    // Fallback to in-memory session storage if Firestore is unavailable in environment
-                    savedImages.unshift({ id: 'session-' + Date.now(), ...newItem });
+                    const localItem = { id: 'local-' + Date.now(), ...newItem };
+                    await saveToLocalDB(localItem);
+                    savedImages.unshift(localItem);
                     document.getElementById('image-count-badge').textContent = savedImages.length;
                     window.renderGallery();
-                    showToast("Bilden sparades i den aktuella sessionen.", "info");
+                    showToast(window.t('toastSavedLocal'), "success");
                 }
 
-                // Reset form
                 selectedImageBase64 = null;
                 document.getElementById('image-file-input').value = '';
                 document.getElementById('img-title-input').value = '';
                 document.getElementById('selected-file-name').classList.add('hidden');
             } catch (error) {
-                console.error("Save error:", error);
-                showToast(`Kunde inte spara online: ${error.message || 'Okänt fel'}`, "error");
+                // Fallback to IndexedDB if Firestore write fails
+                try {
+                    const localItem = {
+                        id: 'local-' + Date.now(),
+                        title: title,
+                        category: category,
+                        imageData: selectedImageBase64,
+                        createdAt: Date.now()
+                    };
+                    await saveToLocalDB(localItem);
+                    savedImages.unshift(localItem);
+                    document.getElementById('image-count-badge').textContent = savedImages.length;
+                    window.renderGallery();
+                    selectedImageBase64 = null;
+                    document.getElementById('image-file-input').value = '';
+                    document.getElementById('img-title-input').value = '';
+                    document.getElementById('selected-file-name').classList.add('hidden');
+                    showToast(window.t('toastSavedLocal'), "success");
+                } catch (e2) {
+                    showToast(error.message || "Error", "error");
+                }
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4"></i><span>Spara bild online</span>`;
+                btn.innerHTML = `<i data-lucide="cloud-upload" class="w-4 h-4"></i><span data-i18n="saveImgBtn">${window.t('saveImgBtn')}</span>`;
                 lucide.createIcons();
             }
         };
@@ -972,26 +1721,38 @@
             const idToDelete = imageToDeleteId;
             closeDeleteModal();
             try {
-                if (idToDelete.startsWith('session-') || !currentUser || !db || useMemoryFallback) {
+                if (idToDelete.startsWith('local-') || storageMode !== 'cloud' || !currentUser || !db) {
+                    await deleteFromLocalDB(idToDelete);
                     savedImages = savedImages.filter(img => img.id !== idToDelete);
                     document.getElementById('image-count-badge').textContent = savedImages.length;
                     window.renderGallery();
-                    showToast("Bilden togs bort.", "info");
                 } else {
                     const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'menopaus_images', idToDelete);
                     await deleteDoc(docRef);
-                    showToast("Bilden togs bort från molnet.", "info");
                 }
+                showToast(window.t('toastDeleted'), "info");
             } catch (error) {
-                console.error("Delete error:", error);
-                showToast(`Kunde inte ta bort bilden: ${error.message}`, "error");
+                showToast(error.message, "error");
             }
         });
+
+        function translateCategoryLabel(catValue) {
+            const map = {
+                'Algoritm & Flöde': 'catAlg',
+                'Översikt': 'catOverview',
+                'Symtom': 'catSymptoms',
+                'Behandling': 'catTreatment',
+                'Riktlinjer': 'catGuidelines',
+                'Preparat & Dosering': 'catPrep',
+                'Övrigt': 'catOther'
+            };
+            return map[catValue] ? window.t(map[catValue]) : catValue;
+        }
 
         window.filterGallery = function(category) {
             activeFilter = category;
             document.querySelectorAll('.filter-chip').forEach(btn => {
-                if (btn.textContent === category) {
+                if (btn.getAttribute('data-cat-key') === category) {
                     btn.className = 'filter-chip active px-3.5 py-1.5 rounded-full text-xs font-medium bg-plum-900 text-white transition-colors';
                 } else {
                     btn.className = 'filter-chip px-3.5 py-1.5 rounded-full text-xs font-medium bg-white text-gray-700 hover:bg-plum-100 border border-gray-200 transition-colors';
@@ -1007,7 +1768,8 @@
 
             const filtered = savedImages.filter(item => {
                 const matchesCat = activeFilter === 'Alla' || item.category === activeFilter;
-                const matchesSearch = item.title.toLowerCase().includes(searchTerm) || item.category.toLowerCase().includes(searchTerm);
+                const translatedCat = translateCategoryLabel(item.category).toLowerCase();
+                const matchesSearch = item.title.toLowerCase().includes(searchTerm) || item.category.toLowerCase().includes(searchTerm) || translatedCat.includes(searchTerm);
                 return matchesCat && matchesSearch;
             });
 
@@ -1018,30 +1780,32 @@
             }
 
             emptyState.classList.add('hidden');
+            const locale = window.currentLang === 'fa' ? 'fa-IR' : (window.currentLang === 'en' ? 'en-US' : 'sv-SE');
             grid.innerHTML = filtered.map(item => {
-                const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString('sv-SE') : '';
+                const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString(locale) : '';
+                const catLabel = translateCategoryLabel(item.category);
                 return `
                     <div onclick="openLightbox('${item.id}')" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-plum-100 transition-all cursor-pointer flex flex-col">
                         <div class="relative h-48 bg-gray-100 overflow-hidden">
                             <img src="${item.imageData}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
                                 <span class="text-white text-xs font-medium flex items-center gap-1">
-                                    <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i> Klicka för helskärm
+                                    <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i> ${window.t('cardFullscreen')}
                                 </span>
                             </div>
-                            <button onclick="promptDeleteImage('${item.id}', event)" class="absolute top-2.5 right-2.5 p-2 rounded-full bg-white/90 hover:bg-red-600 text-gray-700 hover:text-white shadow-sm transition-colors" title="Ta bort bild">
+                            <button onclick="promptDeleteImage('${item.id}', event)" class="absolute top-2.5 end-2.5 p-2 rounded-full bg-white/90 hover:bg-red-600 text-gray-700 hover:text-white shadow-sm transition-colors">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
                         <div class="p-4 flex-grow flex flex-col justify-between">
                             <div>
                                 <span class="inline-block text-[11px] font-semibold text-plum-800 bg-plum-50 px-2.5 py-0.5 rounded-full mb-1.5">
-                                    ${escapeHtml(item.category)}
+                                    ${escapeHtml(catLabel)}
                                 </span>
                                 <h4 class="font-bold text-gray-900 text-sm line-clamp-2">${escapeHtml(item.title)}</h4>
                             </div>
                             <div class="text-[11px] text-gray-400 mt-3 pt-2 border-t border-gray-100 flex items-center justify-between">
-                                <span>Sparad online</span>
+                                <span>${window.t('cardSavedLabel')}</span>
                                 <span>${dateStr}</span>
                             </div>
                         </div>
@@ -1056,11 +1820,11 @@
             if (!item) return;
             document.getElementById('lightbox-img').src = item.imageData;
             document.getElementById('lightbox-title').textContent = item.title;
-            document.getElementById('lightbox-category').textContent = item.category;
+            document.getElementById('lightbox-category').textContent = translateCategoryLabel(item.category);
             const dlLink = document.getElementById('lightbox-download');
             if (dlLink) {
                 dlLink.href = item.imageData;
-                dlLink.download = `${item.title.replace(/[^a-zA-Z0-9åäöÅÄÖ_-]/g, '_')}.jpg`;
+                dlLink.download = `${item.title.replace(/[^a-zA-Z0-9åäöÅÄÖ\u0600-\u06FF_-]/g, '_')}.jpg`;
             }
             document.getElementById('lightbox-modal').classList.remove('hidden');
         };
@@ -1094,18 +1858,16 @@
             return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
         }
 
-        // Start Firebase on load
         initFirebase();
     </script>
 
     <!-- Non-module UI & Clinical Algorithm Script -->
     <script>
-        let state = {
+        window.state = {
             age: null,
             phase: null
         };
 
-        // Tab Switching
         function switchTab(tabName) {
             document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
             document.getElementById(`view-${tabName}`).classList.remove('hidden');
@@ -1119,9 +1881,8 @@
             lucide.createIcons();
         }
 
-        // Step 1: Age Selection
         function selectAge(ageKey) {
-            state.age = ageKey;
+            window.state.age = ageKey;
             document.querySelectorAll('.age-btn').forEach(b => {
                 b.classList.remove('border-plum-800', 'bg-plum-50/70');
                 b.classList.add('border-gray-200');
@@ -1132,23 +1893,12 @@
 
             const resEl = document.getElementById('age-result');
             resEl.classList.remove('hidden');
-            if (ageKey === 'under45') {
-                resEl.innerHTML = `
-                    <div class="font-bold text-plum-900 mb-1">Åtgärd vid ålder &lt; 45 år (Socialstyrelsen):</div>
-                    <p class="text-xs leading-relaxed">Ta <strong>FSH-prov</strong> vid oförklarad amenorré (med eller utan klimakteriebesvär). Observera att ålder &lt; 45 år även utgör indikation för remiss/samråd med gynekolog och ofta kräver högre östradioldos (t.ex. 2 mg tablett eller motsvarande).</p>
-                `;
-            } else {
-                resEl.innerHTML = `
-                    <div class="font-bold text-plum-900 mb-1">Åtgärd vid ålder ≥ 45 år (Socialstyrelsen):</div>
-                    <p class="text-xs leading-relaxed"><strong>Ta INTE FSH-prov rutinmässigt.</strong> Ställ diagnos baserat på klinisk bild och symtom. Friska kvinnor med typiska klimakteriebesvär kan i regel bedömas och behandlas i primärvården.</p>
-                `;
-            }
+            resEl.innerHTML = ageKey === 'under45' ? window.t('ageUnder45Advice') : window.t('ageOver45Advice');
             updateSummary();
         }
 
-        // Step 4: Phase Selection
         function selectPhase(phaseKey) {
-            state.phase = phaseKey;
+            window.state.phase = phaseKey;
             document.querySelectorAll('.phase-btn').forEach(b => {
                 b.classList.remove('border-plum-800', 'bg-plum-50/70');
                 b.classList.add('border-gray-200');
@@ -1160,28 +1910,29 @@
             updateSummary();
         }
 
-        // Update Live Decision Output
-        function updateSummary() {
+        window.updateSummary = function() {
             const absContra = document.getElementById('contra-abs').checked;
             const relContra = document.getElementById('contra-rel').checked;
             const otherDiff = document.getElementById('contra-other').checked;
             const riskDvt = document.getElementById('risk-dvt').checked;
 
-            const checkedSymptoms = Array.from(document.querySelectorAll('.symptom-cb:checked')).map(cb => cb.value);
+            const checkedSymptomCbs = Array.from(document.querySelectorAll('.symptom-cb:checked'));
+            const checkedSymptoms = checkedSymptomCbs.map(cb => window.t(cb.getAttribute('data-sym-key')));
+            const hasDryness = checkedSymptomCbs.some(cb => cb.getAttribute('data-sym-key') === 'symDryness');
 
             // 1. Referral / Contraindication Box
             const refEl = document.getElementById('output-referral');
-            if (absContra || relContra || otherDiff || state.age === 'under45') {
+            if (absContra || relContra || otherDiff || window.state.age === 'under45') {
                 refEl.classList.remove('hidden');
                 let alerts = [];
                 if (absContra) {
-                    alerts.push(`<div class="p-3 rounded-xl bg-red-100 border border-red-300 text-red-950 text-xs"><strong>STOPP – Absolut kontraindikation:</strong> Systemisk hormonbehandling ska ej sättas in. Skicka <strong>remiss till gynekolog</strong> för bedömning av alternativa behandlingar.</div>`);
+                    alerts.push(`<div class="p-3 rounded-xl bg-red-100 border border-red-300 text-red-950 text-xs">${window.t('outAbsStop')}</div>`);
                 }
                 if (relContra) {
-                    alerts.push(`<div class="p-3 rounded-xl bg-amber-100 border border-amber-300 text-amber-950 text-xs"><strong>Relativ kontraindikation:</strong> Överväg <strong>remiss till gynekolog</strong> eller noggrann individuell risk-nyttabedömning (t.ex. transdermalt val vid kärlrisk).</div>`);
+                    alerts.push(`<div class="p-3 rounded-xl bg-amber-100 border border-amber-300 text-amber-950 text-xs">${window.t('outRelWarn')}</div>`);
                 }
-                if (otherDiff || state.age === 'under45') {
-                    alerts.push(`<div class="p-3 rounded-xl bg-indigo-100 border border-indigo-300 text-indigo-950 text-xs"><strong>Särskild hänsyn / Remissindikation:</strong> Vid ålder &lt;45 år, &gt;60 år, &gt;10 år efter menopaus, blödningsrubbning eller behandlingssvikt rekommenderas <strong>remiss till gynekolog</strong>.</div>`);
+                if (otherDiff || window.state.age === 'under45') {
+                    alerts.push(`<div class="p-3 rounded-xl bg-indigo-100 border border-indigo-300 text-indigo-950 text-xs">${window.t('outOtherWarn')}</div>`);
                 }
                 refEl.innerHTML = `<div class="space-y-2">${alerts.join('')}</div>`;
             } else {
@@ -1190,17 +1941,18 @@
 
             // 2. Diagnostics Box
             const diagEl = document.getElementById('output-diagnostics');
-            if (state.age || checkedSymptoms.length > 0) {
+            if (window.state.age || checkedSymptoms.length > 0) {
                 diagEl.classList.remove('hidden');
                 let html = `<div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-xs space-y-1.5">`;
-                html += `<div class="font-bold text-gray-900">Diagnostik & Symtombild</div>`;
-                if (state.age === 'under45') {
-                    html += `<p>• <strong>Provtagning:</strong> Ta FSH-prov (ålder &lt; 45 år).</p>`;
-                } else if (state.age === 'over45') {
-                    html += `<p>• <strong>Provtagning:</strong> Klinisk diagnos (ej rutinmässigt FSH-prov).</p>`;
+                html += `<div class="font-bold text-gray-900">${window.t('outDiagHeader')}</div>`;
+                if (window.state.age === 'under45') {
+                    html += `<p>${window.t('outDiagUnder45')}</p>`;
+                } else if (window.state.age === 'over45') {
+                    html += `<p>${window.t('outDiagOver45')}</p>`;
                 }
                 if (checkedSymptoms.length > 0) {
-                    html += `<p>• <strong>Aktuella symtom (${checkedSymptoms.length}):</strong> ${checkedSymptoms.join(', ')}.</p>`;
+                    const sep = window.currentLang === 'fa' ? '، ' : ', ';
+                    html += `<p>${window.t('outDiagSymptoms')} (${checkedSymptoms.length}):</strong> ${checkedSymptoms.join(sep)}.</p>`;
                 }
                 html += `</div>`;
                 diagEl.innerHTML = html;
@@ -1211,68 +1963,41 @@
             // 3. Treatment Box
             const treatEl = document.getElementById('output-treatment');
             if (absContra) {
-                treatEl.innerHTML = `<p class="text-xs font-semibold text-red-900">Systemisk MHT avråds p.g.a. absoluta kontraindikationer. Fokus på livsstilsråd, icke-hormonella alternativ samt gynekologbedömning.</p>`;
+                treatEl.innerHTML = `<p class="text-xs font-semibold text-red-900">${window.t('outTreatContraindicated')}</p>`;
                 return;
             }
 
             let treatHtml = `<div class="space-y-2.5 text-xs">`;
-            treatHtml += `<div class="font-bold text-plum-950 text-sm flex items-center gap-1.5"><i data-lucide="pill" class="w-4 h-4 text-plum-800"></i><span>Föreslagen hormonbehandling (MHT)</span></div>`;
+            treatHtml += `<div class="font-bold text-plum-950 text-sm flex items-center gap-1.5"><i data-lucide="pill" class="w-4 h-4 text-plum-800 shrink-0"></i><span>${window.t('outTreatHeader')}</span></div>`;
 
-            if (!state.phase) {
-                treatHtml += `<p class="text-plum-800">Välj klimakteriefas (Perimenopaus, Postmenopaus eller Hysterektomerad) i Steg 4 för specifika preparatförslag.</p>`;
-            } else if (state.phase === 'peri') {
-                treatHtml += `
-                    <p><strong>Regim: Sekventiell behandling</strong> (Östradiol kontinuerligt + gestagen 12 dagar/månad för regelbunden bortfallsblödning).</p>
-                    <ul class="list-disc pl-4 space-y-1 text-gray-800">
-                        <li><strong>Fast kombination:</strong> <em>Novofem</em> (1 mg) eller <em>Femasekvens</em> (2 mg, vid &lt;45 år eller otillräcklig effekt av 1 mg).</li>
-                        <li><strong>Individuell kombination:</strong> Östrogen (plåster/gel/tablett) + <em>Provera</em> 10 mg (12 d/mån) eller <em>Mirena</em> hormonspiral (ger blödningsfrihet + antikonception).</li>
-                    </ul>
-                `;
-            } else if (state.phase === 'post') {
-                treatHtml += `
-                    <p><strong>Regim: Kontinuerlig behandling</strong> (Östradiol + kontinuerligt gestagen för blödningsfrihet).</p>
-                    <ul class="list-disc pl-4 space-y-1 text-gray-800">
-                        <li><strong>Fast kombination:</strong> <em>Activelle</em> / <em>Cliovelle</em> / <em>Noresmea</em> (estradiol + noretisteron) eller <em>Indivina</em> (estradiol + MPA).</li>
-                        <li><strong>Individuell kombination:</strong> Östrogen (plåster/gel/tablett) + <em>Mirena</em> hormonspiral.</li>
-                    </ul>
-                `;
-            } else if (state.phase === 'hyst') {
-                treatHtml += `
-                    <p><strong>Regim: Ren östrogenbehandling</strong> (Gestagentillägg behövs ej då livmoder saknas).</p>
-                    <ul class="list-disc pl-4 space-y-1 text-gray-800">
-                        <li><strong>Transdermalt:</strong> <em>Divigel</em>, <em>Estrogel</em>, <em>Estradot</em> eller <em>Lenzetto</em>.</li>
-                        <li><strong>Peroralt:</strong> <em>Femanest</em> eller <em>Progynon</em> (1–2 mg).</li>
-                    </ul>
-                `;
+            if (!window.state.phase) {
+                treatHtml += `<p class="text-plum-800">${window.t('outTreatSelectPhase')}</p>`;
+            } else if (window.state.phase === 'peri') {
+                treatHtml += window.t('outTreatPeri');
+            } else if (window.state.phase === 'post') {
+                treatHtml += window.t('outTreatPost');
+            } else if (window.state.phase === 'hyst') {
+                treatHtml += window.t('outTreatHyst');
             }
 
             if (riskDvt) {
-                treatHtml += `
-                    <div class="p-2.5 rounded-lg bg-sky-100 border border-sky-300 text-sky-950 mt-2">
-                        <strong>Välj transdermalt östrogen!</strong> Ger ingen ökad risk för DVT. Vid restnotering på plåster (Estradot) eller spray (Lenzetto), förskriv gel (<strong>Divigel</strong> eller <strong>Estrogel</strong>).
-                    </div>
-                `;
-            } else if (state.phase) {
-                treatHtml += `
-                    <div class="p-2.5 rounded-lg bg-white/80 border border-plum-200 text-gray-700 mt-2">
-                        <strong>Tips vid restnotering:</strong> Plåster och spray har ofta restnoteringar. Byt vid behov till ekvipotent dos gel (<em>Divigel</em> / <em>Estrogel</em>) eller tablett.
-                    </div>
-                `;
+                treatHtml += `<div class="p-2.5 rounded-lg bg-sky-100 border border-sky-300 text-sky-950 mt-2">${window.t('outTreatDvtYes')}</div>`;
+            } else if (window.state.phase) {
+                treatHtml += `<div class="p-2.5 rounded-lg bg-white/80 border border-plum-200 text-gray-700 mt-2">${window.t('outTreatDvtNo')}</div>`;
             }
 
-            if (checkedSymptoms.includes('Torra slemhinnor')) {
-                treatHtml += `<p class="text-plum-900 font-medium pt-1">+ Vid enbart eller kvarstående urogenitala besvär: överväg lokal östrogenbehandling.</p>`;
+            if (hasDryness) {
+                treatHtml += `<p class="text-plum-900 font-medium pt-1">${window.t('outTreatLocal')}</p>`;
             }
 
             treatHtml += `</div>`;
             treatEl.innerHTML = treatHtml;
             lucide.createIcons();
-        }
+        };
 
-        // Reset Algorithm
         function resetAlgorithm() {
-            state.age = null;
-            state.phase = null;
+            window.state.age = null;
+            window.state.phase = null;
             document.querySelectorAll('.age-btn, .phase-btn').forEach(b => {
                 b.classList.remove('border-plum-800', 'bg-plum-50/70');
                 b.classList.add('border-gray-200');
@@ -1280,26 +2005,24 @@
             document.getElementById('age-result').classList.add('hidden');
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             updateSummary();
-            showToast("Bedömningen har återställts.", "info");
+            showToast(window.t('resetToast'), "info");
         }
 
-        // Copy clinical note using execCommand (iframe-safe)
         function copySummaryToClipboard() {
             const outputText = document.getElementById('decision-output').innerText;
             const textarea = document.createElement('textarea');
-            textarea.value = "KLINISKT BESLUTSSTÖD – KLIMAKTERIEBESVÄR\n\n" + outputText;
+            textarea.value = window.t('copyHeader') + "\n\n" + outputText;
             document.body.appendChild(textarea);
             textarea.select();
             try {
                 document.execCommand('copy');
-                showToast("Sammanfattning kopierad till urklipp!", "success");
+                showToast(window.t('copySuccess'), "success");
             } catch (err) {
-                showToast("Kunde inte kopiera texten.", "error");
+                showToast(window.t('copyError'), "error");
             }
             document.body.removeChild(textarea);
         }
 
-        // Toast Notification System (Replaces alert())
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -1321,7 +2044,6 @@
             }, 3500);
         }
 
-        // Close lightbox with ESC key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeLightbox();
@@ -1329,8 +2051,8 @@
             }
         });
 
-        // Initialize icons on load
         window.addEventListener('DOMContentLoaded', () => {
+            window.setLanguage('sv');
             lucide.createIcons();
         });
     </script>
