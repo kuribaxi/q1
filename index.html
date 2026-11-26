@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="sv">
+html_content = """<!DOCTYPE html>
+<html lang="sv" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,19 +26,49 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Tahoma, Arial, sans-serif;
         }
 
         body {
             background-color: var(--bg);
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.65;
             padding: 20px;
         }
 
         .container {
-            max-width: 850px;
+            max-width: 880px;
             margin: 0 auto;
+        }
+
+        .lang-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            background: var(--card);
+            border: 1.5px solid var(--border);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
         header {
@@ -51,12 +81,12 @@
         }
 
         header h1 {
-            font-size: 1.75rem;
+            font-size: 1.7rem;
             margin-bottom: 8px;
         }
 
         header p {
-            opacity: 0.9;
+            opacity: 0.92;
             font-size: 1rem;
         }
 
@@ -147,13 +177,13 @@
 
         .choice-btn {
             flex: 1;
-            min-width: 200px;
+            min-width: 220px;
             padding: 16px;
             border-radius: 10px;
             border: 2px solid var(--border);
             background: var(--bg);
             cursor: pointer;
-            text-align: left;
+            text-align: start;
             transition: all 0.2s;
         }
 
@@ -184,23 +214,23 @@
             margin-top: 16px;
             padding: 18px;
             border-radius: 10px;
-            border-left: 5px solid var(--primary);
+            border-inline-start: 5px solid var(--primary);
             background: var(--primary-light);
         }
 
         .result-box.danger {
             background: var(--danger-light);
-            border-left-color: var(--danger);
+            border-inline-start-color: var(--danger);
         }
 
         .result-box.warning {
             background: var(--warning-light);
-            border-left-color: var(--warning);
+            border-inline-start-color: var(--warning);
         }
 
         .result-box.success {
             background: var(--success-light);
-            border-left-color: var(--success);
+            border-inline-start-color: var(--success);
         }
 
         .result-box h4 {
@@ -209,7 +239,7 @@
         }
 
         ul {
-            margin-left: 20px;
+            margin-inline-start: 22px;
             margin-top: 8px;
         }
 
@@ -246,48 +276,62 @@
         th, td {
             border: 1px solid var(--border);
             padding: 12px;
-            text-align: left;
+            text-align: start;
         }
 
         th {
             background: var(--primary-light);
             color: var(--primary);
         }
+
+        code {
+            background: rgba(0,0,0,0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            direction: ltr;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="lang-bar">
+        <button class="lang-btn active" id="lang-sv" onclick="setLanguage('sv')">Svenska</button>
+        <button class="lang-btn" id="lang-en" onclick="setLanguage('en')">English</button>
+        <button class="lang-btn" id="lang-fa" onclick="setLanguage('fa')">فارسی</button>
+    </div>
+
     <header>
-        <h1>Steg-för-steg Algoritm: Kalcium, PTH & D-vitamin</h1>
-        <p>Interaktiv klinisk guide med enkla förklaringar för utredning och handläggning.</p>
+        <h1 id="header-title"></h1>
+        <p id="header-sub"></p>
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('algo', this)">1. Steg-för-steg Algoritm</button>
-        <button class="tab-btn" onclick="switchTab('vitd', this)">2. D-vitamin & Osteomalaci</button>
-        <button class="tab-btn" onclick="switchTab('ckd', this)">3. Njursvikt & Osteoporos</button>
-        <button class="tab-btn" onclick="switchTab('summary', this)">4. Vanliga fallgropar</button>
+        <button class="tab-btn active" id="tab-algo" onclick="switchTab('algo', this)"></button>
+        <button class="tab-btn" id="tab-vitd" onclick="switchTab('vitd', this)"></button>
+        <button class="tab-btn" id="tab-ckd" onclick="switchTab('ckd', this)"></button>
+        <button class="tab-btn" id="tab-summary" onclick="switchTab('summary', this)"></button>
     </div>
 
-    <!-- TAB 1: INTERAKTIV ALGORITM -->
+    <!-- TAB 1: ALGORITM -->
     <div id="algo" class="section active">
-        <!-- STEG 1 -->
         <div class="step-card">
             <div class="step-header">
                 <div class="step-badge">1</div>
-                <div class="step-title">Bekräfta avvikande kalcium</div>
+                <div class="step-title" id="s1-title"></div>
             </div>
-            <p>Avfärda aldrig ett lätt förhöjt eller sänkt kalcium utan omprov. Kontrollera alltid <strong>joniserat kalcium</strong> (det fria, aktiva kalciumet i blodet) samt <strong>eGFR, magnesium och fosfat</strong>.</p>
-            <p style="margin-top: 12px; font-weight: 600;">Vad visar det bekräftade kalciumvärdet?</p>
+            <p id="s1-desc"></p>
+            <p style="margin-top: 12px; font-weight: 600;" id="s1-q"></p>
             <div class="btn-group">
                 <button class="choice-btn" id="btn-high-ca" onclick="selectCa('high')">
-                    <strong>Högt Kalcium (Hyperkalcemi)</strong>
-                    <span>Joniserat Ca är förhöjt</span>
+                    <strong id="btn-high-ca-t"></strong>
+                    <span id="btn-high-ca-s"></span>
                 </button>
                 <button class="choice-btn" id="btn-low-ca" onclick="selectCa('low')">
-                    <strong>Lågt Kalcium (Hypokalcemi)</strong>
-                    <span>Joniserat Ca är sänkt</span>
+                    <strong id="btn-low-ca-t"></strong>
+                    <span id="btn-low-ca-s"></span>
                 </button>
             </div>
         </div>
@@ -296,92 +340,137 @@
         <div id="step2-high" class="step-card hidden">
             <div class="step-header">
                 <div class="step-badge">2</div>
-                <div class="step-title">Hyperkalcemi: Tolka PTH ihop med kalcium</div>
+                <div class="step-title" id="s2h-title"></div>
             </div>
-            <p>Bisköldkörtlarna (PTH) ska normalt stängas av när kalcium är högt. Hur reagerar PTH?</p>
+            <p id="s2h-desc"></p>
             <div class="btn-group">
                 <button class="choice-btn" id="btn-high-pth" onclick="selectHighPth('high')">
-                    <strong>PTH är högt eller "normalt" (ej nedtryckt)</strong>
-                    <span>Bisköldkörteln bromsar inte trots högt kalcium</span>
+                    <strong id="btn-high-pth-t"></strong>
+                    <span id="btn-high-pth-s"></span>
                 </button>
                 <button class="choice-btn" id="btn-low-pth" onclick="selectHighPth('low')">
-                    <strong>PTH är lågt (korrekt supprimerat)</strong>
-                    <span>Bisköldkörteln är frisk och har stängt av sig</span>
+                    <strong id="btn-low-pth-t"></strong>
+                    <span id="btn-low-pth-s"></span>
                 </button>
             </div>
 
-            <!-- RESULTAT HYPERKALCEMI -->
-            <div id="res-high-pth" class="result-box warning hidden">
-                <h4>Tolkning: PTH-beroende hyperkalcemi</h4>
-                <p><strong>Enkel förklaring:</strong> Bisköldkörteln driver själv på kalciumökningen.</p>
-                <ul>
-                    <li><strong>Primär hyperparatyreoidism (PHPT):</strong> Vanligaste orsaken (ofta godartad knuta på en bisköldkörtel).</li>
-                    <li><strong>Familjär hypokalciurisk hyperkalcemi (FHH):</strong> Ärftligt, ofarligt tillstånd där njurarna håller kvar kalcium. Kontrollera kalciumutsöndring i urin (CCCR) för att skilja från PHPT.</li>
-                </ul>
-            </div>
-
-            <div id="res-low-pth" class="result-box danger hidden">
-                <h4>Tolkning: PTH-oberoende hyperkalcemi</h4>
-                <p><strong>Enkel förklaring:</strong> Bisköldkörteln är oskyldig. Något annat höjer kalciumet. Bedöm skyndsamhetsgrad och utred:</p>
-                <ul>
-                    <li><strong>Malignitet (cancer), inklusive myelom:</strong> Tumörer som bryter ner ben eller frisätter kalciumhöjande ämnen.</li>
-                    <li><strong>Granulomatös sjukdom (t.ex. sarkoidos):</strong> Inflammatoriska celler bildar okontrollerat aktivt D-vitamin.</li>
-                    <li><strong>Överdosering av D-vitamin eller kalciumtillskott.</strong></li>
-                </ul>
-            </div>
+            <div id="res-high-pth" class="result-box warning hidden"></div>
+            <div id="res-low-pth" class="result-box danger hidden"></div>
         </div>
 
         <!-- STEG 2B: HYPOKALCEMI -->
         <div id="step2-low" class="step-card hidden">
             <div class="step-header">
                 <div class="step-badge">2</div>
-                <div class="step-title">Hypokalcemi: PTH och magnesium visar vägen</div>
+                <div class="step-title" id="s2l-title"></div>
             </div>
-            <p>När kalcium är lågt ska friska bisköldkörtlar öka PTH-produktionen kraftigt. Vad visar PTH?</p>
+            <p id="s2l-desc"></p>
             <div class="btn-group">
                 <button class="choice-btn" id="btn-hypo-high-pth" onclick="selectLowPth('high')">
-                    <strong>PTH är högt (Sekundär HPT)</strong>
-                    <span>Bisköldkörteln kämpar för att höja kalcium</span>
+                    <strong id="btn-hypo-high-pth-t"></strong>
+                    <span id="btn-hypo-high-pth-s"></span>
                 </button>
                 <button class="choice-btn" id="btn-hypo-low-pth" onclick="selectLowPth('low')">
-                    <strong>PTH är lågt eller inadekvat normalt</strong>
-                    <span>Bisköldkörteln svarar inte på kalciumbristen</span>
+                    <strong id="btn-hypo-low-pth-t"></strong>
+                    <span id="btn-hypo-low-pth-s"></span>
                 </button>
             </div>
 
-            <!-- RESULTAT HYPOKALCEMI -->
-            <div id="res-hypo-high-pth" class="result-box warning hidden">
-                <h4>Tolkning: Kroppen försöker kompensera kalciumbrist</h4>
-                <p><strong>Enkel förklaring:</strong> Bisköldkörteln fungerar men saknar "byggstenar" från tarm eller njure. Kontrollera:</p>
-                <ul>
-                    <li><strong>D-vitaminbrist:</strong> För lite solljus/intag gör att tarmen inte tar upp kalcium.</li>
-                    <li><strong>Malabsorption (nedsatt tarmupptag):</strong> T.ex. celiaki (glutenintolerans), Crohns sjukdom eller efter magsäcksoperation.</li>
-                    <li><strong>Kronisk njursjukdom (CKD):</strong> Njurarna klarar inte av att aktivera D-vitamin och fosfat stiger.</li>
-                </ul>
-                <p style="margin-top:8px;"><strong>Åtgärd:</strong> Behandla bakomliggande orsak (D-vitamin, kalcium, utred tarm/njure).</p>
-            </div>
-
-            <div id="res-hypo-low-pth" class="result-box danger hidden">
-                <h4>Tolkning: Bisköldkörteln arbetar inte</h4>
-                <p><strong>Enkel förklaring:</strong> Trots lågt kalcium frisätts inget PTH. Två huvudorsaker:</p>
-                <ul>
-                    <li><strong>Magnesiumbrist:</strong> Bisköldkörteln kräver magnesium för att kunna frisätta PTH. Utan magnesium "låser sig" körteln.</li>
-                    <li><strong>Hypoparatyreoidism (HypoPT):</strong> Skada på bisköldkörtlarna (t.ex. efter halskirurgi) eller autoimmun sjukdom.</li>
-                </ul>
-                <p style="margin-top:8px;"><strong>Åtgärd:</strong> Korrigera magnesiumbrist först! Vid HypoPT krävs aktivt D-vitamin med individualiserad uppföljning.</p>
-            </div>
+            <div id="res-hypo-high-pth" class="result-box warning hidden"></div>
+            <div id="res-hypo-low-pth" class="result-box danger hidden"></div>
         </div>
 
-        <button class="reset-btn" onclick="resetAlgo()">Återställ algoritmen</button>
+        <button class="reset-btn" id="reset-btn" onclick="resetAlgo()"></button>
     </div>
 
     <!-- TAB 2: D-VITAMIN & OSTEOMALACI -->
     <div id="vitd" class="section">
-        <div class="step-card">
-            <div class="step-header">
-                <div class="step-badge">D</div>
-                <div class="step-title">Vilket prov ska beställas och när?</div>
-            </div>
+        <div class="step-card" id="vitd-card-1"></div>
+        <div class="step-card" id="vitd-card-2"></div>
+        <div class="step-card" id="vitd-card-3"></div>
+    </div>
+
+    <!-- TAB 3: NJURSVIKT & OSTEOPOROS -->
+    <div id="ckd" class="section">
+        <div class="step-card" id="ckd-card-1"></div>
+        <div class="step-card" id="ckd-card-2"></div>
+    </div>
+
+    <!-- TAB 4: FALLGROPAR -->
+    <div id="summary" class="section">
+        <div class="step-card" id="summary-card-1"></div>
+    </div>
+</div>
+
+<script>
+const content = {
+    sv: {
+        dir: "ltr",
+        headerTitle: "Steg-för-steg Algoritm: Kalcium, PTH & D-vitamin",
+        headerSub: "Interaktiv klinisk guide med enkla förklaringar för utredning och handläggning.",
+        tabs: {
+            algo: "1. Steg-för-steg Algoritm",
+            vitd: "2. D-vitamin & Osteomalaci",
+            ckd: "3. Njursvikt & Osteoporos",
+            summary: "4. Vanliga fallgropar"
+        },
+        s1Title: "Bekräfta avvikande kalcium",
+        s1Desc: "Avfärda aldrig ett lätt förhöjt eller sänkt kalcium utan omprov. Kontrollera alltid <strong>joniserat kalcium</strong> (det fria, aktiva kalciumet i blodet) samt <strong>eGFR, magnesium och fosfat</strong>.",
+        s1Q: "Vad visar det bekräftade kalciumvärdet?",
+        btnHighCaT: "Högt Kalcium (Hyperkalcemi)",
+        btnHighCaS: "Joniserat Ca är förhöjt",
+        btnLowCaT: "Lågt Kalcium (Hypokalcemi)",
+        btnLowCaS: "Joniserat Ca är sänkt",
+
+        s2hTitle: "Hyperkalcemi: Tolka PTH ihop med kalcium",
+        s2hDesc: "Bisköldkörtlarna (PTH) ska normalt stängas av när kalcium är högt. Hur reagerar PTH?",
+        btnHighPthT: "PTH är högt eller 'normalt' (ej nedtryckt)",
+        btnHighPthS: "Bisköldkörteln bromsar inte trots högt kalcium",
+        btnLowPthT: "PTH är lågt (korrekt supprimerat)",
+        btnLowPthS: "Bisköldkörteln är frisk och har stängt av sig",
+
+        resHighPth: `<h4>Tolkning: PTH-beroende hyperkalcemi</h4>
+            <p><strong>Enkel förklaring:</strong> Bisköldkörteln driver själv på kalciumökningen.</p>
+            <ul>
+                <li><strong>Primär hyperparatyreoidism (PHPT):</strong> Vanligaste orsaken (ofta godartad knuta på en bisköldkörtel).</li>
+                <li><strong>Familjär hypokalciurisk hyperkalcemi (FHH):</strong> Ärftligt, ofarligt tillstånd där njurarna håller kvar kalcium. Kontrollera kalciumutsöndring i urin (CCCR) för att skilja från PHPT.</li>
+            </ul>`,
+
+        resLowPth: `<h4>Tolkning: PTH-oberoende hyperkalcemi</h4>
+            <p><strong>Enkel förklaring:</strong> Bisköldkörteln är oskyldig. Något annat höjer kalciumet. Bedöm skyndsamhetsgrad och utred:</p>
+            <ul>
+                <li><strong>Malignitet (cancer), inklusive myelom:</strong> Tumörer som bryter ner ben eller frisätter kalciumhöjande ämnen.</li>
+                <li><strong>Granulomatös sjukdom (t.ex. sarkoidos):</strong> Inflammatoriska celler bildar okontrollerat aktivt D-vitamin.</li>
+                <li><strong>Överdosering av D-vitamin eller kalciumtillskott.</strong></li>
+            </ul>`,
+
+        s2lTitle: "Hypokalcemi: PTH och magnesium visar vägen",
+        s2lDesc: "När kalcium är lågt ska friska bisköldkörtlar öka PTH-produktionen kraftigt. Vad visar PTH?",
+        btnHypoHighPthT: "PTH är högt (Sekundär HPT)",
+        btnHypoHighPthS: "Bisköldkörteln kämpar för att höja kalcium",
+        btnHypoLowPthT: "PTH är lågt eller inadekvat normalt",
+        btnHypoLowPthS: "Bisköldkörteln svarar inte på kalciumbristen",
+
+        resHypoHighPth: `<h4>Tolkning: Kroppen försöker kompensera kalciumbrist</h4>
+            <p><strong>Enkel förklaring:</strong> Bisköldkörteln fungerar men saknar "byggstenar" från tarm eller njure. Kontrollera:</p>
+            <ul>
+                <li><strong>D-vitaminbrist:</strong> För lite solljus/intag gör att tarmen inte tar upp kalcium.</li>
+                <li><strong>Malabsorption (nedsatt tarmupptag):</strong> T.ex. celiaki (glutenintolerans), Crohns sjukdom eller efter magsäcksoperation.</li>
+                <li><strong>Kronisk njursjukdom (CKD):</strong> Njurarna klarar inte av att aktivera D-vitamin och fosfat stiger.</li>
+            </ul>
+            <p style="margin-top:8px;"><strong>Åtgärd:</strong> Behandla bakomliggande orsak (D-vitamin, kalcium, utred tarm/njure).</p>`,
+
+        resHypoLowPth: `<h4>Tolkning: Bisköldkörteln arbetar inte</h4>
+            <p><strong>Enkel förklaring:</strong> Trots lågt kalcium frisätts inget PTH. Två huvudorsaker:</p>
+            <ul>
+                <li><strong>Magnesiumbrist:</strong> Bisköldkörteln kräver magnesium för att kunna frisätta PTH. Utan magnesium "låser sig" körteln.</li>
+                <li><strong>Hypoparatyreoidism (HypoPT):</strong> Skada på bisköldkörtlarna (t.ex. efter halskirurgi) eller autoimmun sjukdom.</li>
+            </ul>
+            <p style="margin-top:8px;"><strong>Åtgärd:</strong> Korrigera magnesiumbrist först! Vid HypoPT krävs aktivt D-vitamin med individualiserad uppföljning.</p>`,
+
+        resetBtn: "Återställ algoritmen",
+
+        vitdCard1: `<div class="step-header"><div class="step-badge">D</div><div class="step-title">Vilket prov ska beställas och när?</div></div>
             <p><strong>Beställ alltid <code>25-OH-D</code></strong> (lagringsformen från levern) för att bedöma D-vitaminstatus. Beställ <em>inte</em> den aktiva njurformen <code>1,25-(OH)2-D</code> som rutinprov.</p>
             <div class="result-box" style="margin-top:14px;">
                 <h4>Mät selektivt – endast när svaret ändrar handläggningen:</h4>
@@ -392,198 +481,424 @@
                     <li>Inför start av osteoporosbehandling.</li>
                 </ul>
                 <p style="margin-top:8px; color: var(--muted);"><em>Mät inte rutinmässigt vid enbart ospecifik trötthet eller hos friska utan riskfaktorer.</em></p>
-            </div>
-        </div>
+            </div>`,
 
-        <div class="step-card">
-            <div class="step-header">
-                <div class="step-badge">!</div>
-                <div class="step-title">Tolkning av 25-OH-D & Behandling</div>
-            </div>
+        vitdCard2: `<div class="step-header"><div class="step-badge">!</div><div class="step-title">Tolkning av 25-OH-D & Behandling</div></div>
             <table>
-                <thead>
-                    <tr>
-                        <th>Nivå (25-OH-D)</th>
-                        <th>Bedömning</th>
-                        <th>Åtgärd</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Nivå (25-OH-D)</th><th>Bedömning</th><th>Åtgärd</th></tr></thead>
                 <tbody>
-                    <tr style="background: var(--danger-light);">
-                        <td><strong>&lt; 25 nmol/L</strong></td>
-                        <td>D-vitaminbrist</td>
-                        <td>Behandla (t.ex. kolekalciferol 2 000 IE/dag i 8–12 veckor) och utred orsak. Kontrollera prov efter ca 3 månader.</td>
-                    </tr>
-                    <tr style="background: var(--warning-light);">
-                        <td><strong>25–50 nmol/L</strong></td>
-                        <td>Gråzon</td>
-                        <td>Väg samman riskfaktorer, symtom, PTH och ALP innan beslut om behandling.</td>
-                    </tr>
-                    <tr style="background: var(--success-light);">
-                        <td><strong>&ge; 50 nmol/L</strong></td>
-                        <td>Adekvat nivå</td>
-                        <td>Ingen åtgärd eller ändring behövs.</td>
-                    </tr>
+                    <tr style="background: var(--danger-light);"><td><strong>&lt; 25 nmol/L</strong></td><td>D-vitaminbrist</td><td>Behandla (t.ex. kolekalciferol 2 000 IE/dag i 8–12 veckor) och utred orsak. Kontrollera prov efter ca 3 månader.</td></tr>
+                    <tr style="background: var(--warning-light);"><td><strong>25–50 nmol/L</strong></td><td>Gråzon</td><td>Väg samman riskfaktorer, symtom, PTH och ALP innan beslut om behandling.</td></tr>
+                    <tr style="background: var(--success-light);"><td><strong>&ge; 50 nmol/L</strong></td><td>Adekvat nivå</td><td>Ingen åtgärd eller ändring behövs.</td></tr>
+                </tbody>
+            </table>`,
+
+        vitdCard3: `<div class="step-header"><div class="step-badge">vs</div><div class="step-title">Osteomalaci är inte samma sak som osteoporos</div></div>
+            <table>
+                <thead><tr><th>Osteomalaci (Benuppmjukning)</th><th>Osteoporos (Benskörhet)</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Orsak:</strong> Bristande mineralisering (skelettet blir mjukt p.g.a. svår D-vitamin-/kalciumbrist).</td><td><strong>Orsak:</strong> Minskad bentäthet och benstyrka (skelettet är hårt men poröst).</td></tr>
+                    <tr><td><strong>Symtom:</strong> Skelettvärk (bäcken/rygg) och proximal muskelsvaghet.</td><td><strong>Symtom:</strong> Ofta helt asymtomatisk fram tills en fraktur inträffar.</td></tr>
+                    <tr><td><strong>Lab:</strong> Ofta högt ALP och sekundärt högt PTH.</td><td><strong>Utredning:</strong> DXA-mätning och frakturriskbedömning (FRAX).</td></tr>
                 </tbody>
             </table>
-        </div>
+            <div class="result-box danger" style="margin-top: 14px;"><strong>Viktig säkerhetsregel:</strong> Behandla alltid osteomalaci och D-vitaminbrist <em>innan</em> du sätter in antiresorptiv osteoporosbehandling!</div>`,
 
-        <div class="step-card">
-            <div class="step-header">
-                <div class="step-badge">vs</div>
-                <div class="step-title">Osteomalaci är inte samma sak som osteoporos</div>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Osteomalaci (Benuppmjukning)</th>
-                        <th>Osteoporos (Benskörhet)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Orsak:</strong> Bristande mineralisering (skelettet blir mjukt p.g.a. svår D-vitamin-/kalciumbrist).</td>
-                        <td><strong>Orsak:</strong> Minskad bentäthet och benstyrka (skelettet är hårt men poröst).</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Symtom:</strong> Skelettvärk (bäcken/rygg) och proximal muskelsvaghet.</td>
-                        <td><strong>Symtom:</strong> Ofta helt asymtomatisk fram tills en fraktur inträffar.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Lab:</strong> Ofta högt ALP och sekundärt högt PTH.</td>
-                        <td><strong>Utredning:</strong> DXA-mätning och frakturriskbedömning (FRAX).</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="result-box danger" style="margin-top: 14px;">
-                <strong>Viktig säkerhetsregel:</strong> Behandla alltid osteomalaci och D-vitaminbrist <em>innan</em> du sätter in antiresorptiv osteoporosbehandling!
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 3: NJURSVIKT & OSTEOPOROS -->
-    <div id="ckd" class="section">
-        <div class="step-card">
-            <div class="step-header">
-                <div class="step-badge">N</div>
-                <div class="step-title">Njursvikt förändrar spelreglerna</div>
-            </div>
+        ckdCard1: `<div class="step-header"><div class="step-badge">N</div><div class="step-title">Njursvikt förändrar spelreglerna</div></div>
             <p>När njurfunktionen sjunker (lägre eGFR) uppstår en kedjereaktion:</p>
             <ul>
                 <li><strong>Steg 1:</strong> Njurarna klarar inte av att utsöndra fosfat (fosfatretention) och bildar mindre aktivt D-vitamin.</li>
                 <li><strong>Steg 2:</strong> Kalciumupptaget minskar och risken för hypokalcemi ökar.</li>
                 <li><strong>Steg 3:</strong> Bisköldkörtlarna överarbetar för att kompensera &rarr; <strong>Sekundär hyperparatyreoidism (HPT)</strong>.</li>
             </ul>
-            <div class="result-box danger">
-                <h4>Varning vid Denosumab (Prolia) och avancerad njursvikt (CKD)</h4>
-                <p>Vid nedsatt njurfunktion innebär behandling med <strong>denosumab</strong> en hög risk för <strong>svår, livshotande hypokalcemi</strong>. Planera alltid noggrann specialistuppföljning och säkerställ kalcium- och D-vitaminstatus innan injektion.</p>
-            </div>
-        </div>
+            <div class="result-box danger"><h4>Varning vid Denosumab (Prolia) och avancerad njursvikt (CKD)</h4><p>Vid nedsatt njurfunktion innebär behandling med <strong>denosumab</strong> en hög risk för <strong>svår, livshotande hypokalcemi</strong>. Planera alltid noggrann specialistuppföljning och säkerställ kalcium- och D-vitaminstatus innan injektion.</p></div>`,
 
-        <div class="step-card">
-            <div class="step-header">
-                <div class="step-badge">K</div>
-                <div class="step-title">Kalcium + D-vitamin vid osteoporos</div>
-            </div>
+        ckdCard2: `<div class="step-header"><div class="step-badge">K</div><div class="step-title">Kalcium + D-vitamin vid osteoporos</div></div>
             <ul>
                 <li><strong>Börja med maten:</strong> Kartlägg hur mycket kalcium patienten får via kosten (t.ex. mejeriprodukter). Komplettera med tablett endast för det som saknas. Glöm inte protein och allmän nutrition.</li>
                 <li><strong>När osteoporosläkemedel ges:</strong> Åtgärda eventuell D-vitaminbrist och säkerställ tillräckligt kalciumintag före och under behandling.</li>
+            </ul>`,
+
+        summaryCard1: `<div class="step-header"><div class="step-badge">!</div><div class="step-title">Fyra vanliga fallgropar att undvika</div></div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>1. Att tolka PTH utan samtidigt kalcium:</strong> PTH säger ingenting ensamt – det måste alltid ställas mot samma dags kalciumvärde.</div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>2. Att avfärda ett lätt avvikande kalcium utan omprov:</strong> Ta alltid omprov (helst joniserat kalcium) för att bekräfta om avvikelsen är verklig.</div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>3. Att beställa 1,25-vit-D vid misstänkt brist:</strong> Den aktiva formen kan vara normal eller hög trots svår brist. Beställ alltid <code>25-OH-D</code>.</div>
+            <div class="result-box warning"><strong>4. Att ge kalcium och D-vitamin utan att väga in njurfunktion och kost:</strong> Kontrollera alltid eGFR och kostintag innan rutinmässig förskrivning.</div>`
+    },
+
+    en: {
+        dir: "ltr",
+        headerTitle: "Step-by-Step Algorithm: Calcium, PTH & Vitamin D",
+        headerSub: "Interactive clinical guide with clear explanations for workup and management.",
+        tabs: {
+            algo: "1. Step-by-Step Algorithm",
+            vitd: "2. Vitamin D & Osteomalacia",
+            ckd: "3. Renal Failure & Osteoporosis",
+            summary: "4. Common Pitfalls"
+        },
+        s1Title: "Confirm abnormal calcium",
+        s1Desc: "Never dismiss a mildly elevated or reduced calcium without a repeat test. Always check <strong>ionized calcium</strong> (the free, active calcium in the blood) as well as <strong>eGFR, magnesium, and phosphate</strong>.",
+        s1Q: "What does the confirmed calcium level show?",
+        btnHighCaT: "High Calcium (Hypercalcemia)",
+        btnHighCaS: "Ionized Ca is elevated",
+        btnLowCaT: "Low Calcium (Hypocalcemia)",
+        btnLowCaS: "Ionized Ca is decreased",
+
+        s2hTitle: "Hypercalcemia: Interpret PTH together with calcium",
+        s2hDesc: "The parathyroid glands (PTH) should normally shut down when calcium is high. How is PTH responding?",
+        btnHighPthT: "PTH is high or 'normal' (not suppressed)",
+        btnHighPthS: "Parathyroid glands fail to brake despite high calcium",
+        btnLowPthT: "PTH is low (appropriately suppressed)",
+        btnLowPthS: "Parathyroid glands are healthy and have turned off",
+
+        resHighPth: `<h4>Interpretation: PTH-dependent hypercalcemia</h4>
+            <p><strong>Simple explanation:</strong> The parathyroid gland itself is driving the rise in calcium.</p>
+            <ul>
+                <li><strong>Primary hyperparathyroidism (PHPT):</strong> Most common cause (usually a benign adenoma on one parathyroid gland).</li>
+                <li><strong>Familial hypocalciuric hypercalcemia (FHH):</strong> Benign inherited condition where kidneys retain calcium. Check urinary calcium excretion (CCCR) to distinguish from PHPT.</li>
+            </ul>`,
+
+        resLowPth: `<h4>Interpretation: PTH-independent hypercalcemia</h4>
+            <p><strong>Simple explanation:</strong> The parathyroid gland is innocent. Something else is raising calcium. Assess urgency and investigate:</p>
+            <ul>
+                <li><strong>Malignancy (cancer), including myeloma:</strong> Tumors breaking down bone or releasing calcium-raising factors.</li>
+                <li><strong>Granulomatous disease (e.g., sarcoidosis):</strong> Inflammatory cells uncontrollably produce active vitamin D.</li>
+                <li><strong>Overdose of vitamin D or calcium supplements.</strong></li>
+            </ul>`,
+
+        s2lTitle: "Hypocalcemia: PTH and magnesium lead the way",
+        s2lDesc: "When calcium is low, healthy parathyroid glands sharply increase PTH production. What does PTH show?",
+        btnHypoHighPthT: "PTH is high (Secondary HPT)",
+        btnHypoHighPthS: "Parathyroid gland is working hard to raise calcium",
+        btnHypoLowPthT: "PTH is low or inappropriately normal",
+        btnHypoLowPthS: "Parathyroid gland fails to respond to low calcium",
+
+        resHypoHighPth: `<h4>Interpretation: Body is compensating for calcium deficiency</h4>
+            <p><strong>Simple explanation:</strong> The parathyroid gland works, but lacks 'building blocks' from gut or kidneys. Check for:</p>
+            <ul>
+                <li><strong>Vitamin D deficiency:</strong> Lack of sunlight/intake prevents intestinal calcium absorption.</li>
+                <li><strong>Malabsorption:</strong> E.g., celiac disease, Crohn's disease, or prior gastric surgery.</li>
+                <li><strong>Chronic kidney disease (CKD):</strong> Kidneys fail to activate vitamin D and phosphate accumulates.</li>
             </ul>
-        </div>
-    </div>
+            <p style="margin-top:8px;"><strong>Action:</strong> Treat the underlying cause (vitamin D, calcium, investigate gut/kidney).</p>`,
 
-    <!-- TAB 4: VANLIGA FALLGROPAR -->
-    <div id="summary" class="section">
-        <div class="step-card">
-            <div class="step-header">
-                <div class="step-badge">!</div>
-                <div class="step-title">Fyra vanliga fallgropar att undvika</div>
-            </div>
-            <div class="result-box warning" style="margin-bottom: 12px;">
-                <strong>1. Att tolka PTH utan samtidigt kalcium:</strong> PTH säger ingenting ensamt – det måste alltid ställas mot samma dags kalciumvärde.
-            </div>
-            <div class="result-box warning" style="margin-bottom: 12px;">
-                <strong>2. Att avfärda ett lätt avvikande kalcium utan omprov:</strong> Ta alltid omprov (helst joniserat kalcium) för att bekräfta om avvikelsen är verklig.
-            </div>
-            <div class="result-box warning" style="margin-bottom: 12px;">
-                <strong>3. Att beställa 1,25-vit-D vid misstänkt brist:</strong> Den aktiva formen kan vara normal eller hög trots svår brist. Beställ alltid <code>25-OH-D</code>.
-            </div>
-            <div class="result-box warning">
-                <strong>4. Att ge kalcium och D-vitamin utan att väga in njurfunktion och kost:</strong> Kontrollera alltid eGFR och kostintag innan rutinmässig förskrivning.
-            </div>
-        </div>
-    </div>
-</div>
+        resHypoLowPth: `<h4>Interpretation: Parathyroid gland is not working</h4>
+            <p><strong>Simple explanation:</strong> Despite low calcium, no PTH is released. Two main causes:</p>
+            <ul>
+                <li><strong>Magnesium deficiency:</strong> The parathyroid gland requires magnesium to secrete PTH. Without it, secretion is blocked.</li>
+                <li><strong>Hypoparathyroidism (HypoPT):</strong> Damage to the parathyroid glands (e.g., post-neck surgery) or autoimmune disease.</li>
+            </ul>
+            <p style="margin-top:8px;"><strong>Action:</strong> Correct magnesium deficiency first! In HypoPT, active vitamin D with individualized monitoring is required.</p>`,
 
-<script>
-    function switchTab(tabId, btn) {
-        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        btn.classList.add('active');
+        resetBtn: "Reset algorithm",
+
+        vitdCard1: `<div class="step-header"><div class="step-badge">D</div><div class="step-title">Which test to order and when?</div></div>
+            <p><strong>Always order <code>25-OH-D</code></strong> (the liver storage form) to assess vitamin D status. Do <em>not</em> order the active kidney form <code>1,25-(OH)2-D</code> as a routine test.</p>
+            <div class="result-box" style="margin-top:14px;">
+                <h4>Test selectively – only when the result changes management:</h4>
+                <ul>
+                    <li>Suspected osteomalacia or proximal muscle weakness (difficulty rising from a chair).</li>
+                    <li>Hypocalcemia or unexplained elevated PTH.</li>
+                    <li>Malabsorption or another clear risk factor.</li>
+                    <li>Prior to initiating osteoporosis treatment.</li>
+                </ul>
+                <p style="margin-top:8px; color: var(--muted);"><em>Do not test routinely for non-specific fatigue alone or in healthy individuals without risk factors.</em></p>
+            </div>`,
+
+        vitdCard2: `<div class="step-header"><div class="step-badge">!</div><div class="step-title">Interpreting 25-OH-D & Treatment</div></div>
+            <table>
+                <thead><tr><th>Level (25-OH-D)</th><th>Assessment</th><th>Action</th></tr></thead>
+                <tbody>
+                    <tr style="background: var(--danger-light);"><td><strong>&lt; 25 nmol/L</strong></td><td>Vitamin D deficiency</td><td>Treat (e.g., cholecalciferol 2,000 IU/day for 8–12 weeks) and investigate cause. Recheck levels after ~3 months.</td></tr>
+                    <tr style="background: var(--warning-light);"><td><strong>25–50 nmol/L</strong></td><td>Grey zone</td><td>Weigh risk factors, symptoms, PTH, and ALP before deciding on treatment.</td></tr>
+                    <tr style="background: var(--success-light);"><td><strong>&ge; 50 nmol/L</strong></td><td>Adequate level</td><td>No action or change needed.</td></tr>
+                </tbody>
+            </table>`,
+
+        vitdCard3: `<div class="step-header"><div class="step-badge">vs</div><div class="step-title">Osteomalacia is not the same as osteoporosis</div></div>
+            <table>
+                <thead><tr><th>Osteomalacia (Bone Softening)</th><th>Osteoporosis (Porous Bone)</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Cause:</strong> Defective mineralization (bones become soft due to severe vitamin D/calcium deficiency).</td><td><strong>Cause:</strong> Reduced bone density and strength (bone is hard but porous).</td></tr>
+                    <tr><td><strong>Symptoms:</strong> Bone pain (pelvis/lower back) and proximal muscle weakness.</td><td><strong>Symptoms:</strong> Usually completely asymptomatic until a fracture occurs.</td></tr>
+                    <tr><td><strong>Labs:</strong> Often elevated ALP and secondary high PTH.</td><td><strong>Workup:</strong> DXA scan and fracture risk assessment (FRAX).</td></tr>
+                </tbody>
+            </table>
+            <div class="result-box danger" style="margin-top: 14px;"><strong>Key Safety Rule:</strong> Always treat osteomalacia and vitamin D deficiency <em>before</em> starting antiresorptive osteoporosis therapy!</div>`,
+
+        ckdCard1: `<div class="step-header"><div class="step-badge">R</div><div class="step-title">Renal failure changes the rules</div></div>
+            <p>When kidney function declines (lower eGFR), a chain reaction occurs:</p>
+            <ul>
+                <li><strong>Step 1:</strong> Kidneys fail to excrete phosphate (phosphate retention) and produce less active vitamin D.</li>
+                <li><strong>Step 2:</strong> Calcium absorption drops and the risk of hypocalcemia increases.</li>
+                <li><strong>Step 3:</strong> Parathyroid glands overwork to compensate &rarr; <strong>Secondary hyperparathyroidism (HPT)</strong>.</li>
+            </ul>
+            <div class="result-box danger"><h4>Warning with Denosumab (Prolia) in advanced CKD</h4><p>In impaired renal function, treatment with <strong>denosumab</strong> carries a high risk of <strong>severe, life-threatening hypocalcemia</strong>. Always plan close specialist follow-up and ensure adequate calcium and vitamin D levels prior to injection.</p></div>`,
+
+        ckdCard2: `<div class="step-header"><div class="step-badge">C</div><div class="step-title">Calcium + Vitamin D in osteoporosis</div></div>
+            <ul>
+                <li><strong>Start with diet:</strong> Assess dietary calcium intake (e.g., dairy products). Supplement only what is lacking. Do not overlook protein and overall nutrition.</li>
+                <li><strong>When osteoporosis drugs are prescribed:</strong> Correct any vitamin D deficiency and ensure sufficient calcium intake before and during therapy.</li>
+            </ul>`,
+
+        summaryCard1: `<div class="step-header"><div class="step-badge">!</div><div class="step-title">Four common pitfalls to avoid</div></div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>1. Interpreting PTH without simultaneous calcium:</strong> PTH means nothing on its own – it must always be evaluated alongside same-day calcium.</div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>2. Dismissing mildly abnormal calcium without a repeat test:</strong> Always retest (preferably ionized calcium) to confirm the abnormality is real.</div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>3. Ordering 1,25-vit-D for suspected deficiency:</strong> The active form can be normal or high despite severe deficiency. Always order <code>25-OH-D</code>.</div>
+            <div class="result-box warning"><strong>4. Prescribing calcium and vitamin D without considering renal function and diet:</strong> Always check eGFR and dietary intake before routine supplementation.</div>`
+    },
+
+    fa: {
+        dir: "rtl",
+        headerTitle: "الگوریتم گام‌به‌گام: کلسیم، PTH و ویتامین D",
+        headerSub: "راهنمای بالینی تعاملی با توضیحات ساده برای بررسی، تشخیص و درمان",
+        tabs: {
+            algo: "۱. الگوریتم گام‌به‌گام",
+            vitd: "۲. ویتامین D و نرمی استخوان",
+            ckd: "۳. نارسایی کلیه و پوکی استخوان",
+            summary: "۴. خطاهای رایج"
+        },
+        s1Title: "تأیید مقدار غیرطبیعی کلسیم",
+        s1Desc: "هرگز کلسیمِ کمی بالا یا کمی پایین را بدون تکرار آزمایش نادیده نگیرید. همیشه <strong>کلسیم یونیزه</strong> (شکل آزاد و فعال کلسیم در خون) را به همراه <strong>عملکرد کلیه (eGFR)، منیزیم و فسفات</strong> چک کنید.",
+        s1Q: "آزمایش تأییدشده کلسیم چه چیزی را نشان می‌دهد؟",
+        btnHighCaT: "کلسیم بالا (هیپرکلسمی)",
+        btnHighCaS: "کلسیم یونیزه بالاتر از حد نرمال است",
+        btnLowCaT: "کلسیم پایین (هیپوکلسمی)",
+        btnLowCaS: "کلسیم یونیزه پایین‌تر از حد نرمال است",
+
+        s2hTitle: "کلسیم بالا: تفسیر PTH همراه با کلسیم",
+        s2hDesc: "در حالت طبیعی، وقتی کلسیم خون بالاست غده پاراتیروئید (PTH) باید خاموش شود. واکنش PTH چگونه است؟",
+        btnHighPthT: "PTH بالاست یا «نرمال» است (مهار نشده)",
+        btnHighPthS: "غده پاراتیروئید با وجود کلسیم بالا ترمز نکرده است",
+        btnLowPthT: "PTH پایین است (به درستی مهار شده)",
+        btnLowPthS: "غده پاراتیروئید سالم است و ترشح خود را قطع کرده",
+
+        resHighPth: `<h4>تفسیر: هیپرکلسمی وابسته به PTH</h4>
+            <p><strong>توضیح ساده:</strong> خودِ غده پاراتیروئید عامل اصلی بالا رفتن کلسیم خون است.</p>
+            <ul>
+                <li><strong>پرکاری اولیه پاراتیروئید (PHPT):</strong> شایع‌ترین علت (معمولاً یک توده خوش‌خیم روی یکی از غدد پاراتیروئید).</li>
+                <li><strong>هیپرکلسمی هیپوکلسیوریک خانوادگی (FHH):</strong> یک وضعیت ارثی و بی‌خطر که در آن کلیه‌ها کلسیم را در بدن نگه می‌دارند. برای افتراق از PHPT باید دفع کلسیم ادرار (CCCR) بررسی شود.</li>
+            </ul>`,
+
+        resLowPth: `<h4>تفسیر: هیپرکلسمی مستقل از PTH</h4>
+            <p><strong>توضیح ساده:</strong> غده پاراتیروئید بی‌گناه است و عامل دیگری کلسیم را بالا برده است. فوریت وضعیت را بسنجید و این موارد را بررسی کنید:</p>
+            <ul>
+                <li><strong>بدخیمی‌ها (سرطان)، از جمله مولتیپل میلوما:</strong> تومورهایی که استخوان را تخریب می‌کنند یا مواد افزاینده کلسیم ترشح می‌کنند.</li>
+                <li><strong>بیماری‌های گرانولوماتوز (مثل سارکوئیدوز):</strong> سلول‌های التهابی به طور کنترل‌نشده ویتامین D فعال می‌سازند.</li>
+                <li><strong>مصرف بیش از حد مکمل ویتامین D یا کلسیم.</strong></li>
+            </ul>`,
+
+        s2lTitle: "کلسیم پایین: PTH و منیزیم مسیر را نشان می‌دهند",
+        s2lDesc: "وقتی کلسیم پایین است، غده پاراتیروئید سالم باید ترشح PTH را به شدت افزایش دهد. وضعیت PTH چگونه است؟",
+        btnHypoHighPthT: "PTH بالاست (پرکاری ثانویه پاراتیروئید)",
+        btnHypoHighPthS: "غده پاراتیروئید در حال تلاش برای بالا بردن کلسیم است",
+        btnHypoLowPthT: "PTH پایین است یا به طور نامناسبی نرمال است",
+        btnHypoLowPthS: "غده پاراتیروئید به کمبود کلسیم واکنشی نشان نمی‌دهد",
+
+        resHypoHighPth: `<h4>تفسیر: بدن در حال جبران کمبود کلسیم است</h4>
+            <p><strong>توضیح ساده:</strong> غده پاراتیروئید سالم است اما «مواد اولیه» از روده یا کلیه به بدن نمی‌رسد. این موارد را بررسی کنید:</p>
+            <ul>
+                <li><strong>کمبود ویتامین D:</strong> کمبود نور آفتاب یا دریافت ناکافی باعث می‌شود روده نتواند کلسیم جذب کند.</li>
+                <li><strong>سوء جذب روده (Malabsorption):</strong> مثلاً بیماری سلیاک (حساسیت به گلوتن)، بیماری کرون یا سابقه جراحی معده.</li>
+                <li><strong>بیماری مزمن کلیه (CKD):</strong> کلیه‌ها نمی‌توانند ویتامین D را فعال کنند و فسفات در خون بالا می‌رود.</li>
+            </ul>
+            <p style="margin-top:8px;"><strong>اقدام درمانی:</strong> علت زمینه‌ای را درمان کنید (ویتامین D، کلسیم و بررسی روده یا کلیه).</p>`,
+
+        resHypoLowPth: `<h4>تفسیر: غده پاراتیروئید کار نمی‌کند</h4>
+            <p><strong>توضیح ساده:</strong> با وجود کلسیم پایین، هورمون PTH ترشح نمی‌شود. دو علت اصلی وجود دارد:</p>
+            <ul>
+                <li><strong>کمبود منیزیم:</strong> غده پاراتیروئید برای ترشح PTH به منیزیم نیاز دارد؛ بدون منیزیم غده «قفل» می‌شود.</li>
+                <li><strong>کم‌کاری پاراتیروئید (HypoPT):</strong> آسیب به غدد پاراتیروئید (مثلاً بعد از جراحی گردن/تیروئید) یا بیماری خودایمنی.</li>
+            </ul>
+            <p style="margin-top:8px;"><strong>اقدام درمانی:</strong> ابتدا کمبود منیزیم را جبران کنید! در کم‌کاری پاراتیروئید، تجویز ویتامین D فعال با پیگیری دقیق ضروری است.</p>`,
+
+        resetBtn: "بازنشانی الگوریتم",
+
+        vitdCard1: `<div class="step-header"><div class="step-badge">D</div><div class="step-title">کدام آزمایش را و چه زمانی درخواست کنیم؟</div></div>
+            <p>برای بررسی وضعیت ویتامین D، <strong>همیشه آزمایش <code>25-OH-D</code></strong> (شکل ذخیره‌ای در کبد) را درخواست کنید. شکل فعالِ کلیوی یعنی <code>1,25-(OH)2-D</code> را به عنوان آزمایش روتین درخواست <em>نکنید</em>.</p>
+            <div class="result-box" style="margin-top:14px;">
+                <h4>آزمایش هدفمند – فقط زمانی اندازه بگیرید که نتیجه آن روند درمان را تغییر دهد:</h4>
+                <ul>
+                    <li>مشکوک بودن به نرمی استخوان (استئومالاسی) یا ضعف عضلات پروگزیمال (سختی در بلند شدن از صندلی).</li>
+                    <li>کلسیم پایین (هیپوکلسمی) یا PTH بالای بدون توضیح.</li>
+                    <li>سوء جذب روده یا سایر عوامل خطر مشخص.</li>
+                    <li>پیش از شروع داروهای درمان پوکی استخوان.</li>
+                </ul>
+                <p style="margin-top:8px; color: var(--muted);"><em>در افراد سالم بدون عامل خطر یا صرفاً به دلیل خستگی غیراختصاصی، آزمایش روتین نگیرید.</em></p>
+            </div>`,
+
+        vitdCard2: `<div class="step-header"><div class="step-badge">!</div><div class="step-title">تفسیر آزمایش 25-OH-D و نحوه درمان</div></div>
+            <table>
+                <thead><tr><th>سطح (25-OH-D)</th><th>ارزیابی</th><th>اقدام درمانی</th></tr></thead>
+                <tbody>
+                    <tr style="background: var(--danger-light);"><td><strong>کمتر از 25 nmol/L</strong></td><td>کمبود ویتامین D</td><td>درمان را شروع کنید (مثلاً کوله کلسیفرول ۲۰۰۰ واحد روزانه به مدت ۸ تا ۱۲ هفته) و علت را بررسی نمایید. حدود ۳ ماه بعد آزمایش را تکرار کنید.</td></tr>
+                    <tr style="background: var(--warning-light);"><td><strong>25 تا 50 nmol/L</strong></td><td>منطقه خاکستری (مرزی)</td><td>پیش از تصمیم‌گیری برای درمان، عوامل خطر، علائم، PTH و آنزیم ALP را در کنار هم بسنجید.</td></tr>
+                    <tr style="background: var(--success-light);"><td><strong>50 nmol/L و بالاتر</strong></td><td>کافی و مناسب</td><td>نیازی به هیچ تغییر یا درمانی نیست.</td></tr>
+                </tbody>
+            </table>`,
+
+        vitdCard3: `<div class="step-header"><div class="step-badge">vs</div><div class="step-title">نرمی استخوان (Osteomalaci) با پوکی استخوان (Osteoporos) متفاوت است</div></div>
+            <table>
+                <thead><tr><th>نرمی استخوان (Osteomalaci)</th><th>پوکی استخوان (Osteoporos)</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>علت:</strong> نقص در معدنی‌سازی (استخوان‌ها به دلیل کمبود شدید ویتامین D و کلسیم نرم می‌شوند).</td><td><strong>علت:</strong> کاهش تراکم و استحکام استخوان (استخوان سفت است اما متخلخل و شکننده شده).</td></tr>
+                    <tr><td><strong>علائم:</strong> درد استخوانی (در لگن و کمر) و ضعف عضلات ران و بازو.</td><td><strong>علائم:</strong> معمولاً تا زمان وقوع شکستگی کاملاً بدون علامت است.</td></tr>
+                    <tr><td><strong>آزمایش:</strong> معمولاً آنزیم ALP بالا و PTH به صورت ثانویه بالاست.</td><td><strong>تشخیص:</strong> سنجش تراکم استخوان (DXA) و ارزیابی خطر شکستگی.</td></tr>
+                </tbody>
+            </table>
+            <div class="result-box danger" style="margin-top: 14px;"><strong>قانون ایمنی بسیار مهم:</strong> همیشه نرمی استخوان و کمبود ویتامین D را <em>پیش از</em> شروع داروهای ضدپوکی استخوان درمان کنید!</div>`,
+
+        ckdCard1: `<div class="step-header"><div class="step-badge">N</div><div class="step-title">نارسایی کلیه قواعد بازی را تغییر می‌دهد</div></div>
+            <p>وقتی عملکرد کلیه‌ها افت می‌کند (کاهش eGFR)، یک واکنش زنجیره‌ای رخ می‌دهد:</p>
+            <ul>
+                <li><strong>گام ۱:</strong> کلیه‌ها نمی‌توانند فسفات را دفع کنند (تجمع فسفات) و ویتامین D فعال کمتری می‌سازند.</li>
+                <li><strong>گام ۲:</strong> جذب کلسیم کاهش می‌یابد و خطر افت کلسیم خون (هیپوکلسمی) بالا می‌رود.</li>
+                <li><strong>گام ۳:</strong> غدد پاراتیروئید برای جبران بیش‌ازحد کار می‌کنند &larr; <strong>پرکاری ثانویه پاراتیروئید (HPT)</strong>.</li>
+            </ul>
+            <div class="result-box danger"><h4>هشدار مهم درباره داروی دنوزوماب (Prolia) در نارسایی پیشرفته کلیه (CKD)</h4><p>در بیماران مبتلا به نارسایی کلیه، تزریق <strong>دنوزوماب</strong> خطر بالای <strong>افت شدید و خطرناک کلسیم خون</strong> دارد. همیشه پیگیری دقیق توسط متخصص را برنامه‌ریزی کنید و پیش از تزریق از کافی بودن کلسیم و ویتامین D مطمئن شوید.</p></div>`,
+
+        ckdCard2: `<div class="step-header"><div class="step-badge">K</div><div class="step-title">کلسیم و ویتامین D در پوکی استخوان</div></div>
+            <ul>
+                <li><strong>با تغذیه شروع کنید:</strong> میزان کلسیم دریافتی بیمار از طریق غذا (مثل لبنیات) را بررسی کنید و مکمل را فقط به اندازه کمبود تجویز نمایید. نقش پروتئین و تغذیه کلی را فراموش نکنید.</li>
+                <li><strong>هنگام تجویز داروهای پوکی استخوان:</strong> کمبود ویتامین D را برطرف کنید و از دریافت کافی کلسیم پیش از شروع و در طول درمان مطمئن شوید.</li>
+            </ul>`,
+
+        summaryCard1: `<div class="step-header"><div class="step-badge">!</div><div class="step-title">چهار دام و اشتباه رایج که باید از آن‌ها دوری کرد</div></div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>۱. تفسیر PTH بدون بررسی هم‌زمان کلسیم:</strong> عدد PTH به تنهایی هیچ معنایی ندارد و همیشه باید در کنار کلسیم همان روز سنجیده شود.</div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>۲. نادیده گرفتن کلسیمِ کمی غیرطبیعی بدون تکرار آزمایش:</strong> همیشه آزمایش را تکرار کنید (ترجیحاً کلسیم یونیزه) تا از واقعی بودن تغییر مطمئن شوید.</div>
+            <div class="result-box warning" style="margin-bottom: 12px;"><strong>۳. درخواست آزمایش 1,25-vit-D هنگام شک به کمبود:</strong> شکل فعال ممکن است با وجود کمبود شدید، نرمال یا حتی بالا باشد. همیشه <code>25-OH-D</code> را درخواست کنید.</div>
+            <div class="result-box warning"><strong>۴. تجویز کلسیم و ویتامین D بدون در نظر گرفتن کلیه و رژیم غذایی:</strong> پیش از تجویز مکمل، همیشه عملکرد کلیه (eGFR) و تغذیه بیمار را بررسی کنید.</div>`
     }
+};
 
-    function selectCa(type) {
-        document.getElementById('btn-high-ca').classList.remove('selected');
-        document.getElementById('btn-low-ca').classList.remove('selected');
-        document.getElementById('step2-high').classList.add('hidden');
-        document.getElementById('step2-low').classList.add('hidden');
+let currentLang = 'sv';
 
-        if (type === 'high') {
-            document.getElementById('btn-high-ca').classList.add('selected');
-            document.getElementById('step2-high').classList.remove('hidden');
-        } else {
-            document.getElementById('btn-low-ca').classList.add('selected');
-            document.getElementById('step2-low').classList.remove('hidden');
-        }
+function setLanguage(lang) {
+    currentLang = lang;
+    const t = content[lang];
+    document.documentElement.lang = lang;
+    document.documentElement.dir = t.dir;
+
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('lang-' + lang).classList.add('active');
+
+    document.getElementById('header-title').innerText = t.headerTitle;
+    document.getElementById('header-sub').innerText = t.headerSub;
+
+    document.getElementById('tab-algo').innerText = t.tabs.algo;
+    document.getElementById('tab-vitd').innerText = t.tabs.vitd;
+    document.getElementById('tab-ckd').innerText = t.tabs.ckd;
+    document.getElementById('tab-summary').innerText = t.tabs.summary;
+
+    document.getElementById('s1-title').innerText = t.s1Title;
+    document.getElementById('s1-desc').innerHTML = t.s1Desc;
+    document.getElementById('s1-q').innerText = t.s1Q;
+    document.getElementById('btn-high-ca-t').innerText = t.btnHighCaT;
+    document.getElementById('btn-high-ca-s').innerText = t.btnHighCaS;
+    document.getElementById('btn-low-ca-t').innerText = t.btnLowCaT;
+    document.getElementById('btn-low-ca-s').innerText = t.btnLowCaS;
+
+    document.getElementById('s2h-title').innerText = t.s2hTitle;
+    document.getElementById('s2h-desc').innerText = t.s2hDesc;
+    document.getElementById('btn-high-pth-t').innerText = t.btnHighPthT;
+    document.getElementById('btn-high-pth-s').innerText = t.btnHighPthS;
+    document.getElementById('btn-low-pth-t').innerText = t.btnLowPthT;
+    document.getElementById('btn-low-pth-s').innerText = t.btnLowPthS;
+    document.getElementById('res-high-pth').innerHTML = t.resHighPth;
+    document.getElementById('res-low-pth').innerHTML = t.resLowPth;
+
+    document.getElementById('s2l-title').innerText = t.s2lTitle;
+    document.getElementById('s2l-desc').innerText = t.s2lDesc;
+    document.getElementById('btn-hypo-high-pth-t').innerText = t.btnHypoHighPthT;
+    document.getElementById('btn-hypo-high-pth-s').innerText = t.btnHypoHighPthS;
+    document.getElementById('btn-hypo-low-pth-t').innerText = t.btnHypoLowPthT;
+    document.getElementById('btn-hypo-low-pth-s').innerText = t.btnHypoLowPthS;
+    document.getElementById('res-hypo-high-pth').innerHTML = t.resHypoHighPth;
+    document.getElementById('res-hypo-low-pth').innerHTML = t.resHypoLowPth;
+
+    document.getElementById('reset-btn').innerText = t.resetBtn;
+
+    document.getElementById('vitd-card-1').innerHTML = t.vitdCard1;
+    document.getElementById('vitd-card-2').innerHTML = t.vitdCard2;
+    document.getElementById('vitd-card-3').innerHTML = t.vitdCard3;
+
+    document.getElementById('ckd-card-1').innerHTML = t.ckdCard1;
+    document.getElementById('ckd-card-2').innerHTML = t.ckdCard2;
+
+    document.getElementById('summary-card-1').innerHTML = t.summaryCard1;
+}
+
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+
+function selectCa(type) {
+    document.getElementById('btn-high-ca').classList.remove('selected');
+    document.getElementById('btn-low-ca').classList.remove('selected');
+    document.getElementById('step2-high').classList.add('hidden');
+    document.getElementById('step2-low').classList.add('hidden');
+
+    if (type === 'high') {
+        document.getElementById('btn-high-ca').classList.add('selected');
+        document.getElementById('step2-high').classList.remove('hidden');
+    } else {
+        document.getElementById('btn-low-ca').classList.add('selected');
+        document.getElementById('step2-low').classList.remove('hidden');
     }
+}
 
-    function selectHighPth(type) {
-        document.getElementById('btn-high-pth').classList.remove('selected');
-        document.getElementById('btn-low-pth').classList.remove('selected');
-        document.getElementById('res-high-pth').classList.add('hidden');
-        document.getElementById('res-low-pth').classList.add('hidden');
+function selectHighPth(type) {
+    document.getElementById('btn-high-pth').classList.remove('selected');
+    document.getElementById('btn-low-pth').classList.remove('selected');
+    document.getElementById('res-high-pth').classList.add('hidden');
+    document.getElementById('res-low-pth').classList.add('hidden');
 
-        if (type === 'high') {
-            document.getElementById('btn-high-pth').classList.add('selected');
-            document.getElementById('res-high-pth').classList.remove('hidden');
-        } else {
-            document.getElementById('btn-low-pth').classList.add('selected');
-            document.getElementById('res-low-pth').classList.remove('hidden');
-        }
+    if (type === 'high') {
+        document.getElementById('btn-high-pth').classList.add('selected');
+        document.getElementById('res-high-pth').classList.remove('hidden');
+    } else {
+        document.getElementById('btn-low-pth').classList.add('selected');
+        document.getElementById('res-low-pth').classList.remove('hidden');
     }
+}
 
-    function selectLowPth(type) {
-        document.getElementById('btn-hypo-high-pth').classList.remove('selected');
-        document.getElementById('btn-hypo-low-pth').classList.remove('selected');
-        document.getElementById('res-hypo-high-pth').classList.add('hidden');
-        document.getElementById('res-hypo-low-pth').classList.add('hidden');
+function selectLowPth(type) {
+    document.getElementById('btn-hypo-high-pth').classList.remove('selected');
+    document.getElementById('btn-hypo-low-pth').classList.remove('selected');
+    document.getElementById('res-hypo-high-pth').classList.add('hidden');
+    document.getElementById('res-hypo-low-pth').classList.add('hidden');
 
-        if (type === 'high') {
-            document.getElementById('btn-hypo-high-pth').classList.add('selected');
-            document.getElementById('res-hypo-high-pth').classList.remove('hidden');
-        } else {
-            document.getElementById('btn-hypo-low-pth').classList.add('selected');
-            document.getElementById('res-hypo-low-pth').classList.remove('hidden');
-        }
+    if (type === 'high') {
+        document.getElementById('btn-hypo-high-pth').classList.add('selected');
+        document.getElementById('res-hypo-high-pth').classList.remove('hidden');
+    } else {
+        document.getElementById('btn-hypo-low-pth').classList.add('selected');
+        document.getElementById('res-hypo-low-pth').classList.remove('hidden');
     }
+}
 
-    function resetAlgo() {
-        document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
-        document.getElementById('step2-high').classList.add('hidden');
-        document.getElementById('step2-low').classList.add('hidden');
-        document.getElementById('res-high-pth').classList.add('hidden');
-        document.getElementById('res-low-pth').classList.add('hidden');
-        document.getElementById('res-hypo-high-pth').classList.add('hidden');
-        document.getElementById('res-hypo-low-pth').classList.add('hidden');
-    }
+function resetAlgo() {
+    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('step2-high').classList.add('hidden');
+    document.getElementById('step2-low').classList.add('hidden');
+    document.getElementById('res-high-pth').classList.add('hidden');
+    document.getElementById('res-low-pth').classList.add('hidden');
+    document.getElementById('res-hypo-high-pth').classList.add('hidden');
+    document.getElementById('res-hypo-low-pth').classList.add('hidden');
+}
+
+// Init
+setLanguage('sv');
 </script>
 
 </body>
 </html>
 """
 
-with open("kalcium_pth_algoritm.html", "w", encoding="utf-8") as f:
+with open("kalcium_pth_algoritm-v2.html", "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("HTML-filen är skapad: kalcium_pth_algoritm.html")
+print("HTML-filen är skapad: kalcium_pth_algoritm-v2.html")
